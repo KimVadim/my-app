@@ -17,11 +17,8 @@ function App() {
         >
           Learn React
         </a>
-      </header>
-      <div>
-        <h1>Привет, React!</h1>
         <button onClick={() => alert("Кнопка нажата!")}>Нажми меня</button>
-      </div>
+      </header>
     </div>
   );
 }
