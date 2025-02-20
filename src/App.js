@@ -6,6 +6,7 @@ function App() {
   useEffect(() => {
     fetch("https://palvenko-production.up.railway.app/opty", {
       method: "GET",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
         "Accept": "*/*"
