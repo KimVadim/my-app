@@ -1,9 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from "react";
+import { Table, Button, Tag } from "antd";
 
 function App() {
   const [data, setData] = useState([])
+  const [sortedInfo, setSortedInfo] = useState(
+    {
+      columnKey: "status",
+      field: "status",
+      order: "ascend"
+    }
+  );
+  const handleChange = (pagination, filters, sorter) => {
+    console.log('Various parameters', pagination, sorter);
+    setSortedInfo(sorter);
+  };
+
   useEffect(() => {
     fetch("https://palvenko-production.up.railway.app/opty", {
       method: "GET",
@@ -20,60 +32,57 @@ function App() {
         return response.json();
       })
       .then(data => {
-        console.log("Ответ от сервера:", data)
         const keys = ["id", "text", "userId", "apartId", "product", "status", "amount", "email", "startDt", "endDt"]
-        const formattedData = data.message.map(entry => 
-          Object.fromEntries(keys.map((key, index) => [key, entry[index]]))
-        )
-        console.log("formattedData", formattedData)
+        const formattedData = data.message.map((entry, index) => ({
+          key: index,
+          ...Object.fromEntries(keys.map((key, idx) => [key, entry[idx]])),
+        }));
         setData(formattedData)
       })
       .catch(error => console.error("Ошибка запроса:", error));
   }, []); // Пустой массив зависимостей → выполняется только при первом рендере
   
+  const statusPriority = { "Заключили": 1, "Расторгли": 2 }; 
 
+  const columns = [
+    { 
+      title: "Статус",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color={status === "Заключили" ? "green" : "red"}>{status}</Tag>
+      ),
+      sorter: (a, b) => statusPriority[a.status] - statusPriority[b.status],
+      sortOrder: sortedInfo.columnKey === 'status' ? sortedInfo.order : null,
+      ellipsis: true,
+    }, { 
+      title: "Сумма",
+      dataIndex: "amount", 
+      key: "amount",
+      sorter: (a, b) => a.amount - b.amount,
+      sortOrder: sortedInfo.columnKey === 'amount' ? sortedInfo.order : null,
+      ellipsis: true, 
+    }, { 
+      title: "Дата начала",
+      dataIndex: "startDt",
+      key: "startDt" 
+    }
+  ];
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <button onClick={() => alert("Кнопка нажата!")}>Нажми меня</button>
-      </header>
-      <table className="min-w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2">ID</th>
-            <th className="border px-4 py-2">Статус</th>
-            <th className="border px-4 py-2">Сумма</th>
-            <th className="border px-4 py-2">Email</th>
-            <th className="border px-4 py-2">Дата начала</th>
-            <th className="border px-4 py-2">Дата окончания</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.id} className="border">
-              <td className="border px-4 py-2">{item.id}</td>
-              <td className="border px-4 py-2">{item.status}</td>
-              <td className="border px-4 py-2">{item.amount}</td>
-              <td className="border px-4 py-2">{item.email}</td>
-              <td className="border px-4 py-2">{item.startDate}</td>
-              <td className="border px-4 py-2">{item.endDate}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={{ padding: 20 }}>
+      <h2>Договора</h2>
+      <Table 
+        columns={columns}
+        dataSource={data}
+        onChange={handleChange}
+        size='small'
+        pagination={{
+          position: ['None', 'bottomCenter'],
+          pageSize: 15
+        }}
+      />
+      <Button type="primary" style={{ marginTop: 20 }}>Обновить данные</Button>
     </div>
   );
 }
