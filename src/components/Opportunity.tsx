@@ -3,14 +3,10 @@ import { Table, Tag } from "antd";
 import React from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 
-const formatPhoneNumber = (phone: String) => {
-  if (!phone) return "";
-  return phone.replace(/(\+7)(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 ($2) $3-$4-$5");
-};
-
 export const Opportunity: React.FC = () => {
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [sortedInfo, setSortedInfo] = useState(
     {
       columnKey: "5",
@@ -41,6 +37,11 @@ export const Opportunity: React.FC = () => {
   }, []);
   
   const statusPriority = { "Заключили": 1, "Расторгли": 2 }; 
+  
+  const handleRowDoubleClick = (record: any) => {
+    setSelectedRecord(record); // Сохраняем выбранную строку
+    setIsModalOpen(true); // Открываем модальное окно
+  };
 
   const columns = [
     {
@@ -49,16 +50,13 @@ export const Opportunity: React.FC = () => {
       key: "3",
       width: 35, // Уменьшаем ширину колонки
     }, { 
-      title: "ФИО, Телефон",
+      title: "ФИО",
       dataIndex: "phone", 
       key: "phone",
       ellipsis: true,
       render: (phone: string, record: any) => (
         <p>
           <strong className="full-name">{record.full_name}</strong> <br />
-          <a className="phone-link" href={`tel:${phone}`} style={{ textDecoration: "none", color: "blue" }}>
-            {formatPhoneNumber(phone)}
-          </a>
         </p>
       ),
     }, { 
@@ -95,11 +93,11 @@ export const Opportunity: React.FC = () => {
           position: ['bottomCenter'],
           pageSize: 27
         }}
-        onRow={() => ({
-          onClick: () => setIsModalOpen(true),
+        onRow={(record) => ({
+          onClick: () => handleRowDoubleClick(record),
         })}
       />
-      { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+      { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} record={selectedRecord} />}
     </>
   );
 }
