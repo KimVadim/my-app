@@ -1,7 +1,8 @@
 import React from 'react';
-import { Modal, Table, Tag } from 'antd';
+import { Card, Modal, Table, Tag } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { selectFilteredQuotes } from '../selector/selectors.tsx';
 
 interface OpportunityModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -16,22 +17,26 @@ const formatPhoneNumber = (phone: String) => {
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
   const optyDate = new Date(record?.["8"]);
   const optyPayDate = new Date(record?.["9"]);
-  const quoteData = useSelector((state: RootState) => state.quote.quote)
+  const optyId = record?.[0]
+  const filteredQuotes = useSelector((state: RootState) => 
+    selectFilteredQuotes(state, optyId)
+  );
+  
   const columns = [
     {
       title: "Источник",
       dataIndex: "5", 
       key: "5",
+    }, {
+      title: "Продукт",
+      dataIndex: "4",
+      key: "4",
     }, {
       title: "Сумма",
       dataIndex: "6",
@@ -50,29 +55,29 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   return (
     <>
       <Modal 
-        title="Детали договора" 
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
       >
-        <p><strong>ФИО:</strong> {record?.full_name}</p>
-        <p><strong>Телефон: </strong>           
-          <a className="phone-link" href={`tel:${record?.phone}`} style={{ textDecoration: "none", color: "blue" }}>
-            {formatPhoneNumber(record?.phone)}
-          </a>
-        </p>
-        <p><strong>Сумма договора:</strong> {record?.["6"]}</p>
-        <p><strong>Дата договора:</strong> {optyDate.toLocaleDateString("ru-RU")}</p>
-        <p><strong>Дата оплаты:</strong> {optyPayDate.toLocaleDateString("ru-RU")}</p>
-        <h2>Платежи</h2>
-        <Table 
+        <Card title="Детали договора" variant="outlined">
+          <p><strong>ФИО:</strong> {record?.full_name}</p>
+          <p><strong>Телефон: </strong>           
+            <a className="phone-link" href={`tel:${record?.phone}`} style={{ textDecoration: "none", color: "blue" }}>
+              {formatPhoneNumber(record?.phone)}
+            </a>
+          </p>
+          <p><strong>Сумма договора:</strong> {record?.["6"]}</p>
+          <p><strong>Дата договора:</strong> {optyDate.toLocaleDateString("ru-RU")}</p>
+          <p><strong>Дата оплаты:</strong> {optyPayDate.toLocaleDateString("ru-RU")}</p>
+        </Card>
+        <Table
+          title={() => <strong>Платежи</strong>}
           columns={columns}
-          dataSource={quoteData}
+          dataSource={filteredQuotes}
           size='small'
           pagination={{
             position: ['bottomCenter'],
-            pageSize: 5
+            pageSize: 8
           }}
         />
       </Modal>

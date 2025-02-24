@@ -52,7 +52,7 @@ export const Opportunity: React.FC = () => {
 
   const columns = [
     { 
-      title: "№, Статус, Дата договора",
+      title: "№ / Статус / Дата договора",
       dataIndex: "5",
       key: "5",
       render: (status: String, record: any) => {
@@ -80,11 +80,11 @@ export const Opportunity: React.FC = () => {
 
   return (
     <>
-      <h2>Все договора</h2>
-      <Table 
+      <Table
+        title={() => <strong>Все договора</strong>}
         columns={columns}
         dataSource={optyData}
-        size='small'
+        size='middle'
         pagination={{
           position: ['bottomCenter'],
           pageSize: 27
