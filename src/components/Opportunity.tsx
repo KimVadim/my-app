@@ -2,83 +2,79 @@ import { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import React from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../store";
+import { setOpportunity } from "../slices/opportunitySlice.ts";
+import { setQuote } from "../slices/quoteSlice.ts"
 
 export const Opportunity: React.FC = () => {
-  const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [sortedInfo, setSortedInfo] = useState(
-    {
-      columnKey: "5",
-      field: "5",
-      order: "ascend"
-    }
-  );
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    fetch("https://palvenko-production.up.railway.app/opty", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "*/*"
-      }
-    })
-      .then(response => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://palvenko-production.up.railway.app/sheet_data", {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "*/*"
+          }
+        });
+  
         if (!response.ok) {
-          throw new Error(`Ошибка HTTP: ${response.status}`);
+          const errorText = await response.text();
+          throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
         }
-        return response.json();
-      })
-      .then(data => {
-        setData(data.message);
-      })
-      .catch(error => console.error("Ошибка запроса:", error));
-  }, []);
   
-  const statusPriority = { "Заключили": 1, "Расторгли": 2 }; 
+        const data = await response.json();
+        const opportunities = data.message?.opportunity || [];
+        console.log(data)
+        const quote = data.message?.quotes || [];
+
+        dispatch(setOpportunity(opportunities));
+        dispatch(setQuote(quote));
+      } catch (error) {
+        console.error("Ошибка запроса:", error);
+      }
+    };
   
+    fetchData();
+  }, [dispatch]);
+  
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
   const handleRowDoubleClick = (record: any) => {
     setSelectedRecord(record); // Сохраняем выбранную строку
     setIsModalOpen(true); // Открываем модальное окно
   };
 
   const columns = [
-    {
-      title: "#",
-      dataIndex: "3",
-      key: "3",
-      width: 35, // Уменьшаем ширину колонки
-    }, { 
-      title: "ФИО",
-      dataIndex: "phone", 
-      key: "phone",
-      ellipsis: true,
-      render: (phone: string, record: any) => (
-        <p>
-          <strong className="full-name">{record.full_name}</strong> <br />
-        </p>
-      ),
-    }, { 
-      title: "Статус",
+    { 
+      title: "№, Статус, Дата договора",
       dataIndex: "5",
       key: "5",
-      render: (status: String) => (
-        <Tag color={status === "Заключили" ? "green" : "red"}>{status}</Tag>
-      ),
-      sorter: (a, b) => statusPriority[a['5']] - statusPriority[b['5']],
-      sortOrder: sortedInfo.columnKey === '5' ? sortedInfo.order : null,
-      ellipsis: true,
-      width: 100, // Уменьшаем ширину колонки
-    }, { 
-      title: "Дата договора",
-      dataIndex: "8",
-      key: "8",
-      render: (startDt: string) => {
-        const date = new Date(startDt);
-        return <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>;
+      render: (status: String, record: any) => {
+        const date = new Date(record?.[8])
+
+        return <>
+          <Tag color={"#2db7f5"}>{record?.[3]}</Tag>
+          <Tag color={status === "Заключили" ? "green" : "red"}>{status}</Tag>
+          <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
+        </>
       },
-      width: 100, // Уменьшаем ширину колонки
+      width: 235, // Уменьшаем ширину колонки
+    }, {
+      title: "ФИО",
+      dataIndex: "full_name", 
+      key: "full_name",
+      ellipsis: true,
+      render: (full_name: String, record: any) => {
+        return <>
+          <strong className="full-name">{full_name}</strong> <br />
+        </>
+      },
     }
   ];
 
@@ -87,7 +83,7 @@ export const Opportunity: React.FC = () => {
       <h2>Все договора</h2>
       <Table 
         columns={columns}
-        dataSource={data}
+        dataSource={optyData}
         size='small'
         pagination={{
           position: ['bottomCenter'],
