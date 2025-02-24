@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import React from 'react';
+import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 
-const formatPhoneNumber = (phone) => {
+const formatPhoneNumber = (phone: String) => {
   if (!phone) return "";
   return phone.replace(/(\+7)(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 ($2) $3-$4-$5");
 };
 
-function Opportunity() {
+export const Opportunity: React.FC = () => {
   const [data, setData] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortedInfo, setSortedInfo] = useState(
     {
       columnKey: "5",
@@ -16,9 +18,6 @@ function Opportunity() {
       order: "ascend"
     }
   );
-  const handleChange = (pagination, filters, sorter) => {
-    setSortedInfo(sorter);
-  };
 
   useEffect(() => {
     fetch("https://palvenko-production.up.railway.app/opty", {
@@ -49,7 +48,6 @@ function Opportunity() {
       dataIndex: "3",
       key: "3",
       width: 35, // Уменьшаем ширину колонки
-      align: "center",
     }, { 
       title: "ФИО, Телефон",
       dataIndex: "phone", 
@@ -73,8 +71,7 @@ function Opportunity() {
       sorter: (a, b) => statusPriority[a['5']] - statusPriority[b['5']],
       sortOrder: sortedInfo.columnKey === '5' ? sortedInfo.order : null,
       ellipsis: true,
-      width: 95, // Уменьшаем ширину колонки
-      align: "center",
+      width: 100, // Уменьшаем ширину колонки
     }, { 
       title: "Дата договора",
       dataIndex: "8",
@@ -83,8 +80,7 @@ function Opportunity() {
         const date = new Date(startDt);
         return <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>;
       },
-      width: 95, // Уменьшаем ширину колонки
-      align: "center",
+      width: 100, // Уменьшаем ширину колонки
     }
   ];
 
@@ -94,15 +90,16 @@ function Opportunity() {
       <Table 
         columns={columns}
         dataSource={data}
-        onChange={handleChange}
         size='small'
         pagination={{
-          position: ['None', 'bottomCenter'],
+          position: ['bottomCenter'],
           pageSize: 27
         }}
+        onRow={() => ({
+          onClick: () => setIsModalOpen(true),
+        })}
       />
+      { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
     </>
   );
 }
-
-export default Opportunity;

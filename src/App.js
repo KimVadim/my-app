@@ -1,4 +1,4 @@
-import Opportunity from './service/Opportunity.tsx'
+import { Opportunity } from './components/Opportunity.tsx'
 import './App.css';
 
 function App() {
