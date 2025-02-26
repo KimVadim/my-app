@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Table, Tag } from "antd";
+import { FloatButton, Table, Tag } from "antd";
 import React from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
 import { setQuote } from "../slices/quoteSlice.ts"
+import { DollarOutlined, FileDoneOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons';
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,7 +46,7 @@ export const Opportunity: React.FC = () => {
   }, [dispatch]);
   
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
-  const handleRowDoubleClick = (record: any) => {
+  const handleRowClick = (record: any) => {
     setSelectedRecord(record); // Сохраняем выбранную строку
     setIsModalOpen(true); // Открываем модальное окно
   };
@@ -64,7 +65,7 @@ export const Opportunity: React.FC = () => {
           <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         </>
       },
-      width: 235, // Уменьшаем ширину колонки
+      width: 235,
     }, {
       title: "ФИО",
       dataIndex: "full_name", 
@@ -90,10 +91,20 @@ export const Opportunity: React.FC = () => {
           pageSize: 27
         }}
         onRow={(record) => ({
-          onClick: () => handleRowDoubleClick(record),
+          onClick: () => handleRowClick(record),
         })}
       />
       { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} record={selectedRecord} />}
+      <FloatButton.Group
+        trigger="click"
+        type="primary"
+        style={{ insetInlineEnd: 24 }}
+        icon={<PlusOutlined />}
+      >
+        <FloatButton icon={<FileDoneOutlined />} onClick={() => setIsModalOpen(true)} />
+        <FloatButton icon={<DollarOutlined />} />
+        <FloatButton icon={<WalletOutlined />} />
+      </FloatButton.Group>
     </>
   );
 }

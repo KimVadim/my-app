@@ -60,15 +60,15 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         footer={null}
       >
         <Card title="Детали договора" variant="outlined">
-          <p><strong>ФИО:</strong> {record?.full_name}</p>
-          <p><strong>Телефон: </strong>           
+          <p className="opty-card"><strong>ФИО:</strong> {record?.full_name}</p>
+          <p className="opty-card"><strong>Телефон: </strong>           
             <a className="phone-link" href={`tel:${record?.phone}`} style={{ textDecoration: "none", color: "blue" }}>
               {formatPhoneNumber(record?.phone)}
             </a>
           </p>
-          <p><strong>Сумма договора:</strong> {record?.["6"]}</p>
-          <p><strong>Дата договора:</strong> {optyDate.toLocaleDateString("ru-RU")}</p>
-          <p><strong>Дата оплаты:</strong> {optyPayDate.toLocaleDateString("ru-RU")}</p>
+          <p className="opty-card"><strong>Сумма договора:</strong> {record?.["6"]}</p>
+          <p className="opty-card"><strong>Дата договора:</strong> {optyDate.toLocaleDateString("ru-RU")}</p>
+          <p className="opty-card"><strong>Дата оплаты:</strong> {optyPayDate.toLocaleDateString("ru-RU")}</p>
         </Card>
         <Table
           title={() => <strong>Платежи</strong>}
@@ -77,7 +77,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           size='small'
           pagination={{
             position: ['bottomCenter'],
-            pageSize: 8
+            pageSize: 5
           }}
         />
       </Modal>

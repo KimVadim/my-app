@@ -1,42 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .full-name {
   font-size: 12px;
   color: #555;
@@ -46,4 +7,55 @@
   font-size: 14px;
   text-decoration: none;
   color: blue;
+}
+
+.ant-card {
+  .ant-card-body {
+    padding: 0 12px;
+  }
+  .ant-card-head {
+    padding: 0 14px;
+  }
+}
+
+.opty-card {
+  padding: 0 0px;
+  margin: 10px 0px;
+}
+
+.ant-float-btn-circle {
+  height: 60px;
+  width: 60px;
+}
+
+.ant-float-btn .ant-float-btn-body .ant-float-btn-content .ant-float-btn-icon {
+  width: 24px;
+  font-size: 24px;
+}
+
+.ant-float-btn-group-top>.ant-float-btn-group-wrap {
+  bottom: 76px;
+}
+
+.ant-pagination.ant-pagination-mini {
+  .ant-pagination-item {
+    min-width: 34px;
+    height: 34px;
+    line-height: 34px;
+    font-size: 24px;
+  }
+  .ant-pagination-next {
+    min-width: 34px;
+    height: 34px;
+    line-height: 34px;
+  }
+  .ant-pagination-prev {
+    min-width: 34px;
+    height: 34px;
+    line-height: 34px;
+  }
+}
+
+.ant-float-btn-group {
+  bottom: 20px;
 }
