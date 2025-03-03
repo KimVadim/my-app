@@ -1,7 +1,7 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
-import React from "react"
-import dayjs from 'dayjs';
-import { addOpty } from "../service/appServiceBackend.ts";
+import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
+import React, { useState } from "react"
+import { useSelector } from "react-redux";
+import { RootState } from "../store.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -16,13 +16,36 @@ export interface AddPayment {
 
 export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment, isAddPayment}) => {
     const [form] = Form.useForm();
+    const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
+    const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+
     const handleSubmit = (values: AddPayment) => {
       console.log(values)
       //addOpty(values).then(() => setIsAddPayment(false));
     };
     
+    const handleSearch = (value: string) => {
+      if (!optyData) return;
+  
+      const filteredOptions = optyData
+        .filter(item => item['Stage'] === 'Заключили')
+        .filter(item =>
+          item['full_name'].toLowerCase().includes(value.toLowerCase()) || 
+          item['Description'].toLowerCase().includes(value.toLowerCase())
+        )
+        .slice(0, 7)
+        .map(item => ({
+          optyId: item['ID'],
+          value: `${item['Description']} - ${item['full_name']}`,
+          label: `${item['Description']} - ${item['full_name']}`
+        }));
+  
+      setOptions(filteredOptions);
+    };
+    
     return (
-      <Modal 
+      <Modal
+        title={'Добавить платеж'}
         open={isAddPayment}
         onCancel={() => setIsAddPayment(false)}
         style={{ maxWidth: '80%' }}
@@ -44,15 +67,19 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
           </Form.Item>
           <Form.Item
             label="Договор"
-            name="optyId"
+            name="optyName"
             rules={[{ required: true, message: 'Обязтельное поле!' }]}
           >
-            <Select
+            <AutoComplete
               style={{ width: '95%' }}
-              options={[
-                { value: '3dbeb0bd', label: '27 - Даниил Цай' },
-              ]}
-              onSelect={(value: string) => form.setFieldsValue({'product': value})}
+              onSearch={handleSearch}
+              placeholder="Введите номер квартиры или ФИО"
+              options={options}
+              onSelect={(value: string, option: any) => {
+                form.setFieldsValue({
+                  optyId: option.optyId,
+                });
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -78,6 +105,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
               Отмена
             </Button>
           </Form.Item>
+          <Form.Item name="optyId" hidden={true}></Form.Item>
         </Form>
       </Modal>
     )

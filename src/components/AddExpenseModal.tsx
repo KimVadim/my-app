@@ -1,7 +1,7 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
-import React from "react"
-import dayjs from 'dayjs';
-import { addOpty } from "../service/appServiceBackend.ts";
+import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
+import React, { useState } from "react"
+import { RootState } from "../store.ts";
+import { useSelector } from "react-redux";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
@@ -19,12 +19,35 @@ export interface AddOpportunuty {
 
 export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
     const [form] = Form.useForm();
+    const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
+    const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+
     const handleSubmit = (values: AddOpportunuty) => {
-      //addOpty(values).then(() => setIsAddExpense(false));
+      console.log(values)
+    };
+    
+    const handleSearch = (value: string) => {
+      if (!optyData) return;
+  
+      const filteredOptions = optyData
+        .filter(item => item['Stage'] === 'Заключили')
+        .filter(item =>
+          item['full_name'].toLowerCase().includes(value.toLowerCase()) || 
+          item['Description'].toLowerCase().includes(value.toLowerCase())
+        )
+        .slice(0, 7)
+        .map(item => ({
+          optyId: item['ID'],
+          value: `${item['Description']} - ${item['full_name']}`,
+          label: `${item['Description']} - ${item['full_name']}`
+        }));
+  
+      setOptions(filteredOptions);
     };
     
     return (
-      <Modal 
+      <Modal
+        title={'Добавить расход'}
         open={isAddExpense}
         onCancel={() => setIsAddExpense(false)}
         style={{ maxWidth: '80%' }}
@@ -51,15 +74,19 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
           </Form.Item>
           <Form.Item
             label="Договор"
-            name="optyId"
+            name="optyName"
             rules={[{ required: true, message: 'Обязтельное поле!' }]}
           >
-            <Select
+            <AutoComplete
               style={{ width: '95%' }}
-              options={[
-                { value: '3dbeb0bd', label: '27 - Даниил Цай' },
-              ]}
-              onSelect={(value: string) => form.setFieldsValue({'product': value})}
+              onSearch={handleSearch}
+              placeholder="Введите номер квартиры или ФИО"
+              options={options}
+              onSelect={(value: string, option: any) => {
+                form.setFieldsValue({
+                  optyId: option.optyId,
+                });
+              }}
             />
           </Form.Item>
           <Form.Item
@@ -79,7 +106,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 { value: 'Комм. Алатау', label: 'Комм. Алатау' },
                 { value: 'Комм. Павленко', label: 'Комм. Павленко' },
               ]}
-              onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
+              onSelect={(value: string) => form.setFieldsValue({'expenseType': value})}
             />
           </Form.Item>
           <Form.Item
@@ -105,6 +132,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               Отмена
             </Button>
           </Form.Item>
+          <Form.Item name="optyId" hidden={true}></Form.Item>
         </Form>
       </Modal>
     )

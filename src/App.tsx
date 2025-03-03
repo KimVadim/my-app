@@ -1,28 +1,19 @@
-import { Opportunity } from './components/Opportunity.tsx'
 import './App.css';
-import React, { useState } from 'react';
-import { AddFloatButton } from './components/AddFloatButton.tsx';
-import { AddOpportunutyModal } from './components/AddOpportunityModal.tsx';
-import { AddPaymentModal } from './components/AddPaymentModal.tsx';
-import { AddExpenseModal } from './components/AddExpenseModal.tsx';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login.tsx';
+import HomePage from './components/HomePage.tsx';
+import PrivateRoute from './components/PrivateRoute.tsx';
 
 function App() {
-  const [isAddOpty, setIsAddOpty] = useState(false);
-  const [isAddPayment, setIsAddPayment] = useState(false);
-  const [isAddExpense, setIsAddExpense] = useState(false)
-  
   return (
-    <div style={{ padding: 5 }}>
-      <Opportunity />
-      <AddFloatButton
-        setIsAddOpty={setIsAddOpty}
-        setIsAddPayment={setIsAddPayment}
-        setIsAdExpense={setIsAddExpense}
-      />
-      {isAddOpty && <AddOpportunutyModal setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty} />}
-      {isAddPayment && <AddPaymentModal setIsAddPayment={setIsAddPayment} isAddPayment={isAddPayment}/>}
-      {isAddExpense && <AddExpenseModal setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}/>}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/homepage" element={<PrivateRoute><HomePage/></PrivateRoute>} />
+        <Route path="/my-app" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 

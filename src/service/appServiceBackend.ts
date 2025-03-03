@@ -69,3 +69,30 @@ export const addOpty = async (values: AddOpportunuty) => {
         console.error("Ошибка запроса:", error);
     }
 };
+
+export const loginUser = async (login: string, password: string) => {
+    try {
+        const response = await fetch("https://palvenko-production.up.railway.app/login", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            },
+            body: JSON.stringify({
+                "login": login,
+                "password": password,
+            })
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
+        }
+        const data = await response.json();
+        console.log("Ответ сервера:", data);
+        return data; // Возвращаем ответ сервера
+
+    } catch (error) {
+        console.error("Ошибка запроса:", error);
+    }
+};

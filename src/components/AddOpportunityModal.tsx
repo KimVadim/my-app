@@ -25,7 +25,8 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
     };
     
     return (
-      <Modal 
+      <Modal
+        title={'Добавить договор'}
         open={isAddOpty}
         onCancel={() => setIsAddOpty(false)}
         style={{ maxWidth: '80%' }}
@@ -104,6 +105,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
               style={{ width: '95%' }} 
               format="DD.MM.YYYY"
               inputReadOnly={true}
+              placeholder="Введите дату"
               disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
             />
           </Form.Item>
@@ -118,6 +120,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
               style={{ width: '95%' }} 
               format="DD.MM.YYYY"
               inputReadOnly={true}
+              placeholder="Введите дату"
               disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
             />
           </Form.Item>

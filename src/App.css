@@ -1,3 +1,7 @@
+body {
+  min-height: 150vh; /* Делаем страницу достаточно длинной для прокрутки */
+}
+
 .full-name {
   font-size: 12px;
   color: #555;
