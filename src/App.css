@@ -59,3 +59,11 @@
 .ant-float-btn-group {
   bottom: 20px;
 }
+
+.ant-form-item {
+  margin-bottom: 4px;
+
+  .ant-form-item-label {
+    padding: 0 0 0;
+  }
+}

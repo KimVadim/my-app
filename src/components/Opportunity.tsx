@@ -1,48 +1,18 @@
 import { useEffect, useState } from "react";
-import { FloatButton, Table, Tag } from "antd";
+import { Button, Table, Tag } from "antd";
 import React from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { setOpportunity } from "../slices/opportunitySlice.ts";
-import { setQuote } from "../slices/quoteSlice.ts"
-import { DollarOutlined, FileDoneOutlined, PlusOutlined, WalletOutlined } from '@ant-design/icons';
+import { getSheetData } from "../service/appServiceBackend.ts";
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const dispatch: AppDispatch = useDispatch();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://palvenko-production.up.railway.app/sheet_data", {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "*/*"
-          }
-        });
-  
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
-        }
-  
-        const data = await response.json();
-        const opportunities = data.message?.opportunity || [];
-        console.log(data)
-        const quote = data.message?.quotes || [];
-
-        dispatch(setOpportunity(opportunities));
-        dispatch(setQuote(quote));
-      } catch (error) {
-        console.error("Ошибка запроса:", error);
-      }
-    };
-  
-    fetchData();
+  useEffect(() => {  
+    getSheetData(dispatch);
   }, [dispatch]);
   
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
@@ -54,13 +24,13 @@ export const Opportunity: React.FC = () => {
   const columns = [
     { 
       title: "№ / Статус / Дата договора",
-      dataIndex: "5",
-      key: "5",
+      dataIndex: "Stage",
+      key: "Stage",
       render: (status: String, record: any) => {
-        const date = new Date(record?.[8])
+        const date = new Date(record?.['OppoDate'])
 
         return <>
-          <Tag color={"#2db7f5"}>{record?.[3]}</Tag>
+          <Tag color={"#2db7f5"}>{record?.['Description']}</Tag>
           <Tag color={status === "Заключили" ? "green" : "red"}>{status}</Tag>
           <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         </>
@@ -82,7 +52,12 @@ export const Opportunity: React.FC = () => {
   return (
     <>
       <Table
-        title={() => <strong>Все договора</strong>}
+        title={() => 
+          <>
+            <strong>Все договора</strong>
+            <Button type="primary" onClick={() => getSheetData(dispatch)} style={{ marginLeft: 15 }}>Обновить</Button>
+          </>
+        }
         columns={columns}
         dataSource={optyData}
         size='middle'
@@ -95,16 +70,6 @@ export const Opportunity: React.FC = () => {
         })}
       />
       { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} record={selectedRecord} />}
-      <FloatButton.Group
-        trigger="click"
-        type="primary"
-        style={{ insetInlineEnd: 24 }}
-        icon={<PlusOutlined />}
-      >
-        <FloatButton icon={<FileDoneOutlined />} onClick={() => setIsModalOpen(true)} />
-        <FloatButton icon={<DollarOutlined />} />
-        <FloatButton icon={<WalletOutlined />} />
-      </FloatButton.Group>
     </>
   );
 }
