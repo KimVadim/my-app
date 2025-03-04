@@ -1,5 +1,5 @@
 import { Opportunity } from './Opportunity.tsx'
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AddFloatButton } from './AddFloatButton.tsx';
 import { AddOpportunutyModal } from './AddOpportunityModal.tsx';
 import { AddPaymentModal } from './AddPaymentModal.tsx';

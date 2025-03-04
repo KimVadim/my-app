@@ -1,8 +1,8 @@
 import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
 import React, { useState } from "react"
-import { useSelector } from "react-redux";
-import { RootState } from "../store.ts";
-import { addPayment } from "../service/appServiceBackend.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store.ts";
+import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -17,11 +17,15 @@ export interface AddPayment {
 
 export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment, isAddPayment}) => {
     const [form] = Form.useForm();
+    const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
 
     const handleSubmit = (values: AddPayment) => {
-      addPayment(values).then(() => setIsAddPayment(false));
+      addPayment(values).then(() => {
+        getSheetData(dispatch);
+        setIsAddPayment(false)
+      });
     };
     
     const handleSearch = (value: string) => {

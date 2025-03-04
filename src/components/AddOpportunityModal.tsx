@@ -1,7 +1,9 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
 import React from "react"
 import dayjs from 'dayjs';
-import { addOpty } from "../service/appServiceBackend.ts";
+import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store.ts";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -20,8 +22,12 @@ export interface AddOpportunuty {
 
 export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAddOpty, isAddOpty}) => {
     const [form] = Form.useForm();
+    const dispatch: AppDispatch = useDispatch();
     const handleSubmit = (values: AddOpportunuty) => {
-      addOpty(values).then(() => setIsAddOpty(false));
+      addOpty(values).then(() => {
+        getSheetData(dispatch);
+        setIsAddOpty(false)
+      });
     };
     
     return (
