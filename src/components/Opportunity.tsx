@@ -5,18 +5,18 @@ import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  }; 
+  //const handleLogout = () => {
+    //localStorage.removeItem('token');
+    //navigate('/login');
+  //}; 
   useEffect(() => {  
     getSheetData(dispatch);
   }, [dispatch]);
@@ -54,7 +54,7 @@ export const Opportunity: React.FC = () => {
       },
     }
   ];
-
+  //<Button onClick={() => handleLogout()} style={{ marginLeft: 15 }}>Выйти</Button>
   return (
     <>
       <Table
@@ -62,7 +62,6 @@ export const Opportunity: React.FC = () => {
           <>
             <strong>Все договора</strong>
             <Button type="primary" onClick={() => getSheetData(dispatch)} style={{ marginLeft: 15 }}>Обновить</Button>
-            <Button onClick={() => handleLogout()} style={{ marginLeft: 15 }}>Выйти</Button>
           </>
         }
         columns={columns}

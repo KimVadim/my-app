@@ -30,11 +30,15 @@ const Login = () => {
     <Form
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 300 }}
+      style={{
+        maxWidth: 300,
+        position: 'absolute',
+        transform: 'translate(25%, 110%)'
+      }}
       onFinish={handleSubmit}
     >
       <Form.Item<FieldType>
-        label="Username"
+        label="Username."
         name="username"
         rules={[{ required: true, message: 'Please input your username!' }]}
       >

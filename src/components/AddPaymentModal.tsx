@@ -2,6 +2,7 @@ import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
 import React, { useState } from "react"
 import { useSelector } from "react-redux";
 import { RootState } from "../store.ts";
+import { addPayment } from "../service/appServiceBackend.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -20,8 +21,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
 
     const handleSubmit = (values: AddPayment) => {
-      console.log(values)
-      //addOpty(values).then(() => setIsAddPayment(false));
+      addPayment(values).then(() => setIsAddPayment(false));
     };
     
     const handleSearch = (value: string) => {

@@ -2,28 +2,30 @@ import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
 import React, { useState } from "react"
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
+import { addExpense } from "../service/appServiceBackend.ts";
+import TextArea from "antd/es/input/TextArea";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
   isAddExpense: boolean;
 }
 
-export interface AddOpportunuty {
+export interface AddExpense {
   optyId: string;
   expenseType: string;
   amount: number;
   comment: string;
   paymentType: string;
-  optyDate: Date;
+  apartNum: string;
 }
 
 export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
     const [form] = Form.useForm();
-    const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
+    const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
 
-    const handleSubmit = (values: AddOpportunuty) => {
-      console.log(values)
+    const handleSubmit = (values: AddExpense) => {
+      addExpense(values).then(() => setIsAddExpense(false));
     };
     
     const handleSearch = (value: string) => {
@@ -38,6 +40,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
         .slice(0, 7)
         .map(item => ({
           optyId: item['ID'],
+          apartNum: item['Description'],
           value: `${item['Description']} - ${item['full_name']}`,
           label: `${item['Description']} - ${item['full_name']}`
         }));
@@ -85,6 +88,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               onSelect={(value: string, option: any) => {
                 form.setFieldsValue({
                   optyId: option.optyId,
+                  apartNum: option.apartNum,
                 });
               }}
             />
@@ -124,6 +128,13 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
             />
           </Form.Item>
+          <Form.Item
+            label="Комментарий"
+            name="comment"
+            rules={[{ required: true, message: 'Обязтельное поле!' }]}
+          >
+            <TextArea showCount maxLength={300} placeholder="Введите комментарий" />
+          </Form.Item>
           <Form.Item style={{ textAlign: "center" }}>
             <Button type="primary" htmlType="submit">
               Добавить
@@ -133,6 +144,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
             </Button>
           </Form.Item>
           <Form.Item name="optyId" hidden={true}></Form.Item>
+          <Form.Item name="apartNum" hidden={true}></Form.Item>
         </Form>
       </Modal>
     )
