@@ -24,8 +24,10 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
 
     const handleSubmit = (values: AddPayment) => {
+      setLoading(true)
       addPayment(values).then(() => {
         getSheetData(dispatch);
+        setLoading(false)
         setIsAddPayment(false)
       });
     };
