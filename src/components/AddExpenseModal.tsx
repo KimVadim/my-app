@@ -32,7 +32,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
       if (!optyData) return;
   
       const filteredOptions = optyData
-        .filter(item => item['Stage'] === 'Заключили')
         .filter(item =>
           item['full_name'].toLowerCase().includes(value.toLowerCase()) || 
           item['Description'].toLowerCase().includes(value.toLowerCase())
