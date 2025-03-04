@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Spin } from "antd";
 import React from "react"
 import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
@@ -8,6 +8,8 @@ import { AppDispatch } from "../store.ts";
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
   isAddOpty: boolean;
+  setLoading: (isOpen: boolean) => void;
+  loading: boolean;
 }
 
 export interface AddOpportunuty {
@@ -20,13 +22,15 @@ export interface AddOpportunuty {
   paymentDate: Date;
 }
 
-export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAddOpty, isAddOpty}) => {
+export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const handleSubmit = (values: AddOpportunuty) => {
+      setLoading(true);
       addOpty(values).then(() => {
         getSheetData(dispatch);
-        setIsAddOpty(false)
+        setLoading(false);
+        setIsAddOpty(false);
       });
     };
     
@@ -38,6 +42,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
         style={{ maxWidth: '80%' }}
         footer={null}
       >
+        <Spin spinning={loading}>
         <Form
           form={form}
           initialValues={{
@@ -139,6 +144,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             </Button>
           </Form.Item>
         </Form>
+        </Spin>
       </Modal>
     )
 }

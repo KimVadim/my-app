@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
+import { AutoComplete, Button, Form, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
@@ -8,6 +8,8 @@ import TextArea from "antd/es/input/TextArea";
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
   isAddExpense: boolean;
+  setLoading: (isOpen: boolean) => void;
+  loading: boolean;
 }
 
 export interface AddExpense {
@@ -19,13 +21,17 @@ export interface AddExpense {
   apartNum: string;
 }
 
-export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
+export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense, setLoading, loading}) => {
     const [form] = Form.useForm();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
 
     const handleSubmit = (values: AddExpense) => {
-      addExpense(values).then(() => setIsAddExpense(false));
+      setLoading(true)
+      addExpense(values).then(() => {
+        setLoading(false)
+        setIsAddExpense(false)
+      });
     };
     
     const handleSearch = (value: string) => {
@@ -55,96 +61,98 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
         style={{ maxWidth: '80%' }}
         footer={null}
       >
-        <Form
-          form={form}
-          initialValues={{
-            variant: 'filled',
-            phone: '+7',
-            product: 'Prod_1' 
-          }}
-          onFinish={handleSubmit}
-        >
-          <Form.Item
-            label="Сумма"
-            name="amount"
-            rules={[
-              { required: true, message: 'Обязательное поле!' },
-              { type: 'number', min: 0, max: 500000, message: 'Введите сумму от 0 до 500 000' }
-            ]}
+        <Spin spinning={loading}>
+          <Form
+            form={form}
+            initialValues={{
+              variant: 'filled',
+              phone: '+7',
+              product: 'Prod_1' 
+            }}
+            onFinish={handleSubmit}
           >
-            <InputNumber style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            label="Договор"
-            name="optyName"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <AutoComplete
-              style={{ width: '95%' }}
-              onSearch={handleSearch}
-              placeholder="Введите номер квартиры или ФИО"
-              options={options}
-              onSelect={(value: string, option: any) => {
-                form.setFieldsValue({
-                  optyId: option.optyId,
-                  apartNum: option.apartNum,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Тип"
-            name="expenseType"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <Select
-              style={{ width: '95%' }}
-              options={[
-                { value: 'Аренда', label: 'Аренда' },
-                { value: 'Депозит', label: 'Депозит' },
-                { value: 'Возврат', label: 'Возврат' },
-                { value: 'Расход', label: 'Расход' },
-                { value: 'Зарплата', label: 'Зарплата' },
-                { value: 'Комм. Жильцы', label: 'Комм. Жильцы' },
-                { value: 'Комм. Алатау', label: 'Комм. Алатау' },
-                { value: 'Комм. Павленко', label: 'Комм. Павленко' },
+            <Form.Item
+              label="Сумма"
+              name="amount"
+              rules={[
+                { required: true, message: 'Обязательное поле!' },
+                { type: 'number', min: 0, max: 500000, message: 'Введите сумму от 0 до 500 000' }
               ]}
-              onSelect={(value: string) => form.setFieldsValue({'expenseType': value})}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Получатель"
-            name="paymentType"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <Select
-              style={{ width: '95%' }}
-              options={[
-                { value: 'QR Аркен', label: 'QR Аркен' },
-                { value: 'Gold Вадим', label: 'Gold Вадим' },
-                { value: 'Налом', label: 'Налом' },
-              ]}
-              onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Комментарий"
-            name="comment"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <TextArea showCount maxLength={300} placeholder="Введите комментарий" />
-          </Form.Item>
-          <Form.Item style={{ textAlign: "center" }}>
-            <Button type="primary" htmlType="submit">
-              Добавить
-            </Button>
-            <Button onClick={() => setIsAddExpense(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-              Отмена
-            </Button>
-          </Form.Item>
-          <Form.Item name="optyId" hidden={true}></Form.Item>
-          <Form.Item name="apartNum" hidden={true}></Form.Item>
-        </Form>
+            >
+              <InputNumber style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              label="Договор"
+              name="optyName"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <AutoComplete
+                style={{ width: '95%' }}
+                onSearch={handleSearch}
+                placeholder="Введите номер квартиры или ФИО"
+                options={options}
+                onSelect={(value: string, option: any) => {
+                  form.setFieldsValue({
+                    optyId: option.optyId,
+                    apartNum: option.apartNum,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Тип"
+              name="expenseType"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <Select
+                style={{ width: '95%' }}
+                options={[
+                  { value: 'Аренда', label: 'Аренда' },
+                  { value: 'Депозит', label: 'Депозит' },
+                  { value: 'Возврат', label: 'Возврат' },
+                  { value: 'Расход', label: 'Расход' },
+                  { value: 'Зарплата', label: 'Зарплата' },
+                  { value: 'Комм. Жильцы', label: 'Комм. Жильцы' },
+                  { value: 'Комм. Алатау', label: 'Комм. Алатау' },
+                  { value: 'Комм. Павленко', label: 'Комм. Павленко' },
+                ]}
+                onSelect={(value: string) => form.setFieldsValue({'expenseType': value})}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Получатель"
+              name="paymentType"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <Select
+                style={{ width: '95%' }}
+                options={[
+                  { value: 'QR Аркен', label: 'QR Аркен' },
+                  { value: 'Gold Вадим', label: 'Gold Вадим' },
+                  { value: 'Налом', label: 'Налом' },
+                ]}
+                onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Комментарий"
+              name="comment"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <TextArea showCount maxLength={300} placeholder="Введите комментарий" />
+            </Form.Item>
+            <Form.Item style={{ textAlign: "center" }}>
+              <Button type="primary" htmlType="submit">
+                Добавить
+              </Button>
+              <Button onClick={() => setIsAddExpense(false)} style={{ marginLeft: 8,  marginTop: 10}}>
+                Отмена
+              </Button>
+            </Form.Item>
+            <Form.Item name="optyId" hidden={true}></Form.Item>
+            <Form.Item name="apartNum" hidden={true}></Form.Item>
+          </Form>
+        </Spin>
       </Modal>
     )
 }

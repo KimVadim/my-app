@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Form, InputNumber, Modal, Select } from "antd";
+import { AutoComplete, Button, Form, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
@@ -7,6 +7,8 @@ import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
   isAddPayment: boolean;
+  setLoading: (isOpen: boolean) => void;
+  loading: boolean;
 }
 
 export interface AddPayment {
@@ -15,7 +17,7 @@ export interface AddPayment {
   paymentType: string;
 }
 
-export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment, isAddPayment}) => {
+export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment, isAddPayment, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
@@ -55,62 +57,64 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
         style={{ maxWidth: '80%' }}
         footer={null}
       >
-        <Form
-          form={form}
-          onFinish={handleSubmit}
-        >
-          <Form.Item
-            label="Сумма"
-            name="amount"
-            rules={[
-              { required: true, message: 'Обязательное поле!' },
-              { type: 'number', min: 0, max: 500000, message: 'Введите сумму от 0 до 500 000' }
-            ]}
+        <Spin spinning={loading}>
+          <Form
+            form={form}
+            onFinish={handleSubmit}
           >
-            <InputNumber style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            label="Договор"
-            name="optyName"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <AutoComplete
-              style={{ width: '95%' }}
-              onSearch={handleSearch}
-              placeholder="Введите номер квартиры или ФИО"
-              options={options}
-              onSelect={(value: string, option: any) => {
-                form.setFieldsValue({
-                  optyId: option.optyId,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item
-            label="Получатель"
-            name="paymentType"
-            rules={[{ required: true, message: 'Обязтельное поле!' }]}
-          >
-            <Select
-              style={{ width: '95%' }}
-              options={[
-                { value: 'QR Аркен', label: 'QR Аркен' },
-                { value: 'Gold Вадим', label: 'Gold Вадим' },
-                { value: 'Налом', label: 'Налом' },
+            <Form.Item
+              label="Сумма"
+              name="amount"
+              rules={[
+                { required: true, message: 'Обязательное поле!' },
+                { type: 'number', min: 0, max: 500000, message: 'Введите сумму от 0 до 500 000' }
               ]}
-              onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
-            />
-          </Form.Item>
-          <Form.Item style={{ textAlign: "center" }}>
-            <Button type="primary" htmlType="submit">
-              Добавить
-            </Button>
-            <Button onClick={() => setIsAddPayment(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-              Отмена
-            </Button>
-          </Form.Item>
-          <Form.Item name="optyId" hidden={true}></Form.Item>
-        </Form>
+            >
+              <InputNumber style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              label="Договор"
+              name="optyName"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <AutoComplete
+                style={{ width: '95%' }}
+                onSearch={handleSearch}
+                placeholder="Введите номер квартиры или ФИО"
+                options={options}
+                onSelect={(value: string, option: any) => {
+                  form.setFieldsValue({
+                    optyId: option.optyId,
+                  });
+                }}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Получатель"
+              name="paymentType"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <Select
+                style={{ width: '95%' }}
+                options={[
+                  { value: 'QR Аркен', label: 'QR Аркен' },
+                  { value: 'Gold Вадим', label: 'Gold Вадим' },
+                  { value: 'Налом', label: 'Налом' },
+                ]}
+                onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
+              />
+            </Form.Item>
+            <Form.Item style={{ textAlign: "center" }}>
+              <Button type="primary" htmlType="submit">
+                Добавить
+              </Button>
+              <Button onClick={() => setIsAddPayment(false)} style={{ marginLeft: 8,  marginTop: 10}}>
+                Отмена
+              </Button>
+            </Form.Item>
+            <Form.Item name="optyId" hidden={true}></Form.Item>
+          </Form>
+        </Spin>
       </Modal>
     )
 }

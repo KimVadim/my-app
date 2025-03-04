@@ -9,6 +9,7 @@ function HomePage() {
   const [isAddOpty, setIsAddOpty] = useState(false);
   const [isAddPayment, setIsAddPayment] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   return (
     <div style={{ padding: 5 }}>
@@ -18,9 +19,18 @@ function HomePage() {
         setIsAddPayment={setIsAddPayment}
         setIsAdExpense={setIsAddExpense}
       />
-      {isAddOpty && <AddOpportunutyModal setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty} />}
-      {isAddPayment && <AddPaymentModal setIsAddPayment={setIsAddPayment} isAddPayment={isAddPayment}/>}
-      {isAddExpense && <AddExpenseModal setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}/>}
+      {isAddOpty && <AddOpportunutyModal 
+        setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
+        setLoading={setLoading} loading={loading}
+      />}
+      {isAddPayment && <AddPaymentModal 
+        setIsAddPayment={setIsAddPayment} isAddPayment={isAddPayment}
+        setLoading={setLoading} loading={loading}
+      />}
+      {isAddExpense && <AddExpenseModal
+        setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense} 
+        setLoading={setLoading} loading={loading}
+      />}
     </div>
   );
 }
