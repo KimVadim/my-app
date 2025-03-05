@@ -27,10 +27,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) => 
     selectFilteredQuotes(state, optyId)
   );
-  console.log(optyDate)
-  const url = process.env.REACT_APP_API_URL
-  console.log(url)
-
   const columns = [
     {
       title: "Источник",
