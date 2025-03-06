@@ -38,13 +38,17 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
       <Modal
         title={'Добавить договор'}
         open={isAddOpty}
-        onCancel={() => setIsAddOpty(false)}
+        onCancel={() => {
+          setIsAddOpty(false);
+          form.resetFields();
+        }}
         style={{ maxWidth: '80%' }}
         footer={null}
       >
         <Spin spinning={loading}>
         <Form
           form={form}
+          layout="vertical"
           initialValues={{
             variant: 'filled',
             phone: '+7',
@@ -98,9 +102,11 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[{ required: true, message: 'Обязтельное поле!' }]}
           >
             <Select
-              style={{ width: '95%' }}
+              style={{ width: '100%' }}
               options={[
                 { value: 'Prod_1', label: 'Аренда 170' },
+                { value: 'Prod_3', label: 'Депозит' },
+                { value: 'Prod_4', label: 'Депозит возврат' },
               ]}
               onSelect={(value: string) => form.setFieldsValue({'product': value})}
             />
@@ -113,7 +119,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             ]}
           >
             <DatePicker
-              style={{ width: '95%' }} 
+              style={{ width: '100%' }} 
               format="DD.MM.YYYY"
               inputReadOnly={true}
               placeholder="Введите дату"
@@ -128,7 +134,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             ]}
           >
             <DatePicker
-              style={{ width: '95%' }} 
+              style={{ width: '100%' }} 
               format="DD.MM.YYYY"
               inputReadOnly={true}
               placeholder="Введите дату"

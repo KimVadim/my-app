@@ -36,6 +36,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       title: "Продукт",
       dataIndex: "Product",
       key: "Product",
+      render: (product: string) => {
+        const productMapping: Record<string, string> = {
+          Prod_1: "Аренда 170",
+          Prod_2: "Аренда 160",
+          Prod_3: "Депозит",
+          Prod_4:	"Депозит возврат",
+        };
+    
+        return <Tag color="orange">{productMapping[product] || "Неизвестный продукт"}</Tag>;
+      },
     }, {
       title: "Сумма",
       dataIndex: "Amount",

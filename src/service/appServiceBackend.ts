@@ -110,7 +110,8 @@ export const addPayment = async (values: AddPayment) => {
             },
             body: JSON.stringify({
                 "optyId": values.optyId,
-                "product": "Prod_1",
+                "conId": values.conId,
+                "product": values.product,
                 "paymentType": values.paymentType,
                 "amount": values.amount,
                 "createBy": "vkim",

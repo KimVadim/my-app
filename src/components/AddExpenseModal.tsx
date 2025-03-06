@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Form, InputNumber, Modal, Select, Spin } from "antd";
+import { AutoComplete, Button, Form, Input, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
@@ -34,6 +34,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const handleSubmit = (values: AddExpense) => {
+      console.log(values);
       setLoading(true);
       addExpense(values)
         .then(() => {
@@ -69,12 +70,15 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
   
       setOptions(filteredOptions);
     }, 300);
-    
+
     return (
       <Modal
         title={'Добавить расход'}
         open={isAddExpense}
-        onCancel={() => setIsAddExpense(false)}
+        onCancel={() => {
+          setIsAddExpense(false);
+          form.resetFields();
+        }}
         style={{ maxWidth: '80%' }}
         footer={null}
       >
@@ -86,33 +90,16 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               phone: '+7',
               product: 'Prod_1' 
             }}
+            layout="vertical"
             onFinish={handleSubmit}
           >
-            <Form.Item
-              label="Договор"
-              name="optyName"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
-            >
-              <AutoComplete
-                style={{ width: '300px' }}
-                onSearch={handleSearch}
-                placeholder="Введите номер квартиры или ФИО"
-                options={options}
-                onSelect={(value: string, option: any) => {
-                  form.setFieldsValue({
-                    optyId: option.optyId,
-                    apartNum: option.apartNum,
-                  });
-                }}
-              />
-            </Form.Item>
             <Form.Item
               label="Тип"
               name="expenseType"
               rules={[{ required: true, message: 'Обязтельное поле!' }]}
             >
               <Select
-                style={{ width: '300px' }}
+                style={{ width: '100%' }}
                 options={[
                   { value: 'Аренда', label: 'Аренда' },
                   { value: 'Депозит', label: 'Депозит' },
@@ -126,13 +113,50 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 onSelect={(value: string) => form.setFieldsValue({'expenseType': value})}
               />
             </Form.Item>
+            <Form.Item shouldUpdate={(prev, curr) => prev.expenseType !== curr.expenseType}>
+              {({ getFieldValue }) => {
+                const expenseType = getFieldValue("expenseType");
+                return (
+                  <>
+                    {expenseType === "Депозит" ? (
+                      <Form.Item
+                        name="apartNum"
+                        label="Номер квартиры"
+                        rules={[{ required: true, message: "Обязательное поле!" }]}
+                      >
+                        <Input placeholder="Введите номер квартиры" />
+                      </Form.Item>
+                    ) : (
+                      <Form.Item
+                        label="Договор"
+                        name="optyName"
+                        rules={[{ required: true, message: "Обязательное поле!" }]}
+                      >
+                        <AutoComplete
+                          style={{ width: "100%" }}
+                          onSearch={handleSearch}
+                          placeholder="Введите номер квартиры или ФИО"
+                          options={options}
+                          onSelect={(value: string, option: any) => {
+                            form.setFieldsValue({
+                              optyId: option.optyId,
+                              apartNum: option.apartNum,
+                            });
+                          }}
+                        />
+                      </Form.Item>
+                    )}
+                  </>
+                );
+              }}
+            </Form.Item>
             <Form.Item
               label="Получатель"
               name="paymentType"
               rules={[{ required: true, message: 'Обязтельное поле!' }]}
             >
               <Select
-                style={{ width: '300px' }}
+                style={{ width: '100%' }}
                 options={[
                   { value: 'QR Аркен', label: 'QR Аркен' },
                   { value: 'Gold Вадим', label: 'Gold Вадим' },
@@ -149,7 +173,9 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 { type: 'number', min: -100000, max: 500000, message: 'Введите сумму от -100000 до 500000' }
               ]}
             >
-              <InputNumber style={{ width: '300px' }} />
+              <InputNumber
+                style={{ width: '100%' }}
+              />
             </Form.Item>
             <Form.Item
               label="Комментарий"

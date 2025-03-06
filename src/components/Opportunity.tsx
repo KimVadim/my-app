@@ -1,30 +1,25 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Tag } from "antd";
+import { Button, Spin, Table, Tag } from "antd";
 import React from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
-//import { useNavigate } from "react-router-dom";
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-  //const navigate = useNavigate();
 
-  //const handleLogout = () => {
-    //localStorage.removeItem('token');
-    //navigate('/login');
-  //}; 
   useEffect(() => {  
     getSheetData(dispatch);
   }, [dispatch]);
   
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
   const handleRowClick = (record: any) => {
-    setSelectedRecord(record); // Сохраняем выбранную строку
-    setIsModalOpen(true); // Открываем модальное окно
+    setSelectedRecord(record);
+    setIsModalOpen(true);
   };
 
   const columns = [
@@ -57,24 +52,32 @@ export const Opportunity: React.FC = () => {
   //<Button onClick={() => handleLogout()} style={{ marginLeft: 15 }}>Выйти</Button>
   return (
     <>
-      <Table
-        title={() => 
-          <>
-            <strong>Все договора</strong>
-            <Button type="primary" onClick={() => getSheetData(dispatch)} style={{ marginLeft: 15 }}>Обновить</Button>
-          </>
-        }
-        columns={columns}
-        dataSource={optyData}
-        size='middle'
-        pagination={{
-          position: ['bottomCenter'],
-          pageSize: 27
-        }}
-        onRow={(record) => ({
-          onClick: () => handleRowClick(record),
-        })}
-      />
+      <Spin spinning={loading}>
+        <Table
+          title={() => 
+            <>
+              <strong>Все договора</strong>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setLoading(true)
+                  getSheetData(dispatch).then(() => setLoading(false));
+                }}
+                style={{ marginLeft: 15 }}>Обновить</Button>
+            </>
+          }
+          columns={columns}
+          dataSource={optyData}
+          size='middle'
+          pagination={{
+            position: ['bottomCenter'],
+            pageSize: 27
+          }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+          })}
+        />
+      </Spin>
       { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} record={selectedRecord} />}
     </>
   );

@@ -14,6 +14,8 @@ interface AddPaymentModalProps {
 export interface AddPayment {
   optyId: string;
   amount: number;
+  conId: string;
+  product: string;
   paymentType: string;
 }
 
@@ -44,6 +46,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
         .slice(0, 7)
         .map(item => ({
           optyId: item['ID'],
+          conId: item['Contact'],
           value: `${item['Description']} - ${item['full_name']}`,
           label: `${item['Description']} - ${item['full_name']}`
         }));
@@ -55,7 +58,10 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
       <Modal
         title={'Добавить платеж'}
         open={isAddPayment}
-        onCancel={() => setIsAddPayment(false)}
+        onCancel={() => {
+          setIsAddPayment(false);
+          form.resetFields();
+        }}
         style={{ maxWidth: '80%' }}
         footer={null}
       >
@@ -63,7 +69,23 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
           <Form
             form={form}
             onFinish={handleSubmit}
+            layout="vertical"
           >
+            <Form.Item
+              label="Продукт"
+              name="product"
+              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+            >
+              <Select
+                style={{ width: '100%' }}
+                options={[
+                  { value: 'Prod_1', label: 'Аренда 170' },
+                  { value: 'Prod_3', label: 'Депозит' },
+                  { value: 'Prod_4', label: 'Депозит возврат' },
+                ]}
+                onSelect={(value: string) => form.setFieldsValue({'product': value})}
+              />
+            </Form.Item>
             <Form.Item
               label="Сумма"
               name="amount"
@@ -80,13 +102,14 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
               rules={[{ required: true, message: 'Обязтельное поле!' }]}
             >
               <AutoComplete
-                style={{ width: '95%' }}
+                style={{ width: '100%' }}
                 onSearch={handleSearch}
                 placeholder="Введите номер квартиры или ФИО"
                 options={options}
                 onSelect={(value: string, option: any) => {
                   form.setFieldsValue({
                     optyId: option.optyId,
+                    conId: option.conId
                   });
                 }}
               />
@@ -97,7 +120,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
               rules={[{ required: true, message: 'Обязтельное поле!' }]}
             >
               <Select
-                style={{ width: '95%' }}
+                style={{ width: '100%' }}
                 options={[
                   { value: 'QR Аркен', label: 'QR Аркен' },
                   { value: 'Gold Вадим', label: 'Gold Вадим' },
@@ -115,6 +138,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
               </Button>
             </Form.Item>
             <Form.Item name="optyId" hidden={true}></Form.Item>
+            <Form.Item name="conId" hidden={true}></Form.Item>
           </Form>
         </Spin>
       </Modal>
