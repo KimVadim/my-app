@@ -5,26 +5,12 @@ import { useSelector } from "react-redux";
 import { addExpense } from "../service/appServiceBackend.ts";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
+import { EXPENSE_TYPE, PAYMENT_TYPE } from "../constants/dictionaries.ts";
+import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, OptionType } from "../constants/appConstant.ts";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
   isAddExpense: boolean;
-}
-
-interface OptionType {
-  optyId: string;
-  value: string;
-  label: string;
-  apartNum: string;
-}
-
-export interface AddExpense {
-  optyId: string;
-  expenseType: string;
-  amount: number;
-  comment: string;
-  paymentType: string;
-  apartNum: string;
 }
 
 export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
@@ -34,7 +20,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const handleSubmit = (values: AddExpense) => {
-      console.log(values);
       setLoading(true);
       addExpense(values)
         .then(() => {
@@ -57,15 +42,15 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
   
       const filteredOptions: OptionType[] = optyData
         .filter(item =>
-          item['full_name'].toLowerCase().includes(value.toLowerCase()) || 
-          item['Description'].toLowerCase().includes(value.toLowerCase())
+          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) || 
+          item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
         )
         .slice(0, 7)
         .map(item => ({
-          optyId: item['ID'],
-          apartNum: item['Description'],
-          value: `${item['Description']} - ${item['full_name']} - ${item['Stage']}`,
-          label: `${item['Description']} - ${item['full_name']} - ${item['Stage']}`
+          optyId: item[OpportunityFieldData.Id],
+          apartNum: item[OpportunityFieldData.ApartNum],
+          value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`,
+          label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`
         }));
   
       setOptions(filteredOptions);
@@ -73,7 +58,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
 
     return (
       <Modal
-        title={'Добавить расход'}
+        title={ModalTitle.AddExpense}
         open={isAddExpense}
         onCancel={() => {
           setIsAddExpense(false);
@@ -94,48 +79,39 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
             onFinish={handleSubmit}
           >
             <Form.Item
-              label="Тип"
-              name="expenseType"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={ExpenseField.ExpenseTypeLabel}
+              name={ExpenseField.ExpenseType}
+              rules={[FieldRules.Required]}
             >
               <Select
                 style={{ width: '100%' }}
-                options={[
-                  { value: 'Аренда', label: 'Аренда' },
-                  { value: 'Депозит', label: 'Депозит' },
-                  { value: 'Возврат', label: 'Возврат' },
-                  { value: 'Расход', label: 'Расход' },
-                  { value: 'Зарплата', label: 'Зарплата' },
-                  { value: 'Комм. Жильцы', label: 'Комм. Жильцы' },
-                  { value: 'Комм. Алатау', label: 'Комм. Алатау' },
-                  { value: 'Комм. Павленко', label: 'Комм. Павленко' },
-                ]}
-                onSelect={(value: string) => form.setFieldsValue({'expenseType': value})}
+                options={EXPENSE_TYPE}
+                onSelect={(value: string) => form.setFieldsValue({[ExpenseField.ExpenseType]: value})}
               />
             </Form.Item>
             <Form.Item shouldUpdate={(prev, curr) => prev.expenseType !== curr.expenseType}>
               {({ getFieldValue }) => {
-                const expenseType = getFieldValue("expenseType");
+                const expenseType = getFieldValue(ExpenseField.ExpenseType);
                 return (
                   <>
                     {expenseType === "Депозит" ? (
                       <Form.Item
-                        name="apartNum"
-                        label="Номер квартиры"
-                        rules={[{ required: true, message: "Обязательное поле!" }]}
+                        name={ExpenseField.ApartNum}
+                        label={ExpenseField.ApartNumLabel}
+                        rules={[FieldRules.Required]}
                       >
-                        <Input placeholder="Введите номер квартиры" />
+                        <Input placeholder={FieldPlaceholder.ApartNum} />
                       </Form.Item>
                     ) : (
                       <Form.Item
-                        label="Договор"
-                        name="optyName"
-                        rules={[{ required: true, message: "Обязательное поле!" }]}
+                        label={ExpenseField.OptyNameLabel}
+                        name={ExpenseField.OptyName}
+                        rules={[FieldRules.Required]}
                       >
                         <AutoComplete
                           style={{ width: "100%" }}
                           onSearch={handleSearch}
-                          placeholder="Введите номер квартиры или ФИО"
+                          placeholder={FieldPlaceholder.OptyName}
                           options={options}
                           onSelect={(value: string, option: any) => {
                             form.setFieldsValue({
@@ -151,41 +127,34 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               }}
             </Form.Item>
             <Form.Item
-              label="Получатель"
-              name="paymentType"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={ExpenseField.PaymnetTypeLabel}
+              name={ExpenseField.PaymentType}
+              rules={[FieldRules.Required]}
             >
               <Select
                 style={{ width: '100%' }}
-                options={[
-                  { value: 'QR Аркен', label: 'QR Аркен' },
-                  { value: 'Gold Вадим', label: 'Gold Вадим' },
-                  { value: 'Налом', label: 'Налом' },
-                ]}
-                onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
+                options={PAYMENT_TYPE}
+                onSelect={(value: string) => form.setFieldsValue({[ExpenseField.PaymentType]: value})}
               />
             </Form.Item>
             <Form.Item
-              label="Сумма"
-              name="amount"
-              rules={[
-                { required: true, message: 'Обязательное поле!' },
-                { type: 'number', min: -100000, max: 500000, message: 'Введите сумму от -100000 до 500000' }
-              ]}
+              label={ExpenseField.AmountLabel}
+              name={ExpenseField.Amount}
+              rules={[FieldRules.Required,FieldRules.ExpenseAmount]}
             >
               <InputNumber
                 style={{ width: '100%' }}
               />
             </Form.Item>
             <Form.Item
-              label="Комментарий"
-              name="comment"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={ExpenseField.CommentLabel}
+              name={ExpenseField.Comment}
+              rules={[FieldRules.Required]}
             >
               <TextArea 
                 showCount 
                 maxLength={300} 
-                placeholder="Введите комментарий" 
+                placeholder={FieldPlaceholder.Comment}
                 autoSize={{ minRows: 2, maxRows: 4 }} 
               />
             </Form.Item>
@@ -197,8 +166,8 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 Отмена
               </Button>
             </Form.Item>
-            <Form.Item name="optyId" hidden={true}></Form.Item>
-            <Form.Item name="apartNum" hidden={true}></Form.Item>
+            <Form.Item name={ExpenseField.OptyId} hidden={true}></Form.Item>
+            <Form.Item name={ExpenseField.ApartNum} hidden={true}></Form.Item>
           </Form>
         </Spin>
       </Modal>

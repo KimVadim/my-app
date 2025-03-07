@@ -16,7 +16,6 @@ const Login: React.FC<LoginProps> = ({setIsToken}) => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  //const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setError('');
@@ -25,7 +24,6 @@ const Login: React.FC<LoginProps> = ({setIsToken}) => {
       const response = loginUser(login, password);
       localStorage.setItem('token', response['access_token']);
       setIsToken(response['access_token'])
-      //navigate('/homepage');
     } catch (err) {
       setError('Неверный email или пароль');
     }

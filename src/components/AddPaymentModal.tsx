@@ -3,6 +3,8 @@ import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
+import { PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
+import { AddPayment, FieldPlaceholder, FieldRules, OpportunityFieldData, PaymentField } from "../constants/appConstant.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -11,15 +13,12 @@ interface AddPaymentModalProps {
   loading: boolean;
 }
 
-export interface AddPayment {
-  optyId: string;
-  amount: number;
-  conId: string;
-  product: string;
-  paymentType: string;
-}
-
-export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment, isAddPayment, setLoading, loading}) => {
+export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
+      setIsAddPayment,
+      isAddPayment,
+      setLoading,
+      loading
+  }) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
@@ -38,17 +37,17 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
       if (!optyData) return;
   
       const filteredOptions = optyData
-        .filter(item => item['Stage'] === 'Заключили')
+        .filter(item => item[OpportunityFieldData.Stage] === 'Заключили')
         .filter(item =>
-          item['full_name'].toLowerCase().includes(value.toLowerCase()) || 
-          item['Description'].toLowerCase().includes(value.toLowerCase())
+          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) || 
+          item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
         )
         .slice(0, 7)
         .map(item => ({
-          optyId: item['ID'],
-          conId: item['Contact'],
-          value: `${item['Description']} - ${item['full_name']}`,
-          label: `${item['Description']} - ${item['full_name']}`
+          optyId: item[OpportunityFieldData.Id],
+          conId: item[OpportunityFieldData.Contact],
+          value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`,
+          label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`
         }));
   
       setOptions(filteredOptions);
@@ -72,39 +71,32 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
             layout="vertical"
           >
             <Form.Item
-              label="Продукт"
-              name="product"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={PaymentField.ProductLabel}
+              name={PaymentField.Product}
+              rules={[FieldRules.Required]}
             >
               <Select
                 style={{ width: '100%' }}
-                options={[
-                  { value: 'Prod_1', label: 'Аренда 170' },
-                  { value: 'Prod_3', label: 'Депозит' },
-                  { value: 'Prod_4', label: 'Депозит возврат' },
-                ]}
-                onSelect={(value: string) => form.setFieldsValue({'product': value})}
+                options={PRODUCT}
+                onSelect={(value: string) => form.setFieldsValue({[PaymentField.Product]: value})}
               />
             </Form.Item>
             <Form.Item
-              label="Сумма"
-              name="amount"
-              rules={[
-                { required: true, message: 'Обязательное поле!' },
-                { type: 'number', min: 0, max: 500000, message: 'Введите сумму от 0 до 500 000' }
-              ]}
+              label={PaymentField.AmountLabel}
+              name={PaymentField.Amount}
+              rules={[FieldRules.Required, FieldRules.PaymentAmount]}
             >
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item
-              label="Договор"
-              name="optyName"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={PaymentField.OptyNameLabel}
+              name={PaymentField.OptyName}
+              rules={[FieldRules.Required]}
             >
               <AutoComplete
                 style={{ width: '100%' }}
                 onSearch={handleSearch}
-                placeholder="Введите номер квартиры или ФИО"
+                placeholder={FieldPlaceholder.OptyName}
                 options={options}
                 onSelect={(value: string, option: any) => {
                   form.setFieldsValue({
@@ -115,18 +107,14 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
               />
             </Form.Item>
             <Form.Item
-              label="Получатель"
-              name="paymentType"
-              rules={[{ required: true, message: 'Обязтельное поле!' }]}
+              label={PaymentField.PaymnetTypeLabel}
+              name={PaymentField.PaymentType}
+              rules={[FieldRules.Required]}
             >
               <Select
                 style={{ width: '100%' }}
-                options={[
-                  { value: 'QR Аркен', label: 'QR Аркен' },
-                  { value: 'Gold Вадим', label: 'Gold Вадим' },
-                  { value: 'Налом', label: 'Налом' },
-                ]}
-                onSelect={(value: string) => form.setFieldsValue({'paymentType': value})}
+                options={PAYMENT_TYPE}
+                onSelect={(value: string) => form.setFieldsValue({[PaymentField.PaymentType]: value})}
               />
             </Form.Item>
             <Form.Item style={{ textAlign: "center" }}>
@@ -137,8 +125,8 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({setIsAddPayment
                 Отмена
               </Button>
             </Form.Item>
-            <Form.Item name="optyId" hidden={true}></Form.Item>
-            <Form.Item name="conId" hidden={true}></Form.Item>
+            <Form.Item name={PaymentField.OptyId} hidden={true}></Form.Item>
+            <Form.Item name={PaymentField.ContactId} hidden={true}></Form.Item>
           </Form>
         </Spin>
       </Modal>

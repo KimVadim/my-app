@@ -5,6 +5,7 @@ import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
+import { ModalTitle } from "../constants/appConstant.ts";
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,14 +50,14 @@ export const Opportunity: React.FC = () => {
       },
     }
   ];
-  //<Button onClick={() => handleLogout()} style={{ marginLeft: 15 }}>Выйти</Button>
+
   return (
     <>
       <Spin spinning={loading}>
         <Table
           title={() => 
             <>
-              <strong>Все договора</strong>
+              <strong>{ModalTitle.AllOpportunity}</strong>
               <Button
                 type="primary"
                 onClick={() => {
