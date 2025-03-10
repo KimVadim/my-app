@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
-import { Button, Spin, Table, Tag } from "antd";
-import React from 'react';
+import { Button, notification, Spin, Table } from "antd";
+import React, { useEffect, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
 import { ModalTitle } from "../constants/appConstant.ts";
+import { openNotification } from "../service/utils.ts";
+import { opportunityMeta } from "./AllApplicationMeta.tsx";
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-
+  const [api, contextNotification] = notification.useNotification();
+  
   useEffect(() => {  
     getSheetData(dispatch);
   }, [dispatch]);
@@ -23,36 +25,9 @@ export const Opportunity: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const columns = [
-    { 
-      title: "№ / Статус / Дата договора",
-      dataIndex: "Stage",
-      key: "Stage",
-      render: (status: String, record: any) => {
-        const date = new Date(record?.['OppoDate'])
-
-        return <>
-          <Tag color={"#2db7f5"}>{record?.['Description']}</Tag>
-          <Tag color={status === "Заключили" ? "green" : "red"}>{status}</Tag>
-          <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
-        </>
-      },
-      width: 235,
-    }, {
-      title: "ФИО",
-      dataIndex: "full_name", 
-      key: "full_name",
-      ellipsis: true,
-      render: (full_name: String, record: any) => {
-        return <>
-          <strong className="full-name">{full_name}</strong> <br />
-        </>
-      },
-    }
-  ];
-
   return (
     <>
+      {contextNotification}
       <Spin spinning={loading}>
         <Table
           title={() => 
@@ -62,12 +37,15 @@ export const Opportunity: React.FC = () => {
                 type="primary"
                 onClick={() => {
                   setLoading(true)
-                  getSheetData(dispatch).then(() => setLoading(false));
+                  getSheetData(dispatch).then(() => {
+                    setLoading(false)
+                    openNotification(api, 'success', 'Данные обновлены', 'Договора и платежи');
+                  });
                 }}
                 style={{ marginLeft: 15 }}>Обновить</Button>
             </>
           }
-          columns={columns}
+          columns={opportunityMeta}
           dataSource={optyData}
           size='middle'
           pagination={{
@@ -79,7 +57,13 @@ export const Opportunity: React.FC = () => {
           })}
         />
       </Spin>
-      { isModalOpen && <OpportunityModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} record={selectedRecord} />}
+      {isModalOpen && 
+        <OpportunityModal
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen} 
+          record={selectedRecord} 
+        />
+      }
     </>
   );
 }

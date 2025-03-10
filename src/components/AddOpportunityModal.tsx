@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
-import { PRODUCT } from "../constants/dictionaries.ts";
+import { Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
 
 interface AddOpportunutyModalProps {
@@ -44,7 +44,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           initialValues={{
             variant: 'filled',
             phone: '+7',
-            product: 'Prod_1' 
+            product: Product.Rent170
           }}
           onFinish={handleSubmit}
         >

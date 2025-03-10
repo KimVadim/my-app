@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 import { PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
-import { AddPayment, FieldPlaceholder, FieldRules, OpportunityFieldData, PaymentField } from "../constants/appConstant.ts";
+import { AddPayment, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -37,7 +37,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
       if (!optyData) return;
   
       const filteredOptions = optyData
-        .filter(item => item[OpportunityFieldData.Stage] === 'Заключили')
+        .filter(item => item[OpportunityFieldData.Stage] === Stage.Signed)
         .filter(item =>
           item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) || 
           item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
@@ -55,7 +55,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     
     return (
       <Modal
-        title={'Добавить платеж'}
+        title={ModalTitle.AddPayment}
         open={isAddPayment}
         onCancel={() => {
           setIsAddPayment(false);

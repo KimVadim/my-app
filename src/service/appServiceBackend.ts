@@ -2,10 +2,9 @@ import { setOpportunity } from "../slices/opportunitySlice.ts";
 import { setQuote } from "../slices/quoteSlice.ts"
 import { setContact } from "../slices/contactSlice.ts"
 import { AppDispatch } from "../store.ts";
-import { AddOpportunuty } from "../components/AddOpportunityModal.tsx";
-import { AddPayment } from "../components/AddPaymentModal.tsx";
 import dayjs from "dayjs";
-import { AddExpense } from "../components/AddExpenseModal.tsx";
+import { AddExpense, AddOpportunuty, AddPayment, FieldFormat, Stage, Status } from "../constants/appConstant.ts";
+import { Product } from "../constants/dictionaries.ts";
 
 export const getSheetData = async (dispatch: AppDispatch) => {
     try {
@@ -49,14 +48,14 @@ export const addOpty = async (values: AddOpportunuty) => {
                 "firstName": values.firstName,
                 "lastName": values.lastName,
                 "phone": values.phone,
-                "status": "Заехал",
+                "status": Status.Enter,
                 "apartNum": values.apartNum,
                 "product": values.product,
-                "stage": "Заключили",
-                "amount": 170000,
+                "stage": Stage.Signed,
+                "amount": Product.RentAmount,
                 "createBy": "newApp",
-                "optyDate": dayjs(values.optyDate).format("MM/DD/YYYY"),
-                "paymentDate": dayjs(values.paymentDate).format("MM/DD/YYYY"),
+                "optyDate": dayjs(values.optyDate).format(FieldFormat.DateEN),
+                "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN),
             })
         });
 
@@ -115,7 +114,7 @@ export const addPayment = async (values: AddPayment) => {
                 "paymentType": values.paymentType,
                 "amount": values.amount,
                 "createBy": "vkim",
-                "paymentDate": dayjs().format("MM/DD/YYYY")
+                "paymentDate": dayjs().format(FieldFormat.DateEN)
             })
         });
 
@@ -143,12 +142,16 @@ export const addExpense = async (values: AddExpense) => {
                 "optyId": values.optyId,
                 "expenseType": values.expenseType,
                 "paymentType": values.paymentType,
-                "amount": values.amount,
+                "amount": ['Комм. Алатау', 'Возврат', 'Расход', 'Зарплата', 'Комм. Павленко'].includes(values.expenseType) 
+                    ? -values.amount 
+                    : values.amount,
                 "createBy": "vkim",
-                "expenseDate": dayjs().format("MM/DD/YYYY"),
+                "expenseDate": dayjs().format(FieldFormat.DateEN),
                 "comment": values.comment,
                 "apartNum": values.apartNum,
-                "invoice": ""
+                "invoice": values.expenseType === 'Комм. Алатау'
+                    ? 'Выставить Комм'
+                    : ''
             })
         });
 

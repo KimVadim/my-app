@@ -2,6 +2,7 @@ export enum ModalTitle {
     AllOpportunity = 'Все договора',
     AddExpense = 'Добавить расход',
     AddOpportunity = 'Добавить договор',
+    AddPayment = 'Добавить платеж',
     Expense = 'Платежи',
     OpportunityDetail = 'Детали договора',
 };
@@ -14,8 +15,19 @@ export enum FieldPlaceholder {
 };
 
 export enum FieldFormat {
-    Date = 'DD.MM.YYYY'
+    Date = 'DD.MM.YYYY',
+    DateEN = 'MM/DD/YYYY',
 };
+
+export enum Status {
+    Enter = 'Заехал'
+}
+
+export enum Stage {
+    Signed = 'Заключили'
+}
+
+export type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 export const FieldRules = {
     Required: { required: true, message: 'Заполните поле!' },
@@ -65,6 +77,7 @@ export enum OpportunityField {
     AmountLabel = 'Сумма',
     FullNameLabel = 'ФИО',
     OptyAmountLabel = 'Сумма договора',
+    OptyNameLabel = '№ / Статус / Дата договора',
 
     LastName = 'lastName',
     FisrtName = 'firstName',

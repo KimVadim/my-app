@@ -1,10 +1,11 @@
 import React from 'react';
-import { Card, Modal, Table, Tag } from 'antd';
+import { Button, Card, Modal, Table } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
+import { paymentMeta } from './AllApplicationMeta.tsx';
 
 interface OpportunityModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -24,39 +25,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) => 
     selectFilteredQuotes(state, optyId)
   );
-  const columns = [
-    {
-      title: OpportunityField.PaymentTypeLabel,
-      dataIndex: OpportunityFieldData.PaymentType, 
-      key: OpportunityFieldData.PaymentType,
-    }, {
-      title: OpportunityField.ProductLabel,
-      dataIndex: OpportunityFieldData.Product,
-      key: OpportunityFieldData.Product,
-      render: (product: string) => {
-        const productMapping: Record<string, string> = {
-          Prod_1: "Аренда 170",
-          Prod_2: "Аренда 160",
-          Prod_3: "Депозит",
-          Prod_4:	"Депозит возврат",
-        };
-    
-        return <Tag color="orange">{productMapping[product] || "Неизвестный продукт"}</Tag>;
-      },
-    }, {
-      title: OpportunityField.AmountLabel,
-      dataIndex: OpportunityFieldData.Amount,
-      key: OpportunityFieldData.Amount,
-    }, { 
-      title: OpportunityField.PaymentDateLabel,
-      dataIndex: OpportunityFieldData.OptyDateTime,
-      key: OpportunityFieldData.OptyDateTime,
-      render: (dateStr: Date) => {
-        const date = new Date(dateStr)
-        return <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
-      },
-    }
-  ];
 
   return (
     <Modal 
@@ -86,10 +54,13 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         <p className="opty-card">
           <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
         </p>
+        <p className="opty-card">
+          <Button color="danger" variant="outlined">Расторгнуть договор</Button>
+        </p>
       </Card>
       <Table
         title={() => <strong>{ModalTitle.Expense}</strong>}
-        columns={columns}
+        columns={paymentMeta}
         dataSource={filteredQuotes}
         size='small'
         pagination={{
