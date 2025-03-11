@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://my-app-lake-zeta.vercel.app",
+  "_homepage": "https://KimVadim.github.io/my-app/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/dom": "^10.4.0",

@@ -90,7 +90,7 @@ export const loginUser = async (login: string, password: string) => {
             throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
         }
         const data = await response.json();
-
+        localStorage.setItem('access_token', data.access_token);
         return data; // Возвращаем ответ сервера
 
     } catch (error) {

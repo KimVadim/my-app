@@ -1,21 +1,26 @@
 import './App.css';
 import React from 'react';
 import HomePage from './components/HomePage.tsx';
-import { ConfigProvider } from 'antd';
+import Login from './components/Login.tsx';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute.tsx';
 
 function App() {
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Notification: {
-            width: 280,
-          },
-        },
-      }}
-    >
-      <HomePage/>
-    </ConfigProvider>
+    <Router>
+      <Routes>
+        {/* Публичные маршруты */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Защищенные маршруты */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/opty" element={<HomePage/>} />
+        </Route>
+
+        {/* Перенаправление на страницу логина по умолчанию */}
+        <Route path="*" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 

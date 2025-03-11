@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
-//import { useNavigate } from 'react-router-dom';
 import { Button, Form, Input } from 'antd';
 import { loginUser } from '../service/appServiceBackend.ts';
-
-interface LoginProps {
-  setIsToken: (isToken: string) => void
-}
+import { useNavigate } from 'react-router-dom';
 
 type FieldType = {
   username?: string;
   password?: string;
 };
 
-const Login: React.FC<LoginProps> = ({setIsToken}) => {
+const Login: React.FC = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setError('');
-
     try {
-      const response = loginUser(login, password);
-      localStorage.setItem('token', response['access_token']);
-      setIsToken(response['access_token'])
+      const response = loginUser(login, password)
+        .then(() => localStorage.setItem('token', response['access_token']))
+        .then(() => navigate('/opty'));
     } catch (err) {
       setError('Неверный email или пароль');
     }

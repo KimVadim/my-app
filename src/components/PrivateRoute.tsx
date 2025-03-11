@@ -1,9 +1,16 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
-const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
+const PrivateRoute = () => {
+  const isAuthenticated = localStorage.getItem('access_token'); // Проверка токена
+  
+  // Если пользователь не авторизован, перенаправляем на страницу логина
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Если авторизован, отображаем дочерние компоненты
+  return <Outlet />;
 };
 
 export default PrivateRoute;
