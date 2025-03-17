@@ -8,6 +8,7 @@ import { ModalTitle } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
+import '../App.css';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -66,6 +67,8 @@ export const Opportunity: React.FC = () => {
       {contextHolder}
       <Spin spinning={loading}>
         <Table
+          rowKey="uid"
+          scroll={{ x: 430 }}
           title={() => 
             <Row align="middle" gutter={15}>
               <Col flex="auto" style={{ maxWidth: '111px' }}>

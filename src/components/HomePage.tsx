@@ -13,7 +13,7 @@ function HomePage() {
   
   return (
     <>
-      <div style={{ padding: 5 }}>
+      <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
         <Opportunity />
         <AddFloatButton
           setIsAddOpty={setIsAddOpty}
