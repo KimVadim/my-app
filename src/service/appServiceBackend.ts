@@ -84,7 +84,8 @@ export const loginUser = async (login: string, password: string) => {
             },
             body: JSON.stringify({
                 "login": login,
-                "password": CryptoJS.AES.encrypt(password, secretKey).toString(),
+                //"password": CryptoJS.AES.encrypt(password, secretKey).toString(),
+                "password": password,
             })
         });
         if (!response.ok) {
