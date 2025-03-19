@@ -13,6 +13,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "antd": "^5.24.1",
     "axios": "^1.8.1",
+    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

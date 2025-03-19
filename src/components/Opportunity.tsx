@@ -68,7 +68,7 @@ export const Opportunity: React.FC = () => {
       <Spin spinning={loading}>
         <Table
           rowKey="uid"
-          scroll={{ x: 430 }}
+          scroll={{ x: 395 }}
           title={() => 
             <Row align="middle" gutter={15}>
               <Col flex="auto" style={{ maxWidth: '111px' }}>

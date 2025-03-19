@@ -5,6 +5,7 @@ import { AppDispatch } from "../store.ts";
 import dayjs from "dayjs";
 import { AddExpense, AddOpportunuty, AddPayment, FieldFormat, Stage, Status } from "../constants/appConstant.ts";
 import { Product } from "../constants/dictionaries.ts";
+import CryptoJS from 'crypto-js';
 
 export const getSheetData = async (dispatch: AppDispatch) => {
     try {
@@ -73,6 +74,7 @@ export const addOpty = async (values: AddOpportunuty) => {
 
 export const loginUser = async (login: string, password: string) => {
     try {
+        const secretKey = process.env.SECRET_KEY;
         const response = await fetch("https://palvenko-production.up.railway.app/login", {
             method: "POST",
             mode: "cors",
@@ -82,7 +84,7 @@ export const loginUser = async (login: string, password: string) => {
             },
             body: JSON.stringify({
                 "login": login,
-                "password": password,
+                "password": CryptoJS.AES.encrypt(password, secretKey).toString(),
             })
         });
         if (!response.ok) {
