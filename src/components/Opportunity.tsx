@@ -114,7 +114,7 @@ export const Opportunity: React.FC = () => {
         <OpportunityModal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen} 
-          record={selectedRecord} 
+          record={selectedRecord}
         />
       }
     </>

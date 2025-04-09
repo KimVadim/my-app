@@ -5,7 +5,6 @@ import { AppDispatch } from "../store.ts";
 import dayjs from "dayjs";
 import { AddExpense, AddOpportunuty, AddPayment, FieldFormat, Stage, Status } from "../constants/appConstant.ts";
 import { Product } from "../constants/dictionaries.ts";
-import CryptoJS from 'crypto-js';
 
 export const getSheetData = async (dispatch: AppDispatch) => {
     try {
@@ -74,7 +73,31 @@ export const addOpty = async (values: AddOpportunuty) => {
 
 export const loginUser = async (login: string, password: string) => {
     try {
-        const secretKey = process.env.SECRET_KEY;
+        const secretKey = process.env.REACT_APP_SECRET_KEY;
+        if (!secretKey) {
+            console.error("Ошибка: REACT_APP_SECRET_KEY не задан в переменных окружения.");
+            return;
+        }
+        const CryptoJS = require("crypto-js");
+        const iv = CryptoJS.lib.WordArray.random(16);
+        const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(secretKey), {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        const encryptedText = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+        console.log("Зашифрованный текст:", iv);
+        console.log("Зашифрованный текст:", encrypted);
+        console.log("Зашифрованный текст:", encryptedText);
+        
+        // Расшифровка (для проверки)
+        const bytes = CryptoJS.AES.decrypt(
+            { ciphertext: CryptoJS.enc.Base64.parse(encryptedText.slice(24)) },
+            CryptoJS.enc.Utf8.parse(secretKey),
+            { iv: iv }
+        );
+        console.log("Расшифрованный текст:", bytes.toString(CryptoJS.enc.Utf8));
+
         const response = await fetch("https://palvenko-production.up.railway.app/login", {
             method: "POST",
             mode: "cors",
@@ -84,15 +107,19 @@ export const loginUser = async (login: string, password: string) => {
             },
             body: JSON.stringify({
                 "login": login,
-                //"password": CryptoJS.AES.encrypt(password, secretKey).toString(),
+                //"password": encryptedText,
                 "password": password,
             })
         });
+
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
         }
         const data = await response.json();
+        if (!data['access_token']) {
+            throw new Error(`Ошибка пустой token`);
+        }
         localStorage.setItem('access_token', data.access_token);
         return data; // Возвращаем ответ сервера
 
@@ -117,7 +144,7 @@ export const addPayment = async (values: AddPayment) => {
                 "paymentType": values.paymentType,
                 "amount": values.amount,
                 "createBy": "vkim",
-                "paymentDate": dayjs().format(FieldFormat.DateEN)
+                "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN)
             })
         });
 
@@ -155,6 +182,31 @@ export const addExpense = async (values: AddExpense) => {
                 "invoice": values.expenseType === 'Комм. Алатау'
                     ? 'Выставить Комм'
                     : ''
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Ошибка запроса:", error);
+    }
+};
+
+export const closeOpty = async (optyId: String) => {
+    try {
+        const response = await fetch("https://palvenko-production.up.railway.app/closeopty", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            },
+            body: JSON.stringify({
+                optyId
             })
         });
 

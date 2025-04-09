@@ -1,10 +1,11 @@
-import { AutoComplete, Button, Form, InputNumber, Modal, Select, Spin } from "antd";
+import { AutoComplete, Button, DatePicker, Form, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 import { PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
-import { AddPayment, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
+import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
+import dayjs from "dayjs";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -53,6 +54,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
       setOptions(filteredOptions);
     };
     
+    console.log(form.getFieldValue(PaymentField.PaymentDate))
     return (
       <Modal
         title={ModalTitle.AddPayment}
@@ -69,6 +71,9 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             form={form}
             onFinish={handleSubmit}
             layout="vertical"
+            initialValues={{
+              [PaymentField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+            }}
           >
             <Form.Item
               label={PaymentField.ProductLabel}
@@ -115,6 +120,19 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 style={{ width: '100%' }}
                 options={PAYMENT_TYPE}
                 onSelect={(value: string) => form.setFieldsValue({[PaymentField.PaymentType]: value})}
+              />
+            </Form.Item>
+            <Form.Item
+              label={PaymentField.PaymentDateLabel}
+              name={PaymentField.PaymentDate}
+              rules={[FieldRules.Required]}
+            >
+              <DatePicker
+                style={{ width: '100%' }} 
+                format={FieldFormat.Date}
+                inputReadOnly={true}
+                placeholder={FieldPlaceholder.Date}
+                defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
               />
             </Form.Item>
             <Form.Item style={{ textAlign: "center" }}>
