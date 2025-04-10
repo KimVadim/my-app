@@ -110,7 +110,6 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
-              disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
             />
           </Form.Item>
           <Form.Item style={{ textAlign: "center" }}>
