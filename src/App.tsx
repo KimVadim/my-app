@@ -4,6 +4,7 @@ import HomePage from './components/HomePage.tsx';
 import Login from './components/Login.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute.tsx';
+import { IncomeReport } from './components/Report.tsx';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         {/* Защищенные маршруты */}
         <Route element={<PrivateRoute />}>
           <Route path="/opty" element={<HomePage/>} />
+          <Route path="/incomereport" element={<IncomeReport/>} />
         </Route>
 
         {/* Перенаправление на страницу логина по умолчанию */}

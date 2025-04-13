@@ -1,5 +1,5 @@
 import { Button, Spin, Table, message, Menu, Row, Col } from "antd";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
@@ -9,24 +9,25 @@ import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
-import { Line } from '@ant-design/charts';
+import { useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
+export const menuItems: MenuItem[] = [
   {
     label: 'Меню',
     key: 'SubMenu',
     icon: <SettingOutlined />,
     children: [
+      { label: 'Договора', key: '/opty' },
       {
         type: 'group',
-        label: 'Item 1',
+        label: 'Отчеты',
         children: [
-          { label: 'Option 1', key: 'setting:1' },
-          { label: 'Option 2', key: 'setting:2' },
+          { label: 'Отчет по доходам', key: '/incomereport' },
         ],
       },
+      { label: 'Расходы', key: '/expensess' },
     ],
   },
 ];
@@ -37,6 +38,7 @@ export const Opportunity: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
+  const navigate = useNavigate();
 
   const success = () => {
     messageApi.open({
@@ -46,9 +48,14 @@ export const Opportunity: React.FC = () => {
     });
   };
   
+  const isCalledRef = useRef(false);
+
   useEffect(() => {  
-    getSheetData(dispatch);
-  }, [dispatch]);
+    if (!isCalledRef.current) {
+      getSheetData(dispatch);
+      isCalledRef.current = true;
+    }
+  }, []);
   
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
   const handleRowClick = (record: any) => {
@@ -61,47 +68,9 @@ export const Opportunity: React.FC = () => {
   const onClick: MenuProps['onClick'] = (e) => {
     console.log('click ', e.key);
     setCurrent(e.key);
-  };
-
-  const data = [
-    { year: '1991', value: 3 },
-    { year: '1992', value: 4 },
-    { year: '1993', value: 3.5 },
-    { year: '1994', value: 5 },
-    { year: '1995', value: 4.9 },
-    { year: '1996', value: 6 },
-    { year: '1997', value: 7 },
-    { year: '1998', value: 9 },
-    { year: '1999', value: 13 },
-  ];
-  const config = {
-    data,
-    height: 400,
-    xField: 'year',
-    yField: 'value',
-    point: {
-      size: 5,
-      shape: 'circle',
-    },
-    tooltip: {
-      formatter: (data) => {
-        return {
-          name: '',
-          value: String,
-        };
-      },
-      customContent: (name, data) =>
-        `<div>${data?.map((item) => {
-          return `<div class="tooltip-chart" >
-              <span class="tooltip-item-name">${item?.name}</span>
-              <span class="tooltip-item-value">${item?.value}</span>
-            </div>`;
-        })}</div>`,
-      showMarkers: Boolean,
-      showContent: Boolean,
-      position: 'right | left',
-      showCrosshairs: Boolean,
-    },
+    if (e.key) {
+      navigate(e.key)
+    }
   };
 
   return (
@@ -118,7 +87,7 @@ export const Opportunity: React.FC = () => {
                   onClick={onClick}
                   selectedKeys={[current]}
                   mode="horizontal"
-                  items={items}
+                  items={menuItems}
                 />
               </Col>
               <Col>
@@ -151,7 +120,6 @@ export const Opportunity: React.FC = () => {
             onClick: () => handleRowClick(record),
           })}
         />
-        <Line {...config} />
       </Spin>
       {isModalOpen && 
         <OpportunityModal
