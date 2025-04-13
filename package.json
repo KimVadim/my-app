@@ -5,6 +5,7 @@
   "homepage": "https://my-app-lake-zeta.vercel.app",
   "_homepage": "https://KimVadim.github.io/my-app/",
   "dependencies": {
+    "@ant-design/charts": "^2.2.7",
     "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -15,8 +16,8 @@
     "axios": "^1.8.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.2.0",
     "react-scripts": "5.0.1",
