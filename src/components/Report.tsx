@@ -1,19 +1,23 @@
 import React, { useState, useMemo } from 'react';
-import { Col, Menu, Row, Select } from 'antd';
+import { Col, Menu, Row, Select, Button } from 'antd';
 import type { MenuProps } from 'antd';
 import { Pie, Column, Line } from '@ant-design/charts';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { menuItems } from './Opportunity.tsx';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 const { Option } = Select;
 
 const items: MenuProps['items'] = [
   { label: 'Колонки', key: 'column' },
   { label: 'Круговая диаграмма', key: 'pie' },
+  { label: 'Линия', key: 'line' },
 ];
 
 const groupedData = [
-  { year: '01-2025', type: 'Аренда', value: 100000 },
+  { year: '01-2025', type: 'Аренда', value: 10000 },
   { year: '01-2025', type: 'Услуги', value: 50000 },
   { year: '02-2025', type: 'Аренда', value: 110000 },
   { year: '02-2025', type: 'Услуги', value: 55000 },
@@ -27,13 +31,13 @@ export const IncomeReport: React.FC = () => {
   const [current, setCurrent] = useState('column');
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const navigate = useNavigate();
+
   const filteredData = selectedMonth
     ? groupedData.filter((item) => item.year === selectedMonth)
     : groupedData;
 
   const months = Array.from(new Set(groupedData.map((item) => item.year)));
 
-  // Обеспечиваем наличие всех типов в данных
   const ensureAllTypes = () => {
     const allTypes = ['Аренда', 'Услуги'];
     const result: typeof groupedData = [];
@@ -41,23 +45,29 @@ export const IncomeReport: React.FC = () => {
     uniqueYears.forEach((year) => {
       allTypes.forEach((type) => {
         const existing = filteredData.find((item) => item.year === year && item.type === type);
-        result.push(existing || { year, type, value: 0 });
+        result.push(existing ?? { year, type, value: 0 });
       });
     });
     return result;
   };
 
   const finalData = ensureAllTypes();
+  console.log('Final Data:', JSON.stringify(finalData, null, 2));
 
   const computePieData = () => {
-    const aggregated = filteredData.reduce((acc, curr) => {
+    const aggregated = filteredData.reduce((acc: Record<string, number>, curr) => {
       acc[curr.type] = (acc[curr.type] || 0) + curr.value;
       return acc;
-    }, {} as Record<string, number>);
+    }, {});
     return Object.entries(aggregated).map(([type, value]) => ({ type, value }));
   };
 
   const pieDataDynamic = useMemo(() => computePieData(), [filteredData]);
+
+  const totalSum = useMemo(() =>
+    filteredData.reduce((sum, item) => sum + item.value, 0), [filteredData]);
+
+  const COLORS = ['#5B8FF9', '#5AD8A6'];
 
   const chartConfig: Record<string, any> = {
     column: {
@@ -68,17 +78,19 @@ export const IncomeReport: React.FC = () => {
       seriesField: 'type',
       columnWidthRatio: 0.6,
       legend: { position: 'top' },
+      color: COLORS,
+      colorField: 'type',
       tooltip: {
         showMarkers: false,
         formatter: (datum: any) => ({
           name: datum.type,
-          value: datum.value ? new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(datum.value) : '0 ₽',
+          value: datum.value ? new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'KZT' }).format(datum.value) : '0 KZT',
         }),
       },
-      interactions: [{ type: 'element-active' }], // Изменено с element-highlight
+      interactions: [{ type: 'element-active' }],
       yAxis: {
         label: {
-          formatter: (value: number) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(value),
+          formatter: (value: number) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'KZT' }).format(value),
         },
       },
       state: {
@@ -90,17 +102,38 @@ export const IncomeReport: React.FC = () => {
           },
         },
       },
+      label: {
+        position: 'top',
+        layout: [
+          { type: 'interval-adjust-position' },
+          { type: 'adjust-color' },
+        ],
+        style: {
+          fill: '#000',
+          fontSize: 12,
+          fontWeight: 500,
+        },
+        formatter: (datum: { value: number | string }) => {
+          const value = Number(datum.value);
+          return isNaN(value) ? '0 KZT' : new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'KZT',
+            maximumFractionDigits: 0,
+          }).format(value);
+        },
+      },
     },
     pie: {
       data: pieDataDynamic,
       angleField: 'value',
       colorField: 'type',
+      color: COLORS,
       radius: 0.9,
       label: {
         formatter: (data: { type?: string; value?: number }) => {
-          if (!data) return ''; // Возвращаем пустую строку, если данных нет
+          if (!data) return '';
           const { type, value } = data;
-          return `${type}: ${new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(value ?? 0)}`;
+          return `${type}: ${new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'KZT' }).format(value ?? 0)}`;
         },
         style: {
           fontSize: 14,
@@ -109,71 +142,60 @@ export const IncomeReport: React.FC = () => {
       },
       interactions: [{ type: 'element-active' }],
     },
+    line: {
+      data: filteredData,
+      xField: 'year',
+      yField: 'value',
+      seriesField: 'type',
+      color: COLORS,
+      colorField: 'type',
+      point: {
+        size: 5,
+        shape: 'circle',
+      },
+      tooltip: {
+        formatter: (datum) => ({
+          name: datum.type,
+          value: datum.value,
+        }),
+        showMarkers: true,
+        showContent: true,
+        position: 'right',
+        showCrosshairs: true,
+      },
+    },
   };
 
-  const renderChart = () => {
-    const chart = current === 'pie' ? <Pie {...chartConfig.pie} /> : <Column {...chartConfig.column} />;
-
-    return (
-      <motion.div
-        key={current}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.4 }}
-      >
-        {chart}
-      </motion.div>
-    );
+  const chartMap: Record<string, JSX.Element> = {
+    column: <Column {...chartConfig.column} />,
+    pie: <Pie {...chartConfig.pie} />,
+    line: <Line {...chartConfig.line} />,
   };
+
+  const renderChart = () => (
+    <motion.div
+      key={current}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+    >
+      {chartMap[current]}
+    </motion.div>
+  );
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e.key);
     setCurrent(e.key);
-    if (e.key) {
-      navigate(e.key)
-    }
+    if (e.key) navigate(e.key);
   };
 
-  const data = [
-    { year: '1991', value: 3 },
-    { year: '1992', value: 4 },
-    { year: '1993', value: 3.5 },
-    { year: '1994', value: 5 },
-    { year: '1995', value: 4.9 },
-    { year: '1996', value: 6 },
-    { year: '1997', value: 7 },
-    { year: '1998', value: 9 },
-    { year: '1999', value: 13 },
-  ];
-  const config = {
-    data,
-    height: 400,
-    xField: 'year',
-    yField: 'value',
-    point: {
-      size: 5,
-      shape: 'circle',
-    },
-    tooltip: {
-      formatter: (data) => {
-        return {
-          name: '',
-          value: String,
-        };
-      },
-      customContent: (name, data) =>
-        `<div>${data?.map((item) => {
-          return `<div class="tooltip-chart" >
-              <span class="tooltip-item-name">${item?.name}</span>
-              <span class="tooltip-item-value">${item?.value}</span>
-            </div>`;
-        })}</div>`,
-      showMarkers: Boolean,
-      showContent: Boolean,
-      position: 'right | left',
-      showCrosshairs: Boolean,
-    },
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Доход');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'доход.xlsx');
   };
 
   return (
@@ -191,6 +213,7 @@ export const IncomeReport: React.FC = () => {
           <strong>Отчёт по доходам</strong>
         </Col>
       </Row>
+
       <Menu
         onClick={(e) => setCurrent(e.key)}
         selectedKeys={[current]}
@@ -217,7 +240,19 @@ export const IncomeReport: React.FC = () => {
 
       {renderChart()}
 
-      <Line {...config} />
+      <div style={{ marginTop: 16 }}>
+        <strong>
+          Итого:{' '}
+          {new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'KZT',
+          }).format(totalSum)}
+        </strong>
+      </div>
+
+      <Button disabled onClick={exportToExcel} style={{ marginTop: 16 }}>
+        Экспорт в Excel
+      </Button>
     </div>
   );
 };
