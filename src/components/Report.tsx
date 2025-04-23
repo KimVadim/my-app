@@ -110,6 +110,80 @@ export const IncomeReport: React.FC = () => {
         offsetY: -12,
         layout: [{ type: 'interval-hide-overlap' }],
       },
+      tooltip: {
+        formatter: (datum: any) => ({
+          name: datum.type, // Название серии (тип платежа)
+          value: new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'KZT',
+            maximumFractionDigits: 0,
+          }).format(datum.value), // Форматируем значение
+        }),
+        // Кастомизация стилей tooltip
+        domStyles: {
+          'g2-tooltip': {
+            background: '#fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            padding: '8px 12px',
+          },
+          'g2-tooltip-title': {
+            fontWeight: 'bold',
+            marginBottom: '8px',
+          },
+          'g2-tooltip-list-item': {
+            fontSize: '12px',
+            color: '#333',
+          },
+        },
+        // Дополнительные настройки
+        showTitle: true, // Показывать заголовок (например, месяц)
+        title: (title: string) => title, // Можно настроить заголовок, например, форматировать месяц
+        showMarkers: true, // Показывать маркеры в tooltip
+        //showCrosshairs: true, // Показывать перекрестие
+        crosshairs: {
+          type: 'x', // Перекрестие по оси X
+          line: {
+            style: {
+              stroke: '#000',
+              lineWidth: 1,
+              opacity: 0.5,
+            },
+          },
+        },
+        customContent: (title: string, data: any[]) => {
+          // Фильтруем данные, чтобы отображать только "Аренда" и "Депозит"
+          const filteredData = data.filter((item) => item.name === 'Аренда' || item.name === 'Депозит');
+          console.log(filteredData);
+          // Если нет данных для "Аренда" или "Депозит", возвращаем сообщение
+          if (filteredData.length === 0) {
+            return `
+              <div style="padding: 8px;">
+                <div>Нет данных для Аренда или Депозит</div>
+              </div>
+            `;
+          }
+      
+          // Формируем HTML для tooltip
+          return `
+            <div style="padding: 8px;">
+              <h4>${title}</h4>
+              <ul>
+                ${filteredData
+                  .map(
+                    (item) =>
+                      `<li>${item.name}: ${new Intl.NumberFormat('ru-RU', {
+                        style: 'currency',
+                        currency: 'KZT',
+                        maximumFractionDigits: 0,
+                      }).format(item.value)}</li>`
+                  )
+                  .join('')}
+              </ul>
+            </div>
+          `;
+        },
+      }
     },
   };
 
