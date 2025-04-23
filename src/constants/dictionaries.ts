@@ -1,3 +1,4 @@
+import { MenuProps } from "antd";
 
 export enum ExpenseType {
     Rent = 'Аренда',
@@ -52,4 +53,8 @@ export const PAYMENT_TYPE = [
     { value: Payment.QRAN, label: Payment.QRAN },
     { value: Payment.GoldVK, label: Payment.GoldVK },
     { value: Payment.Cash, label: Payment.Cash },
+];
+
+export const ItemsReport: MenuProps['items'] = [
+  { label: 'Линия', key: 'line' },
 ];

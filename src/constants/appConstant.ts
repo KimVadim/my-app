@@ -160,3 +160,11 @@ export interface LoginData {
     username: string;
     password: string;
 };
+
+export const ReportColors = [
+    '#000000', // для первого типа (например, Аренда)
+    '#4ECDC4', // измените этот цвет с синего на другой (например, бирюзовый)
+    '#45B7D1', // для третьего типа
+  ];
+
+export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат'];

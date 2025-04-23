@@ -57,7 +57,7 @@ export const Opportunity: React.FC = () => {
     }
   }, []);
   
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
   const handleRowClick = (record: any) => {
     setSelectedRecord(record);
     setIsModalOpen(true);

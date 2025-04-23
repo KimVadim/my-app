@@ -1,15 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./slices/counterSlice.ts"; // Подключаем наш reducer
+import userReducer from "./slices/userSlice.ts"; // Подключаем наш reducer
 import opportunityReducer from "./slices/opportunitySlice.ts";
 import quoteReducer from "./slices/quoteSlice.ts";
 import contactReducer from "./slices/contactSlice.ts";
+import monthPaymentReducer from "./slices/monthPaymentsSlice.ts";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    user: userReducer,
     opportunity: opportunityReducer,
     quote: quoteReducer,
-    contact: contactReducer
+    contact: contactReducer,
+    monthPayment: monthPaymentReducer,
   },
 });
 

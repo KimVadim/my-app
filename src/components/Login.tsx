@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { loginUser } from '../service/appServiceBackend.ts';
 import { useNavigate } from 'react-router-dom';
+import { setUser } from '../slices/userSlice.ts';
+import { AppDispatch } from '../store.ts';
+import { useDispatch } from 'react-redux';
 
 type FieldType = {
   username?: string;
@@ -13,12 +16,16 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const dispatch: AppDispatch = useDispatch();
+  
   const handleSubmit = async () => {
     setError('');
     try {
       const response = loginUser(login, password)
-        .then(() => localStorage.setItem('token', response['access_token']))
+        .then(() => {
+          localStorage.setItem('token', response['access_token'])
+          dispatch(setUser(login))
+        })
         .then(() => navigate('/opty'));
     } catch (err) {
       setError('Неверный email или пароль');
