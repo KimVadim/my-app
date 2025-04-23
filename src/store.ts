@@ -4,6 +4,7 @@ import opportunityReducer from "./slices/opportunitySlice.ts";
 import quoteReducer from "./slices/quoteSlice.ts";
 import contactReducer from "./slices/contactSlice.ts";
 import monthPaymentReducer from "./slices/monthPaymentsSlice.ts";
+import expenseReducer from "./slices/expenseSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     quote: quoteReducer,
     contact: contactReducer,
     monthPayment: monthPaymentReducer,
+    expense: expenseReducer,
   },
 });
 

@@ -20,6 +20,7 @@ export const menuItems: MenuItem[] = [
     icon: <SettingOutlined />,
     children: [
       { label: 'Договора', key: '/opty' },
+      { label: 'Расходы', key: '/expense' },
       {
         type: 'group',
         label: 'Отчеты',
@@ -27,7 +28,6 @@ export const menuItems: MenuItem[] = [
           { label: 'Отчет по доходам', key: '/incomereport' },
         ],
       },
-      { label: 'Расходы', key: '/expensess' },
     ],
   },
 ];
@@ -66,7 +66,6 @@ export const Opportunity: React.FC = () => {
   const [current, setCurrent] = useState('mail');
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e.key);
     setCurrent(e.key);
     if (e.key) {
       navigate(e.key)

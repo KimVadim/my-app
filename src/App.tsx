@@ -5,6 +5,7 @@ import Login from './components/Login.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute.tsx';
 import { IncomeReport } from './components/Report.tsx';
+import { Expense } from './components/Expense.tsx';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/opty" element={<HomePage/>} />
           <Route path="/incomereport" element={<IncomeReport/>} />
+          <Route path='/expense' element={<Expense/>} />
         </Route>
 
         {/* Перенаправление на страницу логина по умолчанию */}

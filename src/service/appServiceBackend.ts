@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { AddExpense, AddOpportunuty, AddPayment, FieldFormat, Stage, Status } from "../constants/appConstant.ts";
 import { Product } from "../constants/dictionaries.ts";
 import { setMonthPayments } from "../slices/monthPaymentsSlice.ts";
+import { setExpense } from "../slices/expenseSlice.ts";
 
 export const getSheetData = async (dispatch: AppDispatch) => {
     try {
@@ -242,6 +243,31 @@ export const getMonthPaymentData = async (dispatch: AppDispatch) => {
         const monthPayments = data.message?.monthpayments || [];
 
         dispatch(setMonthPayments(monthPayments));
+    } catch (error) {
+        console.error("Ошибка запроса:", error);
+    }
+};
+
+export const getExpenseData = async (dispatch: AppDispatch) => {
+    try {
+        const response = await fetch("https://palvenko-production.up.railway.app/payments", {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${errorText}`);
+        }
+
+        const data = await response.json();
+        const expense = data.message?.payments || [];
+
+        dispatch(setExpense(expense));
     } catch (error) {
         console.error("Ошибка запроса:", error);
     }

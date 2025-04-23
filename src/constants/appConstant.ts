@@ -139,6 +139,7 @@ export enum ExpenseField {
     ApartNumLabel = 'Номер квартиры',
     PaymnetTypeLabel = 'Получатель',
     CommentLabel = 'Комментарий',
+    ExpenseLabel = 'Данные платежа',
 
     Product = 'product',
     Amount = 'amount',
@@ -151,6 +152,21 @@ export enum ExpenseField {
     ContactId = 'conId',
 };
 
+export enum ExpenseFieldData {
+    Id = 'ID',
+    Contact = 'Contact',
+    Company = 'Company',
+    Type = 'Type',
+    ExpenseDate = 'Date/Time',
+    CreatedBy = 'Author',
+    Sum = 'Sum',
+    Comment = 'Comment',
+    ApartNum = 'AppartNum',
+    PaymentType = 'PaymentType',
+    Invoice = 'Invoice',
+    Processed = 'Processed'
+}
+
 export type FieldType = {
     username?: string;
     password?: string;
@@ -160,11 +176,5 @@ export interface LoginData {
     username: string;
     password: string;
 };
-
-export const ReportColors = [
-    '#000000', // для первого типа (например, Аренда)
-    '#4ECDC4', // измените этот цвет с синего на другой (например, бирюзовый)
-    '#45B7D1', // для третьего типа
-  ];
 
 export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат'];

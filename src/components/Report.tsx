@@ -1,17 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Menu, Row, Select, Button } from 'antd';
+import { Col, Menu, Row, Select } from 'antd';
 import type { MenuProps } from 'antd';
 import { Line } from '@ant-design/charts';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { menuItems } from './Opportunity.tsx';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
-import { PaymentTypes, ReportColors } from '../constants/appConstant.ts';
+import { PaymentTypes } from '../constants/appConstant.ts';
 
 const { Option } = Select;
 
@@ -53,9 +50,7 @@ export const IncomeReport: React.FC = () => {
     }
     return monthPaymentData;
   }, [monthPaymentData, selectedMonth]);
-
   const months = Array.from(new Set(monthPaymentData.map((item) => item.month)));
-
   const ensureAllTypes = () => {
     const result: typeof monthPaymentData = [];
     const uniqueMonths = Array.from(new Set(filteredData.map((item) => item.month)));
@@ -73,12 +68,10 @@ export const IncomeReport: React.FC = () => {
 
     return result;
   };
-
   const totalSum = useMemo(() =>
     filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-
   const completedData = ensureAllTypes();
-  console.log(completedData)
+
   const chartConfig: Record<string, any> = {
     line: {
       data: completedData,
@@ -86,26 +79,11 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
-      color: (type: string) => {
-        const colorMap: Record<string, string> = {
-          'Аренда': '#00A76F',
-          'Депозит': '#FFC107',
-          'Депозит возврат': '#FF5722',
-        };
-        return colorMap[type] || '#ccc';
-      },
+      color: ['red', 'blue', 'green'],
       point: {
         size: 1,
         shape: 'circle',
-        style: (datum) => ({
-          fill: (() => {
-            const colorMap: Record<string, string> = {
-              'Аренда': '#00A76F',
-              'Депозит': '#FFC107',
-              'Депозит возврат': '#FF5722',
-            };
-            return colorMap[datum.type] || '#ccc';
-          })(),
+        style: () => ({
           stroke: '#fff',
           lineWidth: 1,
         }),
@@ -132,36 +110,6 @@ export const IncomeReport: React.FC = () => {
         offsetY: -12,
         layout: [{ type: 'interval-hide-overlap' }],
       },
-      tooltip: {
-        customContent: (title, items) => {
-          const month = title;
-          const typesData = items.filter((item) => item.data.type !== 'Всего');
-          const totalItem = items.find((item) => item.data.type === 'Всего');
-
-          return `
-            <div style="padding: 12px; background: #fff; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-              <div style="margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #333;">${month}</div>
-              ${typesData
-                .map(
-                  (item) => `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px;">
-                  <div style="display: flex; align-items: center;">
-                    <span style="display: inline-block; width: 10px; height: 10px; background: ${item.color}; margin-right: 8px; border-radius: 50%;"></span>
-                    ${item.name}
-                  </div>
-                  <div style="font-weight: 500;">${item.value}</div>
-                </div>
-              `
-                )
-                .join('')}
-              <div style="display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; font-size: 14px; font-weight: 600;">
-                <div>Всего:</div>
-                <div>${totalItem?.value || '0'}</div>
-              </div>
-            </div>
-          `;
-        },
-      },
     },
   };
 
@@ -169,30 +117,9 @@ export const IncomeReport: React.FC = () => {
     line: <Line {...chartConfig.line} />,
   };
 
-  const renderChart = () => (
-    <motion.div
-      key={current}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4 }}
-    >
-      {chartMap[current]}
-    </motion.div>
-  );
-
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
     if (e.key) navigate(e.key);
-  };
-
-  const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(filteredData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Доход');
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(data, 'доход.xlsx');
   };
 
   return (
@@ -238,7 +165,7 @@ export const IncomeReport: React.FC = () => {
         </Select>
       </div>
 
-      {renderChart()}
+      {chartMap[current]}
 
       <div style={{ marginTop: 16 }}>
         <strong>
@@ -249,10 +176,6 @@ export const IncomeReport: React.FC = () => {
           }).format(totalSum)}
         </strong>
       </div>
-
-      <Button onClick={exportToExcel} style={{ marginTop: 16 }}>
-        Экспорт в Excel
-      </Button>
     </div>
   );
 };
