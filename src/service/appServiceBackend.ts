@@ -39,6 +39,13 @@ export const getSheetData = async (dispatch: AppDispatch) => {
 
 export const addOpty = async (values: AddOpportunuty) => {
     try {
+        let optyAmount = 0;
+        if (values.product === Product.Rent170) {
+            optyAmount = Product.RentAmount;
+        } else if (values.product === Product.Rent180) {
+            optyAmount = Product.RentAmount180;
+        }
+
         const response = await fetch("https://palvenko-production.up.railway.app/opty", {
             method: "POST",
             mode: "cors",
@@ -54,7 +61,7 @@ export const addOpty = async (values: AddOpportunuty) => {
                 "apartNum": values.apartNum,
                 "product": values.product,
                 "stage": Stage.Signed,
-                "amount": Product.RentAmount,
+                "amount": optyAmount,
                 "createBy": "newApp",
                 "optyDate": dayjs(values.optyDate).format(FieldFormat.DateEN),
                 "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN),

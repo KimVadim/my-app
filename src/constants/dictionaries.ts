@@ -23,14 +23,17 @@ export const EXPENSE_TYPE = [
 ];
 
 export enum Product {
+    RentAmount160 = 160000,
     RentAmount = 170000,
+    RentAmount180 = 180000,
 
+    Rent180Value = 'Аренда 180',
     Rent170Value = 'Аренда 170',
-    Rent160Value = 'Аренда 170',
+    Rent160Value = 'Аренда 160',
     DepositValue = 'Депозит',
     ReturnValue = 'Депозит возврат',
     UnknownValue = 'Неизвестный продукт',
-
+    Rent180 = 'Rent180',
     Rent170 = 'Prod_1',
     Rent160 = 'Prod_2',
     Deposit = 'Prod_3',
@@ -38,6 +41,7 @@ export enum Product {
 }
 
 export const PRODUCT = [
+    { value: Product.Rent180, label: Product.Rent180Value },
     { value: Product.Rent170, label: Product.Rent170Value },
     { value: Product.Deposit, label: Product.DepositValue},
     { value: Product.Return, label: Product.ReturnValue },
