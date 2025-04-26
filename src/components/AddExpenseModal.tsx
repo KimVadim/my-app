@@ -1,8 +1,8 @@
 import { AutoComplete, Button, Form, Input, InputNumber, Modal, Select, Spin } from "antd";
 import React, { useState } from "react"
-import { RootState } from "../store.ts";
-import { useSelector } from "react-redux";
-import { addExpense } from "../service/appServiceBackend.ts";
+import { AppDispatch, RootState } from "../store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { addExpense, getExpenseData } from "../service/appServiceBackend.ts";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
@@ -19,11 +19,23 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(true);
-
+    const dispatch: AppDispatch = useDispatch();
+    
     const handleSubmit = (values: AddExpense) => {
       setLoading(true);
       addExpense(values)
         .then(() => {
+          const fetchData = async () => {
+            setLoading(true);
+            try {
+              await getExpenseData(dispatch);
+            } catch (error) {
+              console.error("Ошибка загрузки данных:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchData();
           setLoading(false);
           setIsAddExpense(false);
           form.resetFields();
