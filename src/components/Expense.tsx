@@ -1,4 +1,4 @@
-import { Col, Menu, MenuProps, Row, Spin, Table } from "antd";
+import { Col, Menu, MenuProps, Row, Spin, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { menuItems } from "./Opportunity.tsx";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
+import { ExpenseFieldData } from "../constants/appConstant.ts";
 
 export const Expense: React.FC = () => {
     const [current, setCurrent] = useState('line');
@@ -29,7 +30,7 @@ export const Expense: React.FC = () => {
     return ( <div style={{ padding: '24px' }}>
         <Spin spinning={loading}>
         <Table
-          rowKey="uid"
+          rowKey="ID"
           scroll={{ x: 395 }}
           title={() => 
             <Row align="middle" gutter={15}>
@@ -48,6 +49,13 @@ export const Expense: React.FC = () => {
           }
           columns={expenseMeta}
           dataSource={expenseData}
+          expandable={{
+            expandedRowRender: (record) => 
+            <p style={{ margin: 0 }}>
+                <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.PaymentType]}</Tag>
+                {record?.[ExpenseFieldData.Comment]}
+            </p>,
+          }}
           size='middle'
           pagination={{
             position: ['bottomCenter'],

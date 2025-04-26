@@ -1,4 +1,4 @@
-import { Tag } from "antd";
+import { Table, Tag } from "antd";
 import { ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, Stage } from "../constants/appConstant.ts"
 import React from 'react';
 import { Product } from "../constants/dictionaries.ts";
@@ -61,18 +61,20 @@ export const paymentMeta = [
   }
 ];
 
-export const expenseMeta = [{ 
+export const expenseMeta = [{
   title: ExpenseField.ExpenseLabel,
   dataIndex: ExpenseFieldData.ApartNum,
   key: ExpenseFieldData.ApartNum,
   render: (status: String, record: any) => {
+    const date = new Date(record?.[ExpenseFieldData.ExpenseDate])
+    const apartNum = record?.[ExpenseFieldData.ApartNum]
+
     return <>
-      <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.ApartNum]}</Tag>
-      <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.Type]}</Tag>
-      <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.PaymentType]}</Tag>
-      <Tag color="blue">{record?.[ExpenseFieldData.ExpenseDate]}</Tag>
+      <Tag color={"green"}>{record?.[ExpenseFieldData.Type]}</Tag>
+      {apartNum && <Tag color={"red"}>{apartNum}</Tag>}
+      <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
       <strong className="full-name">{record?.[ExpenseFieldData.Sum]}</strong>
     </>
   },
-  width: 315,
-}];
+  width: 220,
+}, Table.EXPAND_COLUMN];
