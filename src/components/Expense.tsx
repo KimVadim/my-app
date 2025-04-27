@@ -4,7 +4,7 @@ import { menuItems } from "./Opportunity.tsx";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
-import { getExpenseData } from "../service/appServiceBackend.ts";
+import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
 import { ExpenseFieldData } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
@@ -18,6 +18,7 @@ export const Expense: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const expenseData = useSelector((state: RootState) => state.expense.expense);
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
   const [isAddExpense, setIsAddExpense] = useState(false)
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export const Expense: React.FC = () => {
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       } finally {
+        !optyData && getSheetData(dispatch);
         setLoading(false);
       }
     };
