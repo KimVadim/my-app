@@ -66,8 +66,8 @@ export const expenseMeta = [{
   dataIndex: ExpenseFieldData.ApartNum,
   key: ExpenseFieldData.ApartNum,
   render: (status: String, record: any) => {
-    const date = new Date(record?.[ExpenseFieldData.ExpenseDate])
-    const apartNum = record?.[ExpenseFieldData.ApartNum]
+    const date = new Date(record?.[ExpenseFieldData.ExpenseDate]);
+    const apartNum = record?.[ExpenseFieldData.ApartNum];
 
     return <>
       <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.Type]}</Tag>

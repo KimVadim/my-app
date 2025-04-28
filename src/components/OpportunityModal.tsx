@@ -1,14 +1,14 @@
 import React from 'react';
-import { Button, Card, Modal, Spin, Table } from 'antd';
+import { Button, Card, Modal, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { paymentMeta } from './AllApplicationMeta.tsx';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
 import { Steps } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
+import { productMap } from '../constants/dictionaries.ts';
 
 interface OpportunityModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -71,28 +71,19 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть договор</Button>
         </p>
       </Card>
-      <Table
-        title={() => <strong>{ModalTitle.Expense}</strong>}
-        columns={paymentMeta}
-        dataSource={filteredQuotes}
-        size='small'
-        pagination={{
-          position: ['bottomCenter'],
-          pageSize: 5
-        }}
-      />
       <Steps direction='vertical'>
         {filteredQuotes && filteredQuotes.map(
-          (item) =>
-            <Step
+          (item) => {
+            const date = new Date(item['Date/Time']);
+            return <Step
               key={item['ID']}
-              title={`${item['Notes']} / ${item['Product']} / ${item['Amount']}`}
+              title={`${productMap[item['Product'] as keyof typeof productMap]} / ${item['Notes']} / ${item['Amount']}`}
               status='finish'
-              description={item['Date/Time']}
+              description={date.toLocaleDateString("ru-RU")}
             />
+          }
         )}
       </Steps>
-
       </Spin>
     </Modal>
   );

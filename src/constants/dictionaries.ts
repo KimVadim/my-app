@@ -47,6 +47,14 @@ export const PRODUCT = [
     { value: Product.Return, label: Product.ReturnValue },
 ];
 
+export const productMap = {
+    [Product.Rent170]: Product.Rent170Value,
+    [Product.Rent160]: Product.Rent160Value,
+    [Product.Rent180]: Product.Rent180Value,
+    [Product.Deposit]: Product.DepositValue,
+    [Product.Return]: Product.ReturnValue,
+};
+
 export enum Payment {
     QRAN = 'QR Аркен',
     GoldVK = 'Gold Вадим',
