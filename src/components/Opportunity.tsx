@@ -118,7 +118,7 @@ export const Opportunity: React.FC = () => {
             </Row>
             <ProgressBar
               percent={50}
-              text={`Платежей 27/${currentMonthPaymentsCount}`}
+              text={`Платежей ${currentMonthPaymentsCount}/27`}
               style={{
                 '--text-width': '100px',
               }}
