@@ -7,6 +7,8 @@ import { ModalTitle, OpportunityField, OpportunityFieldData } from '../constants
 import { formatPhoneNumber } from '../service/utils.ts';
 import { paymentMeta } from './AllApplicationMeta.tsx';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
+import { Steps } from 'antd-mobile'
+import { Step } from 'antd-mobile/es/components/steps/step';
 
 interface OpportunityModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
@@ -79,6 +81,18 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           pageSize: 5
         }}
       />
+      <Steps direction='vertical'>
+        {filteredQuotes && filteredQuotes.map(
+          (item) =>
+            <Step
+              key={item['ID']}
+              title={`${item['Notes']} / ${item['Product']} / ${item['Amount']}`}
+              status='finish'
+              description={item['Date/Time']}
+            />
+        )}
+      </Steps>
+
       </Spin>
     </Modal>
   );
