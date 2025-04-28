@@ -120,7 +120,7 @@ export const Opportunity: React.FC = () => {
               percent={50}
               text={`Платежей ${currentMonthPaymentsCount}/27`}
               style={{
-                '--text-width': '100px',
+                '--text-width': '110px',
               }}
             />
           </>
