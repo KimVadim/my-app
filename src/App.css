@@ -72,11 +72,6 @@ body {
   }
 }
 
-.table-container {
-  width: 500px; /* Фиксированная ширина контейнера */
-  margin: 0 auto; /* Центрирование по горизонтали */
-}
-
 @media (min-width: 1024px) { /* Для экранов шире 1024px */
   .centered-table .ant-table {
     max-width: 80%; /* Ограниение ширины */

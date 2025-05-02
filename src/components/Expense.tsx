@@ -56,7 +56,7 @@ export const Expense: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
       <Spin spinning={loading}>
         <Row align="middle" gutter={15} style={{ marginBottom: 16 }}>
           <Col flex="auto" style={{ maxWidth: "111px" }}>

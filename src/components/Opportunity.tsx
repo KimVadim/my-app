@@ -1,10 +1,10 @@
-import { Button, Spin, Table, message, Menu, Row, Col } from "antd";
+import { Button, Spin, Table, message, Menu, Row, Col, Input } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
-import { ModalTitle } from "../constants/appConstant.ts";
+import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
@@ -36,6 +36,8 @@ export const menuItems: MenuItem[] = [
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [searchText, setSearchText] = useState(""); // Текст для поиска по номеру квартиры
+  const [filteredData, setFilteredData] = useState<any[]>([]); // Отфильтрованные данные
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
@@ -57,8 +59,17 @@ export const Opportunity: React.FC = () => {
       isCalledRef.current = true;
     }
   }, []);
-  
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
+  useEffect(() => {
+    if (searchText) {
+      const filtered = optyData.filter((item) =>
+        item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(optyData);
+    }
+  }, [searchText, optyData]);
   const quotesData = useSelector((state: RootState) => state.quote.quote);
   const handleRowClick = (record: any) => {
     setSelectedRecord(record);
@@ -81,6 +92,10 @@ export const Opportunity: React.FC = () => {
     return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && item['Product'] === 'Prod_1';
   }) || [];
   const currentMonthPaymentsCount = currentMonthPayments.length;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
   return (
     <>
       {contextHolder}
@@ -102,6 +117,25 @@ export const Opportunity: React.FC = () => {
                 <strong>{ModalTitle.AllOpportunity}</strong>
               </Col>
               <Col>
+                <Input
+                  placeholder="Поиск по номеру квартиры..."
+                  value={searchText}
+                  onChange={handleSearch}
+                  style={{ width: 150 }}
+                />
+              </Col>
+            </Row>
+            <Row align="middle" gutter={15}>
+              <Col flex="auto">
+                <ProgressBar
+                  percent={(currentMonthPaymentsCount/27)*100}
+                  text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% платеж. ${currentMonthPaymentsCount}/27`}
+                  style={{
+                    '--text-width': '120px',
+                  }}
+                />
+              </Col>
+              <Col>
                 <Button
                   type="primary"
                   onClick={() => {
@@ -116,17 +150,10 @@ export const Opportunity: React.FC = () => {
                 </Button>
               </Col>
             </Row>
-            <ProgressBar
-              percent={(currentMonthPaymentsCount/27)*100}
-              text={`Платежей ${currentMonthPaymentsCount}/27`}
-              style={{
-                '--text-width': '110px',
-              }}
-            />
           </>
           }
           columns={opportunityMeta}
-          dataSource={optyData}
+          dataSource={filteredData}
           size='middle'
           pagination={{
             position: ['bottomCenter'],
