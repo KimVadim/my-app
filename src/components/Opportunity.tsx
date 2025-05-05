@@ -1,4 +1,4 @@
-import { Button, Spin, Table, message, Menu, Row, Col, Input } from "antd";
+import { Button, Spin, Table, message, Menu, Row, Col, Input, Modal } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +11,7 @@ import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "antd-mobile";
+import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -35,9 +36,10 @@ export const menuItems: MenuItem[] = [
 
 export const Opportunity: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalPayment, setIsModalPayment] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [searchText, setSearchText] = useState(""); // Текст для поиска по номеру квартиры
-  const [filteredData, setFilteredData] = useState<any[]>([]); // Отфильтрованные данные
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
@@ -92,7 +94,6 @@ export const Opportunity: React.FC = () => {
     return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && item['Product'] === 'Prod_1';
   }) || [];
   const currentMonthPaymentsCount = currentMonthPayments.length;
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
@@ -127,6 +128,7 @@ export const Opportunity: React.FC = () => {
             </Row>
             <Row align="middle" gutter={15}>
               <Col flex="auto">
+                <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
                 <ProgressBar
                   percent={(currentMonthPaymentsCount/27)*100}
                   text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% платеж. ${currentMonthPaymentsCount}/27`}
@@ -134,6 +136,7 @@ export const Opportunity: React.FC = () => {
                     '--text-width': '120px',
                   }}
                 />
+                </div>
               </Col>
               <Col>
                 <Button
@@ -157,7 +160,7 @@ export const Opportunity: React.FC = () => {
           size='middle'
           pagination={{
             position: ['bottomCenter'],
-            pageSize: 27
+            pageSize: 20
           }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record),
@@ -169,6 +172,14 @@ export const Opportunity: React.FC = () => {
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen} 
           record={selectedRecord}
+        />
+      }
+      {isModalPayment &&
+        <PaymentProgreesModal
+          setIsPaymentModal={setIsModalPayment}
+          isPaymentModal={isModalPayment}
+          payments={currentMonthPayments}
+          paymentsCount={currentMonthPaymentsCount}
         />
       }
     </>

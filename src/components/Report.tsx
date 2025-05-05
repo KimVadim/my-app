@@ -136,11 +136,9 @@ export const IncomeReport: React.FC = () => {
             color: '#333',
           },
         },
-        // Дополнительные настройки
         showTitle: true, // Показывать заголовок (например, месяц)
         title: (title: string) => title, // Можно настроить заголовок, например, форматировать месяц
         showMarkers: true, // Показывать маркеры в tooltip
-        //showCrosshairs: true, // Показывать перекрестие
         crosshairs: {
           type: 'x', // Перекрестие по оси X
           line: {
@@ -152,10 +150,7 @@ export const IncomeReport: React.FC = () => {
           },
         },
         customContent: (title: string, data: any[]) => {
-          // Фильтруем данные, чтобы отображать только "Аренда" и "Депозит"
           const filteredData = data.filter((item) => item.name === 'Аренда' || item.name === 'Депозит');
-          console.log(filteredData);
-          // Если нет данных для "Аренда" или "Депозит", возвращаем сообщение
           if (filteredData.length === 0) {
             return `
               <div style="padding: 8px;">
@@ -163,8 +158,6 @@ export const IncomeReport: React.FC = () => {
               </div>
             `;
           }
-      
-          // Формируем HTML для tooltip
           return `
             <div style="padding: 8px;">
               <h4>${title}</h4>

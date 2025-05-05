@@ -95,7 +95,7 @@ export const Expense: React.FC = () => {
           size="middle"
           pagination={{
             position: ["bottomCenter"],
-            pageSize: 27,
+            pageSize: 20,
           }}
         />
         <AddFloatButton

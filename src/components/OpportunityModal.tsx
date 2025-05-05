@@ -78,7 +78,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             return <Step
               key={item['ID']}
               title={`${productMap[item['Product'] as keyof typeof productMap]} / ${item['Notes']} / ${item['Amount']}`}
-              status='finish'
+              status={item['Product'] === 'Prod_3' ? 'error' : 'finish'}
               description={date.toLocaleDateString("ru-RU")}
             />
           }
