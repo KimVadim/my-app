@@ -8,7 +8,7 @@ export const opportunityMeta = [{
   dataIndex: OpportunityFieldData.Stage,
   key: OpportunityFieldData.Stage,
   render: (status: String, record: any) => {
-    const date = new Date(record?.[OpportunityFieldData.OptyDate])
+    const date = new Date(record?.[OpportunityFieldData.PaymentDate])
 
     return <>
       <Tag color={"#2db7f5"}>{record?.[OpportunityFieldData.ApartNum]}</Tag>
