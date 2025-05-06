@@ -131,7 +131,7 @@ export const Opportunity: React.FC = () => {
                 <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
                 <ProgressBar
                   percent={(currentMonthPaymentsCount/27)*100}
-                  text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% платеж. ${currentMonthPaymentsCount}/27`}
+                  text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/27`}
                   style={{
                     '--text-width': '120px',
                   }}
