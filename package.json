@@ -6,6 +6,7 @@
   "_homepage": "https://KimVadim.github.io/my-app/",
   "dependencies": {
     "@ant-design/charts": "^2.2.7",
+    "@antv/util": "^3.3.10",
     "@reduxjs/toolkit": "^2.6.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",

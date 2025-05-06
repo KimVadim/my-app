@@ -114,14 +114,18 @@ export const IncomeReport: React.FC = () => {
         layout: [{ type: 'interval-hide-overlap' }],
       },
       tooltip: {
-        formatter: (datum: any) => ({
-          name: datum.type,
-          value: new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'KZT',
-            maximumFractionDigits: 0,
-          }).format(datum.value),
-        }),
+        formatter: (datum: any) => {
+          console.log(datum);
+          const data = datum.filter((item) => item.type === 'Аренда' || item.type === 'Депозит');
+          return ({
+            name: data.type,
+            value: new Intl.NumberFormat('ru-RU', {
+              style: 'currency',
+              currency: 'KZT',
+              maximumFractionDigits: 0,
+            }).format(data.value),
+          })
+        },
         domStyles: {
           'g2-tooltip': {
             background: '#fff',
@@ -165,7 +169,7 @@ export const IncomeReport: React.FC = () => {
               <h4>${title}</h4>
               <ul>
                 ${filteredData
-                  //.filter((item) => item.name === 'Аренда' || item.name === 'Депозит')
+                  .filter((item) => item.name === 'Аренда' || item.name === 'Депозит')
                   .map(
                     (item) =>
                       `<li>${item.name}: ${new Intl.NumberFormat('ru-RU', {

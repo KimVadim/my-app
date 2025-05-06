@@ -17,19 +17,19 @@ interface OpportunityModalProps {
 }
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const dispatch: AppDispatch = useDispatch();
 
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
   const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
   const optyId = record?.[OpportunityFieldData.Id]
-  const [loading, setLoading] = React.useState<boolean>(false);
   const filteredQuotes = useSelector((state: RootState) => 
     selectFilteredQuotes(state, optyId)
   );
-  const dispatch: AppDispatch = useDispatch();
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const handleSubmit = (optyId: string) => {
     setLoading(true);
     closeOpty(optyId).then(() => {
@@ -38,6 +38,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setIsModalOpen(false);
     });
   };
+
   return (
     <Modal 
       open={isModalOpen}
@@ -48,6 +49,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       <Card title={ModalTitle.OpportunityDetail} variant="outlined">
         <p className="opty-card">
           <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
+          {'  '}
+          <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть</Button>
         </p>
         <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>           
           <a 
@@ -67,9 +70,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         <p className="opty-card">
           <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
         </p>
-        <p className="opty-card">
-          <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть договор</Button>
-        </p>
       </Card>
       <Steps direction='vertical'>
         {filteredQuotes && filteredQuotes.map(
@@ -77,9 +77,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             const date = new Date(item['Date/Time']);
             return <Step
               key={item['ID']}
-              title={`${productMap[item['Product'] as keyof typeof productMap]} / ${item['Notes']} / ${item['Amount']}`}
-              status={item['Product'] === 'Prod_3' ? 'error' : 'finish'}
-              description={date.toLocaleDateString("ru-RU")}
+              title={`
+                ${date.toLocaleDateString("ru-RU")} / 
+                ${productMap[item['Product'] as keyof typeof productMap]} / 
+                ${item['Notes']} / ${item['Amount']}
+              `}
+              status={item['Product'] === 'Prod_3' ? 'process' : 'finish'}
             />
           }
         )}

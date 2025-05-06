@@ -1,4 +1,4 @@
-import { Button, Spin, Table, message, Menu, Row, Col, Input, Modal } from "antd";
+import { Button, Spin, Table, message, Menu, Row, Col, Input } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";

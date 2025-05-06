@@ -1,5 +1,5 @@
 import { Col, Menu, MenuProps, Row, Spin, Table, Tag, Input } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { menuItems } from "./Opportunity.tsx";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store.ts";
@@ -12,28 +12,32 @@ import { AddExpenseModal } from "./AddExpenseModal.tsx";
 
 export const Expense: React.FC = () => {
   const [current, setCurrent] = useState("line");
-  const [searchText, setSearchText] = useState(""); // Текст для поиска по номеру квартиры
-  const [filteredData, setFilteredData] = useState<any[]>([]); // Отфильтрованные данные
+  const [searchText, setSearchText] = useState("");
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const expenseData = useSelector((state: RootState) => state.expense.expense);
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
-  const [isAddExpense, setIsAddExpense] = useState(false)
+  const [isAddExpense, setIsAddExpense] = useState(false);
+  const isCalledRef = useRef(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         await getExpenseData(dispatch);
+        !optyData && getSheetData(dispatch);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);
       } finally {
-        !optyData && getSheetData(dispatch);
         setLoading(false);
       }
     };
-    fetchData();
+    if (!isCalledRef.current) {
+      fetchData();
+      isCalledRef.current = true;
+    }
   }, [dispatch]);
   useEffect(() => {
     if (searchText) {
