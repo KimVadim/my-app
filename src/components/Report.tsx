@@ -19,54 +19,46 @@ export const IncomeReport: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    try {
-      getMonthPaymentData(dispatch);
-    } catch (error) {
-      console.error('Ошибка загрузки данных:', error);
-    }
-  }, []);
+    const fetchData = async () => {
+      try {
+        await getMonthPaymentData(dispatch);
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+      }
+    };
+    fetchData();
+  }, [dispatch]);
 
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
+  const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
+  const getLastSixMonths = () =>
+    Array.from({ length: 6 }, (_, i) => {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    });
 
-  // Функция для получения последних 6 месяцев
-  const getLastSixMonths = () => {
-    const months: string[] = [];
-    const currentDate = new Date();
-    for (let i = 0; i < 6; i++) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-      const formattedMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      months.push(formattedMonth);
-    }
-    return months;
-  };
-
-  // Фильтрация данных
   const filteredData = useMemo(() => {
     if (selectedMonth === 'last6months') {
       const lastSixMonths = getLastSixMonths();
-      return monthPaymentData.filter((item) => lastSixMonths.includes(item.month));
+      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
     } else if (selectedMonth) {
-      return monthPaymentData.filter((item) => item.month === selectedMonth);
+      return memoizedMonthPaymentData.filter((item) => item.month === selectedMonth);
     }
-    return monthPaymentData;
-  }, [monthPaymentData, selectedMonth]);
-  const months = Array.from(new Set(monthPaymentData.map((item) => item.month)));
+    return memoizedMonthPaymentData;
+  }, [memoizedMonthPaymentData, selectedMonth]);
+  const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
   const ensureAllTypes = () => {
-    const result: typeof monthPaymentData = [];
-    const uniqueMonths = Array.from(new Set(filteredData.map((item) => item.month)));
-
-    uniqueMonths.forEach((month) => {
-      PaymentTypes.forEach((type) => {
+    return Array.from(new Set(filteredData.map((item) => item.month))).flatMap((month) =>
+      PaymentTypes.map((type) => {
         const existing = filteredData.find((item) => item.month === month && item.type === type);
-        result.push({
+        return {
           month,
           type,
           value: Number(existing?.value ?? 0),
-        });
-      });
-    });
-
-    return result;
+        };
+      })
+    );
   };
   const totalSum = useMemo(() =>
     filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
@@ -79,7 +71,18 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
-      color: ['red', 'blue', 'green'],
+      smooth: true,
+      xAxis: {
+        label: {
+          rotate: -45,
+          offset: 10,
+        },
+      },
+      yAxis: {
+        label: {
+          formatter: (value) => `${(value / 1000).toFixed(0)} KZT`,
+        },
+      },
       point: {
         size: 1,
         shape: 'circle',
@@ -99,7 +102,7 @@ export const IncomeReport: React.FC = () => {
         },
         style: {
           fill: '#000',
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: 700,
           stroke: '#fff',
           strokeWidth: 3,
@@ -107,19 +110,18 @@ export const IncomeReport: React.FC = () => {
           shadowBlur: 3,
         },
         position: 'top',
-        offsetY: -12,
+        offsetY: -20,
         layout: [{ type: 'interval-hide-overlap' }],
       },
       tooltip: {
         formatter: (datum: any) => ({
-          name: datum.type, // Название серии (тип платежа)
+          name: datum.type,
           value: new Intl.NumberFormat('ru-RU', {
             style: 'currency',
             currency: 'KZT',
             maximumFractionDigits: 0,
-          }).format(datum.value), // Форматируем значение
+          }).format(datum.value),
         }),
-        // Кастомизация стилей tooltip
         domStyles: {
           'g2-tooltip': {
             background: '#fff',
@@ -136,15 +138,15 @@ export const IncomeReport: React.FC = () => {
             color: '#333',
           },
         },
-        showTitle: true, // Показывать заголовок (например, месяц)
-        title: (title: string) => title, // Можно настроить заголовок, например, форматировать месяц
-        showMarkers: true, // Показывать маркеры в tooltip
+        showTitle: true,
+        title: (title: string) => title,
+        showMarkers: true,
         crosshairs: {
-          type: 'x', // Перекрестие по оси X
+          type: 'x',
           line: {
             style: {
               stroke: '#000',
-              lineWidth: 1,
+              lineWidth: 100,
               opacity: 0.5,
             },
           },
@@ -159,10 +161,11 @@ export const IncomeReport: React.FC = () => {
             `;
           }
           return `
-            <div style="padding: 8px;">
+            <div style="padding: 10px;">
               <h4>${title}</h4>
               <ul>
                 ${filteredData
+                  //.filter((item) => item.name === 'Аренда' || item.name === 'Депозит')
                   .map(
                     (item) =>
                       `<li>${item.name}: ${new Intl.NumberFormat('ru-RU', {
