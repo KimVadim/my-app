@@ -153,7 +153,8 @@ export const addPayment = async (values: AddPayment) => {
                 "paymentType": values.paymentType,
                 "amount": values.amount,
                 "createBy": "vkim",
-                "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN)
+                "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN),
+                "comment": values?.comment,
             })
         });
 

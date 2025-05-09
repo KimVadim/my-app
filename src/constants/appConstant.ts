@@ -96,6 +96,7 @@ export interface AddPayment {
     product: string;
     paymentType: string;
     paymentDate: Date;
+    comment: string;
 };
 
 export enum PaymentField {
@@ -104,6 +105,7 @@ export enum PaymentField {
     OptyNameLabel = 'Договор',
     PaymnetTypeLabel = 'Получатель',
     PaymentDateLabel = 'Дата платежа',
+    CommentLabel = 'Комментарий',
 
     Product = 'product',
     Amount = 'amount',
@@ -111,7 +113,8 @@ export enum PaymentField {
     PaymentType = 'paymentType',
     OptyId = 'optyId',
     ContactId = 'conId',
-    PaymentDate = 'paymentDate'
+    PaymentDate = 'paymentDate',
+    Comment = 'comment',
 };
 
 // Расходы

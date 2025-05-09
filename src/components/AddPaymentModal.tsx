@@ -6,6 +6,7 @@ import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 import { PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
 import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
+import TextArea from "antd/es/input/TextArea";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -24,6 +25,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+    const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
 
     const handleSubmit = (values: AddPayment) => {
       setLoading(true)
@@ -83,7 +85,13 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               <Select
                 style={{ width: '100%' }}
                 options={PRODUCT}
-                onSelect={(value: string) => form.setFieldsValue({[PaymentField.Product]: value})}
+                onSelect={(value: string) => {
+                  form.setFieldsValue({[PaymentField.Product]: value});
+                  console.log(value);
+                  value && ['Prod_4'].includes(value)
+                      ? setHiddenItem(true)
+                      : setHiddenItem(false);
+              }}
               />
             </Form.Item>
             <Form.Item
@@ -122,6 +130,18 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 onSelect={(value: string) => form.setFieldsValue({[PaymentField.PaymentType]: value})}
               />
             </Form.Item>
+            {isHiddenItem && (<Form.Item
+                label={PaymentField.CommentLabel}
+                name={PaymentField.Comment}
+                rules={[FieldRules.Required]}
+              >
+                <TextArea 
+                  showCount 
+                  maxLength={300} 
+                  placeholder={FieldPlaceholder.Comment}
+                  autoSize={{ minRows: 2, maxRows: 4 }} 
+                />
+            </Form.Item>)}
             <Form.Item
               label={PaymentField.PaymentDateLabel}
               name={PaymentField.PaymentDate}
