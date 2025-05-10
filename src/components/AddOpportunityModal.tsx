@@ -1,12 +1,12 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Spin } from "antd";
-import React from "react"
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Spin } from "antd";
+import React, { useState } from "react"
 import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { Segmented, Selector } from "antd-mobile";
+import { NumberKeyboard, Selector } from "antd-mobile";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -19,6 +19,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const handleSubmit = (values: AddOpportunuty) => {
+      console.log(form.getFieldsValue([OpportunityField.ApartNum]));
       setLoading(true);
       addOpty(values).then(() => {
         getSheetData(dispatch);
@@ -26,7 +27,27 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
         setIsAddOpty(false);
       });
     };
-    
+    const [visible, setVisible] = useState(false)
+    const [value, setValue] = useState('')
+    const actions = {
+      onClose: () => {
+        setVisible(false)
+      },
+      onInput: (key: string) => {
+        setValue(v => {
+          const updated = v + key;
+          form.setFieldsValue({ [OpportunityField.ApartNum]: Number(updated) });
+          return updated;
+        });
+      },
+      onDelete: () => {
+        setValue(prev => {
+          const updated = prev.slice(0, -1);
+          form.setFieldsValue({ [OpportunityField.ApartNum]: Number(updated) });
+          return updated;
+        });
+      },
+    }
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -75,7 +96,13 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             name={OpportunityField.ApartNum}
             rules={[FieldRules.Required, FieldRules.ApartNum]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <InputNumber style={{ width: '100%' }}
+              value={value === '' ? undefined : Number(value)}
+              onFocus={()=> setVisible(true)}
+              onClick={()=> setVisible(true)}
+              onBlur={() => setVisible(false)}
+              readOnly
+            />
           </Form.Item>
           <Form.Item
             label={OpportunityField.ProductLabel}
@@ -99,6 +126,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
               disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
+              defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
             />
           </Form.Item>
           <Form.Item
@@ -111,6 +139,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
+              defaultValue={dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date)}
             />
           </Form.Item>
           <Form.Item style={{ textAlign: "center" }}>
@@ -122,6 +151,13 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             </Button>
           </Form.Item>
         </Form>
+        <NumberKeyboard
+          visible={visible}
+          onClose={actions.onClose}
+          onInput={actions.onInput}
+          onDelete={actions.onDelete}
+          confirmText='Закрыть'
+        />
         </Spin>
       </Modal>
     )
