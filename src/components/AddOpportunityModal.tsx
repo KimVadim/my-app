@@ -66,7 +66,9 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           initialValues={{
             variant: 'filled',
             phone: '+7',
-            product: Product.Rent170
+            product: Product.Rent170,
+            [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
+            [OpportunityField.OptyDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
           }}
           onFinish={handleSubmit}
         >
