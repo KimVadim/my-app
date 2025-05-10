@@ -134,6 +134,7 @@ export const Opportunity: React.FC = () => {
                   text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/27`}
                   style={{
                     '--text-width': '120px',
+                    '--fill-color': 'linear-gradient(to right, var(--adm-color-warning), var(--adm-color-success))',
                   }}
                 />
                 </div>

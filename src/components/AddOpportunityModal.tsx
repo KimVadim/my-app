@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
+import { Segmented, Selector } from "antd-mobile";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -81,10 +82,10 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             name={OpportunityField.Product}
             rules={[FieldRules.Required]}
           >
-            <Select
-              style={{ width: '100%' }}
+            <Selector
               options={PRODUCT}
-              onSelect={(value: string) => form.setFieldsValue({[OpportunityField.Product]: value})}
+              defaultValue={[Product.Rent180]}
+              onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
             />
           </Form.Item>
           <Form.Item
