@@ -1,12 +1,12 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Spin } from "antd";
-import React, { useState } from "react"
+import React from "react"
 import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { NumberKeyboard, Selector } from "antd-mobile";
+import { Selector } from "antd-mobile";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -27,7 +27,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
         setIsAddOpty(false);
       });
     };
-    const [visible, setVisible] = useState(false)
+    /*const [visible, setVisible] = useState(false)
     const [value, setValue] = useState('')
     const actions = {
       onClose: () => {
@@ -47,7 +47,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           return updated;
         });
       },
-    }
+    }*/
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -99,11 +99,11 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required, FieldRules.ApartNum]}
           >
             <InputNumber style={{ width: '100%' }}
-              value={value === '' ? undefined : Number(value)}
-              onFocus={()=> setVisible(true)}
-              onClick={()=> setVisible(true)}
-              onBlur={() => setVisible(false)}
-              readOnly
+              //value={value === '' ? undefined : Number(value)}
+              //onFocus={()=> setVisible(true)}
+              //onClick={()=> setVisible(true)}
+              //onBlur={() => setVisible(false)}
+              //readOnly
             />
           </Form.Item>
           <Form.Item
@@ -153,13 +153,13 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             </Button>
           </Form.Item>
         </Form>
-        <NumberKeyboard
+        {/*<NumberKeyboard
           visible={visible}
           onClose={actions.onClose}
           onInput={actions.onInput}
           onDelete={actions.onDelete}
           confirmText='Закрыть'
-        />
+        />*/}
         </Spin>
       </Modal>
     )
