@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Modal, Spin } from 'antd';
+import { Button, Card, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';

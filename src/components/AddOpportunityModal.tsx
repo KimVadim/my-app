@@ -19,7 +19,6 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const handleSubmit = (values: AddOpportunuty) => {
-      console.log(form.getFieldsValue([OpportunityField.ApartNum]));
       setLoading(true);
       addOpty(values).then(() => {
         getSheetData(dispatch);

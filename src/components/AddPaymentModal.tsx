@@ -57,7 +57,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
       setOptions(filteredOptions);
     };
     
-    console.log(form.getFieldValue(PaymentField.PaymentDate))
     return (
       <Modal
         title={ModalTitle.AddPayment}

@@ -9,15 +9,15 @@ import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
 import { PaymentTypes } from '../constants/appConstant.ts';
+import { LoadExternalScripts } from './LoadChartScript.tsx';
 
 const { Option } = Select;
 
 export const IncomeReport: React.FC = () => {
-  const [current, setCurrent] = useState('line');
-  const [selectedMonth, setSelectedMonth] = useState<string | null>('last6months');
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-
+  const [current, setCurrent] = useState('line');
+  const [selectedMonth, setSelectedMonth] = useState<string | null>('last6months');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,13 +31,15 @@ export const IncomeReport: React.FC = () => {
 
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
+  const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
+  
   const getLastSixMonths = () =>
-    Array.from({ length: 6 }, (_, i) => {
+    [...Array(6)].map((_, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - i);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     });
-
+  
   const filteredData = useMemo(() => {
     if (selectedMonth === 'last6months') {
       const lastSixMonths = getLastSixMonths();
@@ -47,7 +49,7 @@ export const IncomeReport: React.FC = () => {
     }
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
-  const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
+  
   const ensureAllTypes = () => {
     return Array.from(new Set(filteredData.map((item) => item.month))).flatMap((month) =>
       PaymentTypes.map((type) => {
@@ -60,10 +62,15 @@ export const IncomeReport: React.FC = () => {
       })
     );
   };
+  
+  const onClick: MenuProps['onClick'] = (e) => {
+    setCurrent(e.key);
+    if (e.key) navigate(e.key);
+  };
+  
   const totalSum = useMemo(() =>
     filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const completedData = ensureAllTypes();
-
   const chartConfig: Record<string, any> = {
     line: {
       data: completedData,
@@ -71,7 +78,6 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
-      smooth: true,
       xAxis: {
         label: {
           rotate: -45,
@@ -84,11 +90,16 @@ export const IncomeReport: React.FC = () => {
         },
       },
       point: {
-        size: 1,
+        size: 10,
         shape: 'circle',
-        style: () => ({
+        style: ({ type }) => ({
           stroke: '#fff',
-          lineWidth: 1,
+          lineWidth: 2,
+          fillOpacity: 1,
+          shadowBlur: 6,
+          shadowColor: 'rgba(0,0,0,0.2)',
+          ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
+          ...(type === 'Депозит' && { fill: 'green', size: 12 })
         }),
       },
       label: {
@@ -115,16 +126,15 @@ export const IncomeReport: React.FC = () => {
       },
       tooltip: {
         formatter: (datum: any) => {
-          console.log(datum);
-          const data = datum.filter((item) => item.type === 'Аренда' || item.type === 'Депозит');
-          return ({
-            name: data.type,
+          if (!['Аренда', 'Депозит'].includes(datum.type)) return null;
+          return {
+            name: datum.type,
             value: new Intl.NumberFormat('ru-RU', {
               style: 'currency',
               currency: 'KZT',
               maximumFractionDigits: 0,
-            }).format(data.value),
-          })
+            }).format(datum.value),
+          };
         },
         domStyles: {
           'g2-tooltip': {
@@ -150,12 +160,12 @@ export const IncomeReport: React.FC = () => {
           line: {
             style: {
               stroke: '#000',
-              lineWidth: 100,
+              lineWidth: 2,
               opacity: 0.5,
             },
           },
         },
-        customContent: (title: string, data: any[]) => {
+        /*customContent: (title: string, data: any[]) => {
           const filteredData = data.filter((item) => item.name === 'Аренда' || item.name === 'Депозит');
           if (filteredData.length === 0) {
             return `
@@ -166,7 +176,7 @@ export const IncomeReport: React.FC = () => {
           }
           return `
             <div style="padding: 10px;">
-              <h4>${title}</h4>
+              <h4>${title}111</h4>
               <ul>
                 ${filteredData
                   .filter((item) => item.name === 'Аренда' || item.name === 'Депозит')
@@ -182,7 +192,7 @@ export const IncomeReport: React.FC = () => {
               </ul>
             </div>
           `;
-        },
+        },*/
       }
     },
   };
@@ -191,13 +201,9 @@ export const IncomeReport: React.FC = () => {
     line: <Line {...chartConfig.line} />,
   };
 
-  const onClick: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
-
   return (
     <div style={{ padding: '24px' }}>
+      <LoadExternalScripts />
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
           <Menu

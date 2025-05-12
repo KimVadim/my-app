@@ -10,7 +10,7 @@ import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
-import { Popup, ProgressBar } from "antd-mobile";
+import { ProgressBar } from "antd-mobile";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 type MenuItem = Required<MenuProps>['items'][number];
