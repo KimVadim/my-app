@@ -48,7 +48,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   >
     <Spin spinning={loading}>
       <div
-        style={{ height: '45vh', overflowY: 'scroll', padding: '20px' }}
+        style={{ height: '55vh', overflowY: 'scroll', padding: '20px' }}
       >
         <Card title={ModalTitle.OpportunityDetail} variant="outlined">
           <p className="opty-card">
