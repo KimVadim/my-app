@@ -7,6 +7,7 @@ import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
 import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, OptionType } from "../constants/appConstant.ts";
+import { Selector } from "antd-mobile";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
@@ -85,7 +86,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
             <Form
               form={form}
               initialValues={{
-                variant: 'filled',
                 phone: '+7',
                 product: Product.Rent170
               }}
@@ -155,10 +155,16 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 name={ExpenseField.PaymentType}
                 rules={[FieldRules.Required]}
               >
-                <Select
+                {/*<Select
                   style={{ width: '100%' }}
                   options={PAYMENT_TYPE}
                   onSelect={(value: string) => form.setFieldsValue({[ExpenseField.PaymentType]: value})}
+                />*/}
+                <Selector
+                  options={PAYMENT_TYPE}
+                  onChange={(arr) => {
+                    arr.length > 0 && form.setFieldsValue({[ExpenseField.PaymentType]: arr[0]});
+                  }}
                 />
               </Form.Item>
               <Form.Item

@@ -60,7 +60,7 @@ export const Opportunity: React.FC = () => {
       getSheetData(dispatch);
       isCalledRef.current = true;
     }
-  }, []);
+  }, [dispatch]);
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
   useEffect(() => {
     if (searchText) {
@@ -161,7 +161,7 @@ export const Opportunity: React.FC = () => {
           size='middle'
           pagination={{
             position: ['bottomCenter'],
-            pageSize: 20
+            pageSize: 15
           }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record),

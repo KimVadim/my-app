@@ -1,12 +1,13 @@
-import { AutoComplete, Button, DatePicker, Form, InputNumber, Modal, Select, Spin } from "antd";
+import { AutoComplete, Button, DatePicker, Form, InputNumber, Modal, Spin } from "antd";
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
-import { PAYMENT_TYPE, PRODUCT } from "../constants/dictionaries.ts";
+import { PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
+import { Selector } from "antd-mobile";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -74,6 +75,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             onFinish={handleSubmit}
             layout="vertical"
             initialValues={{
+              [PaymentField.Product]: Product.Rent170,
               [PaymentField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             }}
           >
@@ -82,7 +84,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               name={PaymentField.Product}
               rules={[FieldRules.Required]}
             >
-              <Select
+              {/*<Select
                 style={{ width: '100%' }}
                 options={PRODUCT}
                 onSelect={(value: string) => {
@@ -91,7 +93,15 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                   value && ['Prod_4'].includes(value)
                       ? setHiddenItem(true)
                       : setHiddenItem(false);
-              }}
+                }}
+              />*/}
+              <Selector
+                options={PRODUCT}
+                defaultValue={[Product.Rent170]}
+                onChange={(arr) => {
+                  arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
+                  arr.length > 0 && arr[0] === Product.Return ? setHiddenItem(true) : setHiddenItem(false);
+                }}
               />
             </Form.Item>
             <Form.Item
@@ -124,10 +134,16 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               name={PaymentField.PaymentType}
               rules={[FieldRules.Required]}
             >
-              <Select
+              {/*<Select
                 style={{ width: '100%' }}
                 options={PAYMENT_TYPE}
                 onSelect={(value: string) => form.setFieldsValue({[PaymentField.PaymentType]: value})}
+              />*/}
+              <Selector
+                options={PAYMENT_TYPE}
+                onChange={(arr) => {
+                  arr.length > 0 && form.setFieldsValue({[PaymentField.PaymentType]: arr[0]});
+                }}
               />
             </Form.Item>
             {isHiddenItem && (<Form.Item

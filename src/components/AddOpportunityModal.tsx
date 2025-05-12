@@ -64,7 +64,6 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           form={form}
           layout="vertical"
           initialValues={{
-            variant: 'filled',
             phone: '+7',
             product: Product.Rent170,
             [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
