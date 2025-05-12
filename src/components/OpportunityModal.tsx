@@ -12,11 +12,10 @@ import { productMap } from '../constants/dictionaries.ts';
 
 interface OpportunityModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
-  isModalOpen: boolean;
   record: any;
 }
 
-export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
+export const OpportunityModal: React.FC<OpportunityModalProps> = ({ setIsModalOpen, record }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
 
@@ -40,12 +39,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   };
 
   return (
-    <Modal 
-      open={isModalOpen}
-      onCancel={handleCancel}
-      footer={null}
-    >
-      <Spin spinning={loading}>
+    <Spin spinning={loading}>
       <Card title={ModalTitle.OpportunityDetail} variant="outlined">
         <p className="opty-card">
           <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
@@ -87,7 +81,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           }
         )}
       </Steps>
-      </Spin>
-    </Modal>
+    </Spin>
   );
 };

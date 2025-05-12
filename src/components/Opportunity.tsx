@@ -10,7 +10,7 @@ import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
-import { ProgressBar } from "antd-mobile";
+import { Popup, ProgressBar } from "antd-mobile";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -168,13 +168,28 @@ export const Opportunity: React.FC = () => {
           })}
         />
       </Spin>
-      {isModalOpen && 
+      {/*isModalOpen && 
         <OpportunityModal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen} 
           record={selectedRecord}
         />
-      }
+      */}
+      <Popup
+        visible={isModalOpen}
+        onMaskClick={() => {
+          setIsModalOpen(false)
+        }}
+      >
+        <div
+          style={{ height: '55vh', overflowY: 'scroll', padding: '20px' }}
+        >
+          <OpportunityModal
+            setIsModalOpen={setIsModalOpen} 
+            record={selectedRecord}
+          />
+        </div>
+      </Popup>
       {isModalPayment &&
         <PaymentProgreesModal
           setIsPaymentModal={setIsModalPayment}
