@@ -173,14 +173,12 @@ export const Opportunity: React.FC = () => {
         setIsModalOpen={setIsModalOpen} 
         record={selectedRecord}
       />
-      {isModalPayment &&
-        <PaymentProgreesModal
-          setIsPaymentModal={setIsModalPayment}
-          isPaymentModal={isModalPayment}
-          payments={currentMonthPayments}
-          paymentsCount={currentMonthPaymentsCount}
-        />
-      }
+      <PaymentProgreesModal
+        setIsPaymentModal={setIsModalPayment}
+        isPaymentModal={isModalPayment}
+        payments={currentMonthPayments}
+        paymentsCount={currentMonthPaymentsCount}
+      />
     </>
   );
 }
