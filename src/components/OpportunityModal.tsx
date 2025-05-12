@@ -6,16 +6,17 @@ import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Steps } from 'antd-mobile'
+import { Popup, Steps } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { productMap } from '../constants/dictionaries.ts';
 
 interface OpportunityModalProps {
+  isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
   record: any;
 }
 
-export const OpportunityModal: React.FC<OpportunityModalProps> = ({ setIsModalOpen, record }) => {
+export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
 
@@ -25,10 +26,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ setIsModalOp
   const filteredQuotes = useSelector((state: RootState) => 
     selectFilteredQuotes(state, optyId)
   );
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
   const handleSubmit = (optyId: string) => {
     setLoading(true);
     closeOpty(optyId).then(() => {
@@ -39,48 +36,63 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ setIsModalOp
   };
 
   return (
+  <Popup
+    visible={isModalOpen}
+    showCloseButton
+    onClose={() => {
+      setIsModalOpen(false);
+    }}
+    onMaskClick={() => {
+      setIsModalOpen(false);
+    }}
+  >
     <Spin spinning={loading}>
-      <Card title={ModalTitle.OpportunityDetail} variant="outlined">
-        <p className="opty-card">
-          <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
-          {'  '}
-          <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть</Button>
-        </p>
-        <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>           
-          <a 
-            className="phone-link"
-            href={`tel:${record?.[OpportunityFieldData.Phone]}`}
-            style={{ textDecoration: "none", color: "blue" }}
-          >
-            {formatPhoneNumber(record?.[OpportunityFieldData.Phone])}
-          </a>
-        </p>
-        <p className="opty-card">
-          <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {record?.[OpportunityFieldData.Amount]}
-        </p>
-        <p className="opty-card">
-          <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
-        </p>
-        <p className="opty-card">
-          <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
-        </p>
-      </Card>
-      <Steps direction='vertical'>
-        {filteredQuotes && filteredQuotes.map(
-          (item) => {
-            const date = new Date(item['Date/Time']);
-            return <Step
-              key={item['ID']}
-              title={`
-                ${date.toLocaleDateString("ru-RU")} / 
-                ${productMap[item['Product'] as keyof typeof productMap]} / 
-                ${item['Notes']} / ${item['Amount']}
-              `}
-              status={item['Product'] === 'Prod_3' ? 'process' : 'finish'}
-            />
-          }
-        )}
-      </Steps>
+      <div
+        style={{ height: '45vh', overflowY: 'scroll', padding: '20px' }}
+      >
+        <Card title={ModalTitle.OpportunityDetail} variant="outlined">
+          <p className="opty-card">
+            <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
+            {'  '}
+            <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть</Button>
+          </p>
+          <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>           
+            <a 
+              className="phone-link"
+              href={`tel:${record?.[OpportunityFieldData.Phone]}`}
+              style={{ textDecoration: "none", color: "blue" }}
+            >
+              {formatPhoneNumber(record?.[OpportunityFieldData.Phone])}
+            </a>
+          </p>
+          <p className="opty-card">
+            <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {record?.[OpportunityFieldData.Amount]}
+          </p>
+          <p className="opty-card">
+            <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
+          </p>
+          <p className="opty-card">
+            <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
+          </p>
+        </Card>
+        <Steps direction='vertical'>
+          {filteredQuotes && filteredQuotes.map(
+            (item) => {
+              const date = new Date(item['Date/Time']);
+              return <Step
+                key={item['ID']}
+                title={`
+                  ${date.toLocaleDateString("ru-RU")} / 
+                  ${productMap[item['Product'] as keyof typeof productMap]} / 
+                  ${item['Notes']} / ${item['Amount']}
+                `}
+                status={item['Product'] === 'Prod_3' ? 'process' : 'finish'}
+              />
+            }
+          )}
+        </Steps>
+      </div>
     </Spin>
+  </Popup>
   );
 };

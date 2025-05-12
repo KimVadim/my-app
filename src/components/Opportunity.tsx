@@ -168,28 +168,11 @@ export const Opportunity: React.FC = () => {
           })}
         />
       </Spin>
-      {/*isModalOpen && 
-        <OpportunityModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen} 
-          record={selectedRecord}
-        />
-      */}
-      <Popup
-        visible={isModalOpen}
-        onMaskClick={() => {
-          setIsModalOpen(false)
-        }}
-      >
-        <div
-          style={{ height: '55vh', overflowY: 'scroll', padding: '20px' }}
-        >
-          <OpportunityModal
-            setIsModalOpen={setIsModalOpen} 
-            record={selectedRecord}
-          />
-        </div>
-      </Popup>
+      <OpportunityModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen} 
+        record={selectedRecord}
+      />
       {isModalPayment &&
         <PaymentProgreesModal
           setIsPaymentModal={setIsModalPayment}
