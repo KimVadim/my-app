@@ -1,12 +1,12 @@
 import React from 'react';
-import { Card, Spin } from 'antd';
+import { Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { productMap } from '../constants/dictionaries.ts';
 
@@ -46,6 +46,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         setIsModalOpen(false);
       }}
     >
+      <Space justify='center' block>
       <Spin spinning={loading}>
         <div
           style={{ 
@@ -58,7 +59,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             //display: 'flex',
           }}
         >
-          <Card title={ModalTitle.OpportunityDetail} variant="outlined">
+          <Card title={ModalTitle.OpportunityDetail}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
                 <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
@@ -103,6 +104,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
             </p>
           </Card>
+          <Divider>Платежи</Divider>
           <Steps direction='vertical'>
             {filteredQuotes && filteredQuotes.map(
               (item) => {
@@ -121,6 +123,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           </Steps>
         </div>
       </Spin>
+      </Space>
     </Popup>
   );
 };

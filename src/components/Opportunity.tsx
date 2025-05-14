@@ -1,4 +1,4 @@
-import { Button, Spin, Table, message, Menu, Row, Col, Input } from "antd";
+import { Button, Spin, Table, Menu, Row, Col, Input } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,7 +10,7 @@ import type { MenuProps } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
-import { ProgressBar } from "antd-mobile";
+import { ProgressBar, Toast } from "antd-mobile";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -42,17 +42,7 @@ export const Opportunity: React.FC = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-
-  const success = () => {
-    messageApi.open({
-      type: 'success',
-      content: 'Данные по договорам и платежам обновлены',
-      duration: 3,
-    });
-  };
-  
   const isCalledRef = useRef(false);
 
   useEffect(() => {  
@@ -99,7 +89,6 @@ export const Opportunity: React.FC = () => {
   };
   return (
     <>
-      {contextHolder}
       <Spin spinning={loading}>
         <Table
           rowKey="uid"
@@ -146,7 +135,7 @@ export const Opportunity: React.FC = () => {
                     setLoading(true);
                     getSheetData(dispatch).then(() => {
                       setLoading(false);
-                      success();
+                      Toast.show({content: 'Договора обновлены!', duration: 3000 })
                     });
                   }}
                 >
