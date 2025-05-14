@@ -1,12 +1,12 @@
 import React from 'react';
-import { Button, Card, Spin } from 'antd';
+import { Card, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { ModalTitle, OpportunityField, OpportunityFieldData } from '../constants/appConstant.ts';
+import { ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Popup, Steps } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { productMap } from '../constants/dictionaries.ts';
 
@@ -48,14 +48,42 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     >
       <Spin spinning={loading}>
         <div
-          style={{ height: '55vh', overflowY: 'scroll', padding: '20px' }}
+          style={{ 
+            height: '55vh',
+            overflowY: 'scroll',
+            padding: '20px',
+            marginBottom: '30px', 
+            justifyContent: 'center',
+            maxWidth: '360px',
+            //display: 'flex',
+          }}
         >
           <Card title={ModalTitle.OpportunityDetail} variant="outlined">
-            <p className="opty-card">
-              <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
-              {'  '}
-              <Button color="danger" variant="outlined" onClick={() => handleSubmit(optyId)}>Расторгнуть</Button>
-            </p>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+              <span>
+                <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
+              </span>
+
+              <Button 
+                color="warning"
+                size="small"
+                style={{ width: 130 }}
+                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
+                onClick={async () => {
+                  const confirmed = await Dialog.confirm({
+                    content: 'Подтвердите закрытие договора!',
+                    cancelText: 'Отмена',
+                    confirmText: 'OK',
+                  });
+
+                  if (confirmed) {
+                    handleSubmit(optyId);
+                  }
+                }}
+              >
+                Расторгнуть
+              </Button>
+            </div>
             <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>           
               <a 
                 className="phone-link"

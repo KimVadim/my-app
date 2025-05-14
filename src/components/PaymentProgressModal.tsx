@@ -29,7 +29,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            bodyStyle={{ height: '25vh' }}
+            bodyStyle={{ height: '24vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}
@@ -37,6 +37,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 setIsPaymentModal(false);
             }}
         >   
+            <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
             <Card title={'Платежи за текущий месяц'}>
                 <p>
                     <Tag color="#2db7f5" key='1'>1 эт.</Tag>
@@ -76,6 +77,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 </p>
                 <p>Всего платежей: {paymentsCount} из 27</p>
             </Card>
+            </div>
         </Popup>
     );
 }
