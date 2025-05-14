@@ -59,7 +59,7 @@ export const addOpty = async (values: AddOpportunuty) => {
             "product": values.product,
             "stage": Stage.Signed,
             "amount": optyAmount,
-            "createBy": "newApp",
+            "createBy": localStorage.getItem('login') ? localStorage.getItem('login') : "newApp",
             "optyDate": dayjs(values.optyDate).format(FieldFormat.DateEN),
             "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN),
         };
@@ -89,6 +89,7 @@ export const loginUser = async (login: string, password: string) => {
             throw new Error(`Ошибка пустой token`);
         }
         localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('login', login);
         return response;
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
@@ -107,7 +108,7 @@ export const addPayment = async (values: AddPayment) => {
             "product": values.product,
             "paymentType": values.paymentType,
             "amount": values.amount,
-            "createBy": "vkim",
+            "createBy": localStorage.getItem('login') ? localStorage.getItem('login') : "newApp",
             "paymentDate": dayjs(values.paymentDate).format(FieldFormat.DateEN),
             "comment": values?.comment ? values?.comment : Product.ReturnValue,
         };
@@ -134,7 +135,7 @@ export const addExpense = async (values: AddExpense) => {
             "amount": ['Комм. Алатау', 'Возврат', 'Расход', 'Зарплата', 'Комм. Павленко'].includes(values.expenseType) 
                 ? -values.amount 
                 : values.amount,
-            "createBy": "vkim",
+            "createBy": localStorage.getItem('login') ? localStorage.getItem('login') : "newApp",
             "expenseDate": dayjs().format(FieldFormat.DateEN),
             "comment": values.comment,
             "apartNum": values.apartNum,

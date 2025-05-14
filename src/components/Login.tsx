@@ -22,10 +22,9 @@ const Login: React.FC = () => {
   const handleSubmit = async () => {
     setError('');
     try {
-      const response = loginUser(login, password)
+      loginUser(login, password)
         .then(() => {
-          localStorage.setItem('token', response['access_token'])
-          dispatch(setUser(login))
+          dispatch(setUser(login));
         })
         .then(() => navigate('/opty'));
     } catch (err) {
