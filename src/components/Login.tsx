@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../slices/userSlice.ts';
 import { AppDispatch } from '../store.ts';
 import { useDispatch } from 'react-redux';
+import { Space } from 'antd-mobile';
 
 type FieldType = {
   username?: string;
@@ -33,13 +34,12 @@ const Login: React.FC = () => {
   };
 
   return (
+    <Space justify='center' block>
     <Form
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{
-        maxWidth: 300,
-        position: 'absolute',
-        transform: 'translate(25%, 110%)'
+        paddingTop: '75%'
       }}
       onFinish={handleSubmit}
     >
@@ -66,6 +66,7 @@ const Login: React.FC = () => {
       </Form.Item>
       {error && <p>{error}</p>}
     </Form>
+    </Space>
   );
 };
 
