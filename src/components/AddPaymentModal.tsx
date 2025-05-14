@@ -7,7 +7,7 @@ import { PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
-import { Selector } from "antd-mobile";
+import { Selector, Toast } from "antd-mobile";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
@@ -30,10 +30,13 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
 
     const handleSubmit = (values: AddPayment) => {
       setLoading(true)
-      addPayment(values).then(() => {
-        getSheetData(dispatch);
-        setLoading(false)
-        setIsAddPayment(false)
+      addPayment(values).then((paymentId) => {
+        paymentId && getSheetData(dispatch);
+        setLoading(false);
+        setIsAddPayment(false);
+        paymentId 
+          ? Toast.show({content: `Платеж добавлен ${paymentId}!`, icon: 'success', duration: 3000 })
+          : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
     
@@ -72,6 +75,10 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
           <Form
             form={form}
             onFinish={handleSubmit}
+            onFinishFailed={(e) => {
+              const fieldName = e?.['errorFields']?.[0]?.['name']?.[0];
+              fieldName === 'optyId' && Toast.show({content: `Неверный договор!`, icon: 'fail', duration: 2000 });
+            }}
             layout="vertical"
             initialValues={{
               [PaymentField.Product]: Product.Rent170,
@@ -83,17 +90,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               name={PaymentField.Product}
               rules={[FieldRules.Required]}
             >
-              {/*<Select
-                style={{ width: '100%' }}
-                options={PRODUCT}
-                onSelect={(value: string) => {
-                  form.setFieldsValue({[PaymentField.Product]: value});
-                  console.log(value);
-                  value && ['Prod_4'].includes(value)
-                      ? setHiddenItem(true)
-                      : setHiddenItem(false);
-                }}
-              />*/}
               <Selector
                 options={PRODUCT}
                 defaultValue={[Product.Rent170]}
@@ -133,11 +129,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               name={PaymentField.PaymentType}
               rules={[FieldRules.Required]}
             >
-              {/*<Select
-                style={{ width: '100%' }}
-                options={PAYMENT_TYPE}
-                onSelect={(value: string) => form.setFieldsValue({[PaymentField.PaymentType]: value})}
-              />*/}
               <Selector
                 options={PAYMENT_TYPE}
                 onChange={(arr) => {
@@ -163,7 +154,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <DatePicker
-                style={{ width: '100%' }} 
+                style={{ width: '100%' }}
                 format={FieldFormat.Date}
                 inputReadOnly={true}
                 placeholder={FieldPlaceholder.Date}
@@ -178,7 +169,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 Отмена
               </Button>
             </Form.Item>
-            <Form.Item name={PaymentField.OptyId} hidden={true}></Form.Item>
+            <Form.Item name={PaymentField.OptyId} hidden={true} rules={[FieldRules.Required]}></Form.Item>
             <Form.Item name={PaymentField.ContactId} hidden={true}></Form.Item>
           </Form>
         </Spin>

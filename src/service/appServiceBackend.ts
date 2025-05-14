@@ -67,6 +67,7 @@ export const addOpty = async (values: AddOpportunuty) => {
         const response = await axios.post(endpoints.OPPORTUNITY, payload);
 
         console.log('Ответ сервера:', response.data);
+        return response?.data
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             console.error('Ошибка запроса:', error.response?.data);
@@ -114,6 +115,7 @@ export const addPayment = async (values: AddPayment) => {
         const response = await axios.post(endpoints.PAYMENT, payload);
 
         console.log('Ответ сервера:', response.data);
+        return response?.data?.message?.payment_id
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             console.error('Ошибка запроса:', error.response?.data);

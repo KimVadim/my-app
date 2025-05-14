@@ -135,7 +135,7 @@ export const Opportunity: React.FC = () => {
                     setLoading(true);
                     getSheetData(dispatch).then(() => {
                       setLoading(false);
-                      Toast.show({content: 'Договора обновлены!', duration: 3000 })
+                      Toast.show({content: 'Договора обновлены!', duration: 3000 });
                     });
                   }}
                 >
