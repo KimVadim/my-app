@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { Selector } from "antd-mobile";
+import { Selector, Toast } from "antd-mobile";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -20,10 +20,13 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
     const dispatch: AppDispatch = useDispatch();
     const handleSubmit = (values: AddOpportunuty) => {
       setLoading(true);
-      addOpty(values).then(() => {
+      addOpty(values).then((optyId) => {
         getSheetData(dispatch);
         setLoading(false);
         setIsAddOpty(false);
+        optyId 
+          ? Toast.show({content: <div><b>Готово!</b><div>Расход № {optyId}</div></div>, icon: 'success', duration: 3000 })
+          : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
     /*const [visible, setVisible] = useState(false)

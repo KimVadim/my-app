@@ -67,30 +67,7 @@ export const addOpty = async (values: AddOpportunuty) => {
         const response = await axios.post(endpoints.OPPORTUNITY, payload);
 
         console.log('Ответ сервера:', response.data);
-        return response?.data
-    } catch (error: any) {
-        if (axios.isAxiosError(error)) {
-            console.error('Ошибка запроса:', error.response?.data);
-        } else {
-            console.error('Непредвиденная ошибка:', error);
-        }
-    }
-};
-
-export const loginUser = async (login: string, password: string) => {
-    try {
-        const payload = {
-            "login": login,
-            "password": password,
-        };
-
-        const response = await axios.post(endpoints.LOGIN, payload);
-        if (!response?.data['access_token']) {
-            throw new Error(`Ошибка пустой token`);
-        }
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('login', login);
-        return response;
+        return response?.data?.message?.opty_id
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             console.error('Ошибка запроса:', error.response?.data);
@@ -147,6 +124,30 @@ export const addExpense = async (values: AddExpense) => {
         const response = await axios.post(endpoints.EXPENSE, payload);
 
         console.log('Ответ сервера:', response.data);
+        return response?.data?.message?.expense_id
+    } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+            console.error('Ошибка запроса:', error.response?.data);
+        } else {
+            console.error('Непредвиденная ошибка:', error);
+        }
+    }
+};
+
+export const loginUser = async (login: string, password: string) => {
+    try {
+        const payload = {
+            "login": login,
+            "password": password,
+        };
+
+        const response = await axios.post(endpoints.LOGIN, payload);
+        if (!response?.data['access_token']) {
+            throw new Error(`Ошибка пустой token`);
+        }
+        localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('login', login);
+        return response;
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             console.error('Ошибка запроса:', error.response?.data);

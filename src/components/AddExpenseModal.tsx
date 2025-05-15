@@ -7,7 +7,7 @@ import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
 import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, OptionType } from "../constants/appConstant.ts";
-import { Selector } from "antd-mobile";
+import { Selector, Toast } from "antd-mobile";
 
 interface AddExpenseModalProps {
   setIsAddExpense: (isOpen: boolean) => void;
@@ -25,7 +25,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const handleSubmit = (values: AddExpense) => {
       setLoading(true);
       addExpense(values)
-        .then(() => {
+        .then((expenseId) => {
           const fetchData = async () => {
             setLoading(true);
             try {
@@ -40,14 +40,9 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
           setLoading(false);
           setIsAddExpense(false);
           form.resetFields();
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.error('Ошибка при добавлении расхода:', error);
-          Modal.error({
-            title: 'Ошибка',
-            content: 'Не удалось добавить расход. Попробуйте снова.',
-          });
+          expenseId 
+            ? Toast.show({content: <div><b>Готово!</b><div>Расход № {expenseId}</div></div>, icon: 'success', duration: 3000 })
+            : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
         });
     };
     
