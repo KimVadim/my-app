@@ -40,7 +40,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
             <Card title={'Платежи за текущий месяц'}>
                 <p>
-                    <Tag color="#2db7f5" key='1'>1 эт.</Tag>
+                    <Tag color="#2db7f5" key='1'>1</Tag>
                     {apartsNum && apartsNum
                         .filter(x => {
                             const num = Number(x.apartNum);
@@ -52,7 +52,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     }
                 </p>
                 <p>
-                    <Tag color="#2db7f5" key='2'>2 эт.</Tag>
+                    <Tag color="#2db7f5" key='2'>2</Tag>
                     {apartsNum && apartsNum
                         .filter(x => {
                             const num = Number(x.apartNum);
@@ -64,7 +64,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     }
                 </p>
                 <p>
-                    <Tag color="#2db7f5" key='3'>3 эт.</Tag>
+                    <Tag color="#2db7f5" key='3'>3</Tag>
                     {apartsNum && apartsNum
                         .filter(x => {
                             const num = Number(x.apartNum);
