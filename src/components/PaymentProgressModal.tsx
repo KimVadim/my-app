@@ -5,10 +5,10 @@ import { RootState } from "../store";
 import { Card, Popup } from "antd-mobile";
 
 interface PaymentProgreesProps {
-    setIsPaymentModal: (isOpen: boolean) => void;
-    isPaymentModal: boolean;
-    payments: any;
-    paymentsCount: number;
+  setIsPaymentModal: (isOpen: boolean) => void;
+  isPaymentModal: boolean;
+  payments: any;
+  paymentsCount: number;
 }
 
 export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
@@ -36,7 +36,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             onMaskClick={() => {
                 setIsPaymentModal(false);
             }}
-        >   
+        >
             <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
             <Card title={'Платежи за текущий месяц'}>
                 <p>

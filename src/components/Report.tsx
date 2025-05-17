@@ -9,7 +9,6 @@ import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
 import { PaymentTypes } from '../constants/appConstant.ts';
-import { LoadExternalScripts } from './LoadChartScript.tsx';
 
 const { Option } = Select;
 
@@ -68,8 +67,7 @@ export const IncomeReport: React.FC = () => {
     if (e.key) navigate(e.key);
   };
   
-  const totalSum = useMemo(() =>
-    filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const totalSum = useMemo(() => filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const completedData = ensureAllTypes();
   const chartConfig: Record<string, any> = {
     line: {
@@ -165,34 +163,6 @@ export const IncomeReport: React.FC = () => {
             },
           },
         },
-        /*customContent: (title: string, data: any[]) => {
-          const filteredData = data.filter((item) => item.name === 'Аренда' || item.name === 'Депозит');
-          if (filteredData.length === 0) {
-            return `
-              <div style="padding: 8px;">
-                <div>Нет данных для Аренда или Депозит</div>
-              </div>
-            `;
-          }
-          return `
-            <div style="padding: 10px;">
-              <h4>${title}111</h4>
-              <ul>
-                ${filteredData
-                  .filter((item) => item.name === 'Аренда' || item.name === 'Депозит')
-                  .map(
-                    (item) =>
-                      `<li>${item.name}: ${new Intl.NumberFormat('ru-RU', {
-                        style: 'currency',
-                        currency: 'KZT',
-                        maximumFractionDigits: 0,
-                      }).format(item.value)}</li>`
-                  )
-                  .join('')}
-              </ul>
-            </div>
-          `;
-        },*/
       }
     },
   };
@@ -203,7 +173,6 @@ export const IncomeReport: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <LoadExternalScripts />
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
           <Menu

@@ -17,15 +17,15 @@ interface OpportunityModalProps {
 }
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
-
+  const [loading, setLoading] = React.useState<boolean>(false);
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
   const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
   const optyId = record?.[OpportunityFieldData.Id]
   const filteredQuotes = useSelector((state: RootState) => 
     selectFilteredQuotes(state, optyId)
   );
+
   const handleSubmit = (optyId: string) => {
     setLoading(true);
     closeOpty(optyId).then(() => {
@@ -39,12 +39,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     <Popup
       visible={isModalOpen}
       showCloseButton
-      onClose={() => {
-        setIsModalOpen(false);
-      }}
-      onMaskClick={() => {
-        setIsModalOpen(false);
-      }}
+      onClose={() => {setIsModalOpen(false);}}
+      onMaskClick={() => {setIsModalOpen(false);}}
     >
       <Space justify='center' block>
       <Spin spinning={loading}>
@@ -56,7 +52,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             marginBottom: '30px', 
             justifyContent: 'center',
             maxWidth: '360px',
-            //display: 'flex',
           }}
         >
           <Card title={ModalTitle.OpportunityDetail}>

@@ -15,13 +15,13 @@ interface AddExpenseModalProps {
 }
 
 export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense, isAddExpense}) => {
+    const dispatch: AppDispatch = useDispatch();
     const [form] = Form.useForm();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(true);
-    const dispatch: AppDispatch = useDispatch();
-    
+
     const handleSubmit = (values: AddExpense) => {
       setLoading(true);
       addExpense(values)
@@ -40,18 +40,18 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
           setLoading(false);
           setIsAddExpense(false);
           form.resetFields();
-          expenseId 
+          expenseId
             ? Toast.show({content: <div><b>Готово!</b><div>Расход № {expenseId}</div></div>, icon: 'success', duration: 3000 })
             : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
         });
     };
-    
+
     const handleSearch = debounce((value: string) => {
       if (!optyData) return;
-  
+
       const filteredOptions: OptionType[] = optyData
         .filter(item =>
-          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) || 
+          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) ||
           item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
         )
         .slice(0, 7)
@@ -61,7 +61,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
           value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`,
           label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]} - ${item[OpportunityFieldData.Stage]}`
         }));
-  
+
       setOptions(filteredOptions);
     }, 300);
 
@@ -150,11 +150,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 name={ExpenseField.PaymentType}
                 rules={[FieldRules.Required]}
               >
-                {/*<Select
-                  style={{ width: '100%' }}
-                  options={PAYMENT_TYPE}
-                  onSelect={(value: string) => form.setFieldsValue({[ExpenseField.PaymentType]: value})}
-                />*/}
                 <Selector
                   options={PAYMENT_TYPE}
                   onChange={(arr) => {
@@ -176,11 +171,11 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 name={ExpenseField.Comment}
                 rules={[FieldRules.Required]}
               >
-                <TextArea 
-                  showCount 
-                  maxLength={300} 
+                <TextArea
+                  showCount
+                  maxLength={300}
                   placeholder={FieldPlaceholder.Comment}
-                  autoSize={{ minRows: 2, maxRows: 4 }} 
+                  autoSize={{ minRows: 2, maxRows: 4 }}
                 />
               </Form.Item>
               <Form.Item style={{ textAlign: "center" }}>

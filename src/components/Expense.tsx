@@ -11,12 +11,12 @@ import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddExpenseModal } from "./AddExpenseModal.tsx";
 
 export const Expense: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState("line");
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const dispatch: AppDispatch = useDispatch();
   const expenseData = useSelector((state: RootState) => state.expense.expense);
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
   const [isAddExpense, setIsAddExpense] = useState(false);
@@ -55,8 +55,10 @@ export const Expense: React.FC = () => {
     if (e.key) navigate(e.key);
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const actions = {
+    handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
+    },
   };
 
   return (
@@ -78,7 +80,7 @@ export const Expense: React.FC = () => {
             <Input
               placeholder="Поиск по номеру квартиры..."
               value={searchText}
-              onChange={handleSearch}
+              onChange={actions.handleSearch}
               style={{ width: 170 }}
             />
           </Col>

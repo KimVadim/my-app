@@ -29,27 +29,6 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
-    /*const [visible, setVisible] = useState(false)
-    const [value, setValue] = useState('')
-    const actions = {
-      onClose: () => {
-        setVisible(false)
-      },
-      onInput: (key: string) => {
-        setValue(v => {
-          const updated = v + key;
-          form.setFieldsValue({ [OpportunityField.ApartNum]: Number(updated) });
-          return updated;
-        });
-      },
-      onDelete: () => {
-        setValue(prev => {
-          const updated = prev.slice(0, -1);
-          form.setFieldsValue({ [OpportunityField.ApartNum]: Number(updated) });
-          return updated;
-        });
-      },
-    }*/
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -154,13 +133,6 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             </Button>
           </Form.Item>
         </Form>
-        {/*<NumberKeyboard
-          visible={visible}
-          onClose={actions.onClose}
-          onInput={actions.onInput}
-          onDelete={actions.onDelete}
-          confirmText='Закрыть'
-        />*/}
         </Spin>
       </Modal>
     )

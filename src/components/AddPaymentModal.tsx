@@ -17,10 +17,10 @@ interface AddPaymentModalProps {
 }
 
 export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
-      setIsAddPayment,
-      isAddPayment,
-      setLoading,
-      loading
+    setIsAddPayment,
+    isAddPayment,
+    setLoading,
+    loading
   }) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
@@ -28,39 +28,39 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
 
-    const handleSubmit = (values: AddPayment) => {
-      setLoading(true)
-      addPayment(values).then((paymentId) => {
-        paymentId && getSheetData(dispatch);
-        setLoading(false);
-        setIsAddPayment(false);
-        form.resetFields();
-        paymentId 
-          ? Toast.show({content: <div><b>Готово!</b><div>Расход № {paymentId}</div></div>, icon: 'success', duration: 3000 })
-          : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
-      });
-    };
-    
-    const handleSearch = (value: string) => {
-      if (!optyData) return;
-  
-      const filteredOptions = optyData
-        .filter(item => item[OpportunityFieldData.Stage] === Stage.Signed)
-        .filter(item =>
-          item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) || 
-          item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
-        )
-        .slice(0, 7)
-        .map(item => ({
-          optyId: item[OpportunityFieldData.Id],
-          conId: item[OpportunityFieldData.Contact],
-          value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`,
-          label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`
-        }));
-  
-      setOptions(filteredOptions);
-    };
-    
+    const actions = {
+      handleSearch: (value: string) => {
+        if (!optyData) return;
+
+        const filteredOptions = optyData
+          .filter(item => item[OpportunityFieldData.Stage] === Stage.Signed)
+          .filter(item =>
+            item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) ||
+            item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
+          )
+          .slice(0, 7)
+          .map(item => ({
+            optyId: item[OpportunityFieldData.Id],
+            conId: item[OpportunityFieldData.Contact],
+            value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`,
+            label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`
+          }));
+
+        setOptions(filteredOptions);
+      },
+      handleSubmit: (values: AddPayment) => {
+        setLoading(true)
+        addPayment(values).then((paymentId) => {
+          paymentId && getSheetData(dispatch);
+          setLoading(false);
+          setIsAddPayment(false);
+          form.resetFields();
+          paymentId
+            ? Toast.show({content: <div><b>Готово!</b><div>Расход № {paymentId}</div></div>, icon: 'success', duration: 3000 })
+            : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
+        });
+      },
+    }
     return (
       <Modal
         title={ModalTitle.AddPayment}
@@ -75,7 +75,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         <Spin spinning={loading}>
           <Form
             form={form}
-            onFinish={handleSubmit}
+            onFinish={actions.handleSubmit}
             onFinishFailed={(e) => {
               const fieldName = e?.['errorFields']?.[0]?.['name']?.[0];
               fieldName === 'optyId' && Toast.show({content: `Неверный договор!`, icon: 'fail', duration: 2000 });
@@ -114,7 +114,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             >
               <AutoComplete
                 style={{ width: '100%' }}
-                onSearch={handleSearch}
+                onSearch={actions.handleSearch}
                 placeholder={FieldPlaceholder.OptyName}
                 options={options}
                 onSelect={(value: string, option: any) => {
@@ -142,11 +142,11 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 name={PaymentField.Comment}
                 rules={[FieldRules.Required]}
               >
-                <TextArea 
-                  showCount 
-                  maxLength={300} 
+                <TextArea
+                  showCount
+                  maxLength={300}
                   placeholder={FieldPlaceholder.Comment}
-                  autoSize={{ minRows: 2, maxRows: 4 }} 
+                  autoSize={{ minRows: 2, maxRows: 4 }}
                 />
             </Form.Item>)}
             <Form.Item

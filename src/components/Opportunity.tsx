@@ -1,4 +1,4 @@
-import { Button, Spin, Table, Menu, Row, Col, Input } from "antd";
+import { Button, Spin, Table, Menu, Row, Col, Input, MenuProps } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,12 +6,11 @@ import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
 import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
-import type { MenuProps } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
 import '../App.css';
 import { useNavigate } from "react-router-dom";
 import { ProgressBar, Toast } from "antd-mobile";
 import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
+import { SettingOutlined } from '@ant-design/icons';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -35,15 +34,26 @@ export const menuItems: MenuItem[] = [
 ];
 
 export const Opportunity: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalPayment, setIsModalPayment] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [current, setCurrent] = useState('mail');
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
   const isCalledRef = useRef(false);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
+  const quotesData = useSelector((state: RootState) => state.quote.quote);
+  const currentMonthPayments = quotesData?.filter(item => {
+    const payDate = new Date(item['Date/Time']);
+    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && item['Product'] === 'Prod_1';
+  }) || [];
+  const currentMonthPaymentsCount = currentMonthPayments.length;
 
   useEffect(() => {  
     if (!isCalledRef.current) {
@@ -51,7 +61,6 @@ export const Opportunity: React.FC = () => {
       isCalledRef.current = true;
     }
   }, [dispatch]);
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
   useEffect(() => {
     if (searchText) {
       const filtered = optyData.filter((item) =>
@@ -62,31 +71,23 @@ export const Opportunity: React.FC = () => {
       setFilteredData(optyData);
     }
   }, [searchText, optyData]);
-  const quotesData = useSelector((state: RootState) => state.quote.quote);
-  const handleRowClick = (record: any) => {
-    setSelectedRecord(record);
-    setIsModalOpen(true);
-  };
 
-  const [current, setCurrent] = useState('mail');
-
-  const onClick: MenuProps['onClick'] = (e) => {
+  const onClickMenu: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
     if (e.key) {
       navigate(e.key)
     }
   };
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
-  const currentMonthPayments = quotesData?.filter(item => {
-    const payDate = new Date(item['Date/Time']);
-    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && item['Product'] === 'Prod_1';
-  }) || [];
-  const currentMonthPaymentsCount = currentMonthPayments.length;
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const actions ={
+    handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
+    },
+    handleRowClick: (record: any) => {
+      setSelectedRecord(record);
+      setIsModalOpen(true);
+    },
   };
+
   return (
     <>
       <Spin spinning={loading}>
@@ -97,7 +98,7 @@ export const Opportunity: React.FC = () => {
             <Row align="middle" gutter={15}>
               <Col flex="auto" style={{ maxWidth: '111px' }}>
                 <Menu
-                  onClick={onClick}
+                  onClick={onClickMenu}
                   selectedKeys={[current]}
                   mode="horizontal"
                   items={menuItems}
@@ -110,7 +111,7 @@ export const Opportunity: React.FC = () => {
                 <Input
                   placeholder="Поиск по номеру квартиры..."
                   value={searchText}
-                  onChange={handleSearch}
+                  onChange={actions.handleSearch}
                   style={{ width: 150 }}
                 />
               </Col>
@@ -153,7 +154,7 @@ export const Opportunity: React.FC = () => {
             pageSize: 15
           }}
           onRow={(record) => ({
-            onClick: () => handleRowClick(record),
+            onClick: () => actions.handleRowClick(record),
           })}
         />
       </Spin>
