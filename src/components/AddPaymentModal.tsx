@@ -56,7 +56,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
           setIsAddPayment(false);
           form.resetFields();
           paymentId
-            ? Toast.show({content: <div><b>Готово!</b><div>Расход № {paymentId}</div></div>, icon: 'success', duration: 3000 })
+            ? Toast.show({content: <div><b>Готово!</b><div>Платеж № {paymentId}</div></div>, icon: 'success', duration: 3000 })
             : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
         });
       },

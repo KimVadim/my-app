@@ -24,8 +24,8 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
         getSheetData(dispatch);
         setLoading(false);
         setIsAddOpty(false);
-        optyId 
-          ? Toast.show({content: <div><b>Готово!</b><div>Расход № {optyId}</div></div>, icon: 'success', duration: 3000 })
+        optyId
+          ? Toast.show({content: <div><b>Готово!</b><div>Договор № {optyId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
@@ -52,21 +52,21 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           }}
           onFinish={handleSubmit}
         >
-          <Form.Item 
+          <Form.Item
             label={OpportunityField.LastNameLabel}
             name={OpportunityField.LastName}
             rules={[FieldRules.Required, FieldRules.ClientName]}
           >
             <Input />
           </Form.Item>
-          <Form.Item 
+          <Form.Item
             label={OpportunityField.FisrtNameLabel}
             name={OpportunityField.FisrtName}
             rules={[FieldRules.Required, FieldRules.ClientName]}
           >
             <Input />
           </Form.Item>
-          <Form.Item 
+          <Form.Item
             label={OpportunityField.PhoneLabel}
             name={OpportunityField.Phone}
             rules={[FieldRules.Required, FieldRules.PhoneNum]}
@@ -103,7 +103,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <DatePicker
-              style={{ width: '100%' }} 
+              style={{ width: '100%' }}
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
@@ -117,7 +117,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <DatePicker
-              style={{ width: '100%' }} 
+              style={{ width: '100%' }}
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
