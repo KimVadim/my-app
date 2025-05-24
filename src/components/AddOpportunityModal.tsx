@@ -78,13 +78,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             name={OpportunityField.ApartNum}
             rules={[FieldRules.Required, FieldRules.ApartNum]}
           >
-            <InputNumber style={{ width: '100%' }}
-              //value={value === '' ? undefined : Number(value)}
-              //onFocus={()=> setVisible(true)}
-              //onClick={()=> setVisible(true)}
-              //onBlur={() => setVisible(false)}
-              //readOnly
-            />
+            <InputNumber style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             label={OpportunityField.ProductLabel}
@@ -92,7 +86,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <Selector
-              options={PRODUCT}
+              options={PRODUCT.filter((x: any)=> x.value === Product.Rent170 || x.value === Product.Rent180)}
               defaultValue={[Product.Rent180]}
               onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
             />
