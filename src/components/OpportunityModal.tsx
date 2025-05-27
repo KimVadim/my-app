@@ -8,7 +8,7 @@ import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
-import { productMap } from '../constants/dictionaries.ts';
+import { BUTTON_TEXT, MODAL_TEXT, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -22,7 +22,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
   const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
   const optyId = record?.[OpportunityFieldData.Id]
-  const filteredQuotes = useSelector((state: RootState) => 
+  const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   );
 
@@ -45,11 +45,11 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       <Space justify='center' block>
       <Spin spinning={loading}>
         <div
-          style={{ 
+          style={{
             height: '55vh',
             overflowY: 'scroll',
             padding: '20px',
-            marginBottom: '30px', 
+            marginBottom: '30px',
             justifyContent: 'center',
             maxWidth: '360px',
           }}
@@ -60,16 +60,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
               </span>
 
-              <Button 
+              <Button
                 color="warning"
                 size="small"
                 style={{ width: 130 }}
                 disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
                 onClick={async () => {
                   const confirmed = await Dialog.confirm({
-                    content: 'Подтвердите закрытие договора!',
-                    cancelText: 'Отмена',
-                    confirmText: 'OK',
+                    content: MODAL_TEXT.OptyCloseText,
+                    cancelText: BUTTON_TEXT.Cancel,
+                    confirmText: BUTTON_TEXT.Ok,
                   });
 
                   if (confirmed) {
@@ -80,8 +80,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 Расторгнуть
               </Button>
             </div>
-            <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>           
-              <a 
+            <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
+              <a
                 className="phone-link"
                 href={`tel:${record?.[OpportunityFieldData.Phone]}`}
                 style={{ textDecoration: "none", color: "blue" }}
@@ -103,15 +103,21 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           <Steps direction='vertical'>
             {filteredQuotes && filteredQuotes.map(
               (item) => {
-                const date = new Date(item['Date/Time']);
+                const date = new Date(item[OpportunityFieldData.OptyDateTime]);
                 return <Step
-                  key={item['ID']}
+                  key={item[OpportunityFieldData.Id]}
                   title={`
-                    ${date.toLocaleDateString("ru-RU")} / 
-                    ${productMap[item['Product'] as keyof typeof productMap]} / 
-                    ${item['Notes']} / ${item['Amount']}
+                    ${date.toLocaleDateString("ru-RU")} /
+                    ${productMap[item[OpportunityFieldData.Product] as keyof typeof productMap]} /
+                    ${item[OpportunityFieldData.PaymentType]} / ${item[OpportunityFieldData.Amount]}
                   `}
-                  status={item['Product'] === 'Prod_3' ? 'process' : 'finish'}
+                  status={
+                    item[OpportunityFieldData.Product] === 'Prod_3'
+                      ? STEP_STATUS.Process
+                      : item[OpportunityFieldData.Product] === 'Prod_4'
+                        ? STEP_STATUS.Error
+                        : STEP_STATUS.Finish
+                  }
                 />
               }
             )}
