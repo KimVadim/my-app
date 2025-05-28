@@ -8,7 +8,7 @@ import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
-import { BUTTON_TEXT, MODAL_TEXT, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
+import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -112,9 +112,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                     ${item[OpportunityFieldData.PaymentType]} / ${item[OpportunityFieldData.Amount]}
                   `}
                   status={
-                    item[OpportunityFieldData.Product] === 'Prod_3'
+                    item[OpportunityFieldData.Product] === Product.Deposit
                       ? STEP_STATUS.Process
-                      : item[OpportunityFieldData.Product] === 'Prod_4'
+                      : item[OpportunityFieldData.Product] === Product.Return
                         ? STEP_STATUS.Error
                         : STEP_STATUS.Finish
                   }

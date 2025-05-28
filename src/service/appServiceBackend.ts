@@ -1,9 +1,9 @@
-import { setOpportunity } from "../slices/opportunitySlice.ts";
-import { setQuote } from "../slices/quoteSlice.ts";
-import { setContact } from "../slices/contactSlice.ts";
-import { AppDispatch } from "../store.ts";
-import dayjs from "dayjs";
-import axios from "axios";
+import { setOpportunity } from '../slices/opportunitySlice.ts';
+import { setQuote } from '../slices/quoteSlice.ts';
+import { setContact } from '../slices/contactSlice.ts';
+import { AppDispatch } from '../store.ts';
+import dayjs from 'dayjs';
+import axios from 'axios';
 import {
   AddExpense,
   AddOpportunuty,
@@ -11,12 +11,12 @@ import {
   FieldFormat,
   Stage,
   Status,
-} from "../constants/appConstant.ts";
-import { Product } from "../constants/dictionaries.ts";
-import { setMonthPayments } from "../slices/monthPaymentsSlice.ts";
-import { setExpense } from "../slices/expenseSlice.ts";
+} from '../constants/appConstant.ts';
+import { Product } from '../constants/dictionaries.ts';
+import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
+import { setExpense } from '../slices/expenseSlice.ts';
 
-export const API_URL = "https://palvenko-production.up.railway.app";
+export const API_URL = 'https://palvenko-production.up.railway.app';
 
 export const endpoints = {
   SHEET_DATE: `${API_URL}/endpoints/sheet-data`,
@@ -41,9 +41,9 @@ export const getSheetData = async (dispatch: AppDispatch) => {
     dispatch(setContact(contact));
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.status);
+      console.error('Ошибка запроса:', error.response?.status);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -52,7 +52,7 @@ export const addOpty = async (values: AddOpportunuty) => {
   try {
     let optyAmount = 0;
     if (values.product === Product.Rent170) {
-      optyAmount = Product.RentAmount;
+      optyAmount = Product.RentAmount170;
     } else if (values.product === Product.Rent180) {
       optyAmount = Product.RentAmount180;
     }
@@ -65,22 +65,22 @@ export const addOpty = async (values: AddOpportunuty) => {
       product: values.product,
       stage: Stage.Signed,
       amount: optyAmount,
-      createBy: localStorage.getItem("login")
-        ? localStorage.getItem("login")
-        : "newApp",
+      createBy: localStorage.getItem('login')
+        ? localStorage.getItem('login')
+        : 'newApp',
       optyDate: dayjs(values.optyDate).format(FieldFormat.DateEN),
       paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
     };
 
     const response = await axios.post(endpoints.OPPORTUNITY, payload);
 
-    console.log("Ответ сервера:", response.data);
+    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.opty_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.data);
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -93,22 +93,22 @@ export const addPayment = async (values: AddPayment) => {
       product: values.product,
       paymentType: values.paymentType,
       amount: values.amount,
-      createBy: localStorage.getItem("login")
-        ? localStorage.getItem("login")
-        : "newApp",
+      createBy: localStorage.getItem('login')
+        ? localStorage.getItem('login')
+        : 'newApp',
       paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
       comment: values?.comment ? values?.comment : Product.ReturnValue,
     };
 
     const response = await axios.post(endpoints.PAYMENT, payload);
 
-    console.log("Ответ сервера:", response.data);
+    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.payment_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.data);
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -120,32 +120,32 @@ export const addExpense = async (values: AddExpense) => {
       expenseType: values.expenseType,
       paymentType: values.paymentType,
       amount: [
-        "Комм. Алатау",
-        "Возврат",
-        "Расход",
-        "Зарплата",
-        "Комм. Павленко",
+        'Комм. Алатау',
+        'Возврат',
+        'Расход',
+        'Зарплата',
+        'Комм. Павленко',
       ].includes(values.expenseType)
         ? -values.amount
         : values.amount,
-      createBy: localStorage.getItem("login")
-        ? localStorage.getItem("login")
-        : "newApp",
+      createBy: localStorage.getItem('login')
+        ? localStorage.getItem('login')
+        : 'newApp',
       expenseDate: dayjs().format(FieldFormat.DateEN),
       comment: values.comment,
       apartNum: values.apartNum,
-      invoice: values.expenseType === "Комм. Алатау" ? "Выставить Комм" : "",
+      invoice: values.expenseType === 'Комм. Алатау' ? 'Выставить Комм' : '',
     };
 
     const response = await axios.post(endpoints.EXPENSE, payload);
 
-    console.log("Ответ сервера:", response.data);
+    console.log('Ответ сервера:', response.data);
     return response?.data?.message?.expense_id;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.data);
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -158,17 +158,17 @@ export const loginUser = async (login: string, password: string) => {
     };
 
     const response = await axios.post(endpoints.LOGIN, payload);
-    if (!response?.data["access_token"]) {
+    if (!response?.data['access_token']) {
       throw new Error(`Ошибка пустой token`);
     }
-    localStorage.setItem("access_token", response.data.access_token);
-    localStorage.setItem("login", login);
+    localStorage.setItem('access_token', response.data.access_token);
+    localStorage.setItem('login', login);
     return response;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.data);
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -181,12 +181,12 @@ export const closeOpty = async (optyId: String) => {
 
     const response = await axios.post(endpoints.CLOSE_OPTY, payload);
 
-    console.log("Ответ сервера:", response.data);
+    console.log('Ответ сервера:', response.data);
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.data);
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -200,9 +200,9 @@ export const getMonthPaymentData = async (dispatch: AppDispatch) => {
     dispatch(setMonthPayments(monthPayments));
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.status);
+      console.error('Ошибка запроса:', error.response?.status);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };
@@ -216,9 +216,9 @@ export const getExpenseData = async (dispatch: AppDispatch) => {
     dispatch(setExpense(expense));
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Ошибка запроса:", error.response?.status);
+      console.error('Ошибка запроса:', error.response?.status);
     } else {
-      console.error("Непредвиденная ошибка:", error);
+      console.error('Непредвиденная ошибка:', error);
     }
   }
 };

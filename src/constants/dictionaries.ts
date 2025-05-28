@@ -27,7 +27,7 @@ export const EXPENSE_TYPE = [
 
 export enum Product {
   RentAmount160 = 160000,
-  RentAmount = 170000,
+  RentAmount170 = 170000,
   RentAmount180 = 180000,
 
   Rent180Value = 'Аренда 180',
