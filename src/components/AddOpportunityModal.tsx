@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
-import { Product, PRODUCT } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
 import { Selector, Toast } from "antd-mobile";
 
@@ -29,6 +29,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
+
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -120,10 +121,10 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           </Form.Item>
           <Form.Item style={{ textAlign: "center" }}>
             <Button type="primary" htmlType="submit">
-              Добавить
+              {BUTTON_TEXT.Add}
             </Button>
             <Button onClick={() => setIsAddOpty(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-              Отмена
+              {BUTTON_TEXT.Cancel}
             </Button>
           </Form.Item>
         </Form>

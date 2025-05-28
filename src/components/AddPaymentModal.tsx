@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
-import { PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
 import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
@@ -164,10 +164,10 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             </Form.Item>
             <Form.Item style={{ textAlign: "center" }}>
               <Button type="primary" htmlType="submit">
-                Добавить
+                {BUTTON_TEXT.Add}
               </Button>
               <Button onClick={() => setIsAddPayment(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-                Отмена
+                {BUTTON_TEXT.Cancel}
               </Button>
             </Form.Item>
             <Form.Item name={PaymentField.OptyId} hidden={true} rules={[FieldRules.Required]}></Form.Item>

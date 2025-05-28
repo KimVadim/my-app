@@ -6,6 +6,7 @@ import { setUser } from '../slices/userSlice.ts';
 import { AppDispatch } from '../store.ts';
 import { useDispatch } from 'react-redux';
 import { Space } from 'antd-mobile';
+import { FieldPlaceholder } from '../constants/appConstant.ts';
 
 type FieldType = {
   username?: string;
@@ -18,7 +19,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  
+
   const handleSubmit = async () => {
     setError('');
     try {
@@ -43,17 +44,17 @@ const Login: React.FC = () => {
       onFinish={handleSubmit}
     >
       <Form.Item<FieldType>
-        label="Username."
-        name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        label='Имя пользователя'
+        name='username'
+        rules={[{ required: true, message: FieldPlaceholder.EnterUsername }]}
       >
         <Input onChange={(e) => setLogin(e.target.value)} />
       </Form.Item>
 
       <Form.Item<FieldType>
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
+        label='Пароль'
+        name='password'
+        rules={[{ required: true, message: FieldPlaceholder.EnterPassword }]}
       >
         <Input.Password onChange={(e) => setPassword(e.target.value)} />
       </Form.Item>

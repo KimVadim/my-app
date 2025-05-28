@@ -2,7 +2,9 @@ import { Tag } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Card, Popup } from "antd-mobile";
+import { Card, Popup, ProgressCircle, Space } from "antd-mobile";
+import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
+import { MODAL_TEXT } from "../constants/dictionaries.ts";
 
 interface PaymentProgreesProps {
   setIsPaymentModal: (isOpen: boolean) => void;
@@ -19,8 +21,8 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
 }) => {
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
     const apartsNum = payments.map(payment => {
-        const opportunity = optyData.find(item => item['ID'] === payment['Opportunity']);
-        const apartNum = opportunity?.['Description'] || "Не найдено";
+        const opportunity = optyData.find(item => item[OpportunityFieldData.Id] === payment['Opportunity']);
+        const apartNum = opportunity?.[OpportunityFieldData.ApartNum] || MODAL_TEXT.NotFound;
         return { apartNum };
     }).sort((a, b) => a.apartNum.localeCompare(b.apartNum, 'ru'));
 
@@ -29,7 +31,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            bodyStyle={{ height: '27vh' }}
+            bodyStyle={{ height: '32vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}
@@ -38,7 +40,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             }}
         >
             <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
-            <Card title={'Платежи за текущий месяц'}>
+            <Card title={ModalTitle.PaymentsMonthProgress}>
                 <p>
                     <Tag color="#2db7f5" key='1'>1</Tag>
                     {apartsNum && apartsNum
@@ -76,6 +78,28 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     }
                 </p>
                 <p>Всего платежей: {paymentsCount} из 27</p>
+                <p>
+                    <Space style={{ '--gap': '24px' }}>
+                        <ProgressCircle
+                            percent={60}
+                            style={{'--fill-color': 'var(--adm-color-success)',}}
+                        >
+                            60%
+                        </ProgressCircle>
+                        <ProgressCircle
+                            percent={60}
+                            style={{'--fill-color': 'var(--adm-color-warning)',}}
+                        >
+                            60%
+                        </ProgressCircle>
+                        <ProgressCircle
+                            percent={60}
+                            style={{'--fill-color': 'var(--adm-color-danger)',}}
+                        >
+                            60%
+                        </ProgressCircle>
+                    </Space>
+                </p>
             </Card>
             </div>
         </Popup>

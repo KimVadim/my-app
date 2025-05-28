@@ -83,8 +83,10 @@ export enum STEP_STATUS {
 export enum BUTTON_TEXT {
   Ok = 'OK',
   Cancel = 'Отмена',
+  Add = 'Добавить',
 }
 
 export enum MODAL_TEXT {
   OptyCloseText = 'Подтвердите закрытие договора!',
+  NotFound = 'Не найдено',
 }

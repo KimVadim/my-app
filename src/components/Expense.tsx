@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
-import { ExpenseFieldData } from "../constants/appConstant.ts";
+import { ExpenseFieldData, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddExpenseModal } from "./AddExpenseModal.tsx";
 
@@ -74,11 +74,11 @@ export const Expense: React.FC = () => {
             />
           </Col>
           <Col>
-            <strong>Расходы</strong>
+            <strong>{ModalTitle.Expenses}</strong>
           </Col>
           <Col>
             <Input
-              placeholder="Поиск по номеру квартиры..."
+              placeholder={FieldPlaceholder.SearchApartNum}
               value={searchText}
               onChange={actions.handleSearch}
               style={{ width: 170 }}
@@ -89,7 +89,7 @@ export const Expense: React.FC = () => {
           rowKey="ID"
           scroll={{ x: 395 }}
           columns={expenseMeta}
-          dataSource={filteredData} // Используем отфильтрованные данные
+          dataSource={filteredData}
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
@@ -108,7 +108,7 @@ export const Expense: React.FC = () => {
           setIsAdExpense={setIsAddExpense}
         />
         {isAddExpense && <AddExpenseModal
-          setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense} 
+          setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
         />}
       </Spin>
     </div>

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addExpense, getExpenseData } from "../service/appServiceBackend.ts";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
-import { EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
+import { BUTTON_TEXT, EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
 import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, OptionType } from "../constants/appConstant.ts";
 import { Selector, Toast } from "antd-mobile";
 
@@ -180,10 +180,10 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               </Form.Item>
               <Form.Item style={{ textAlign: "center" }}>
                 <Button type="primary" htmlType="submit">
-                  Добавить
+                  {BUTTON_TEXT.Add}
                 </Button>
                 <Button onClick={() => setIsAddExpense(false)} style={{ marginLeft: 8,  marginTop: 10}}>
-                  Отмена
+                  {BUTTON_TEXT.Cancel}
                 </Button>
               </Form.Item>
               <Form.Item name={ExpenseField.OptyId} hidden={true}></Form.Item>
