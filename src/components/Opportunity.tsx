@@ -51,11 +51,11 @@ export const Opportunity: React.FC = () => {
   const quotesData = useSelector((state: RootState) => state.quote.quote);
   const currentMonthPayments = quotesData?.filter(item => {
     const payDate = new Date(item['Date/Time']);
-    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && item['Product'] === 'Prod_1';
+    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item['Product']);
   }) || [];
   const currentMonthPaymentsCount = currentMonthPayments.length;
 
-  useEffect(() => {  
+  useEffect(() => {
     if (!isCalledRef.current) {
       getSheetData(dispatch);
       isCalledRef.current = true;
@@ -160,7 +160,7 @@ export const Opportunity: React.FC = () => {
       </Spin>
       <OpportunityModal
         isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen} 
+        setIsModalOpen={setIsModalOpen}
         record={selectedRecord}
       />
       <PaymentProgreesModal
