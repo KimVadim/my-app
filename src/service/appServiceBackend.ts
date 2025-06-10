@@ -97,7 +97,8 @@ export const addPayment = async (values: AddPayment) => {
         ? localStorage.getItem('login')
         : 'newApp',
       paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
-      comment: values?.comment ? values?.comment : Product.ReturnValue,
+      comment: values?.comment,
+      apartNum: values?.apartNum,
     };
 
     const response = await axios.post(endpoints.PAYMENT, payload);

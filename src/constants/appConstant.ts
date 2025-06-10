@@ -118,7 +118,8 @@ export interface AddPayment {
   product: string;
   paymentType: string;
   paymentDate: Date;
-  comment: string;
+  comment?: string;
+  apartNum?: string;
 }
 
 export enum PaymentField {
@@ -137,6 +138,7 @@ export enum PaymentField {
   ContactId = 'conId',
   PaymentDate = 'paymentDate',
   Comment = 'comment',
+  ApartNum = 'apartNum',
 }
 
 // Расходы

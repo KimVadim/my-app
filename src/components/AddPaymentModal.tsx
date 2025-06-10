@@ -24,7 +24,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
   }) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
-    const [options, setOptions] = useState<{ optyId: string; value: string; label: string }[]>([]);
+    const [options, setOptions] = useState<{ apartNum: String; optyId: string; value: string; label: string }[]>([]);
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
 
@@ -41,6 +41,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
           .slice(0, 7)
           .map(item => ({
             optyId: item[OpportunityFieldData.Id],
+            apartNum: item[OpportunityFieldData.ApartNum],
             conId: item[OpportunityFieldData.Contact],
             value: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`,
             label: `${item[OpportunityFieldData.ApartNum]} - ${item[OpportunityFieldData.FullName]}`
@@ -61,6 +62,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         });
       },
     }
+    //console.log(form.getFieldsValue('ApartNum'))
     return (
       <Modal
         title={ModalTitle.AddPayment}
@@ -96,7 +98,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 defaultValue={[Product.Rent170]}
                 onChange={(arr) => {
                   arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
-                  arr.length > 0 && arr[0] === Product.Return ? setHiddenItem(true) : setHiddenItem(false);
+                  arr.length > 0 && [Product.Return, Product.Deposit].includes(arr[0]) ? setHiddenItem(true) : setHiddenItem(false);
                 }}
               />
             </Form.Item>
@@ -120,7 +122,8 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                 onSelect={(value: string, option: any) => {
                   form.setFieldsValue({
                     optyId: option.optyId,
-                    conId: option.conId
+                    conId: option.conId,
+                    apartNum: option.apartNum,
                   });
                 }}
               />
@@ -171,6 +174,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               </Button>
             </Form.Item>
             <Form.Item name={PaymentField.OptyId} hidden={true} rules={[FieldRules.Required]}></Form.Item>
+            <Form.Item name={PaymentField.ApartNum} hidden={true} ></Form.Item>
             <Form.Item name={PaymentField.ContactId} hidden={true}></Form.Item>
           </Form>
         </Spin>
