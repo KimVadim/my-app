@@ -107,7 +107,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 {({ getFieldValue }) => {
                   const expenseType = getFieldValue(ExpenseField.ExpenseType);
                   switch (expenseType) {
-                    case ExpenseType.Deposit:
+                    /*case ExpenseType.Deposit:
                       return (
                         <Form.Item
                           name={ExpenseField.ApartNum}
@@ -118,7 +118,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                         </Form.Item>
                       );
                     case ExpenseType.Rent:
-                    case ExpenseType.Return:
+                    case ExpenseType.Return:*/
                     case ExpenseType.TenantUtilities:
                       return (
                         <Form.Item
