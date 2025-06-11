@@ -11,13 +11,17 @@ interface PaymentProgreesProps {
   isPaymentModal: boolean;
   payments: any;
   paymentsCount: number;
+  optyActiveCount: number;
+  optyAllCount: number;
 }
 
 export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
     setIsPaymentModal,
     isPaymentModal,
     payments,
-    paymentsCount
+    paymentsCount,
+    optyActiveCount,
+    optyAllCount,
 }) => {
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
     const apartsNum = payments.map(payment => {
@@ -81,22 +85,16 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 <p>
                     <Space style={{ '--gap': '24px' }}>
                         <ProgressCircle
-                            percent={60}
+                            percent={27/optyActiveCount*100}
                             style={{'--fill-color': 'var(--adm-color-success)',}}
                         >
-                            60%
+                            {optyActiveCount} зак
                         </ProgressCircle>
                         <ProgressCircle
-                            percent={60}
-                            style={{'--fill-color': 'var(--adm-color-warning)',}}
-                        >
-                            60%
-                        </ProgressCircle>
-                        <ProgressCircle
-                            percent={60}
+                            percent={(optyAllCount-optyActiveCount)/optyAllCount*100}
                             style={{'--fill-color': 'var(--adm-color-danger)',}}
                         >
-                            60%
+                            {optyAllCount - optyActiveCount} рас
                         </ProgressCircle>
                     </Space>
                 </p>

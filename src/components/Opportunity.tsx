@@ -54,6 +54,8 @@ export const Opportunity: React.FC = () => {
     return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item['Product']);
   }) || [];
   const currentMonthPaymentsCount = currentMonthPayments.length;
+  const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
+  const optyAllCount = optyData.length;
 
   useEffect(() => {
     if (!isCalledRef.current) {
@@ -120,8 +122,8 @@ export const Opportunity: React.FC = () => {
               <Col flex="auto">
                 <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
                 <ProgressBar
-                  percent={(currentMonthPaymentsCount/27)*100}
-                  text={`${Math.floor(((currentMonthPaymentsCount/27)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/27`}
+                  percent={(currentMonthPaymentsCount/optyActiveCount)*100}
+                  text={`${Math.floor(((currentMonthPaymentsCount/optyActiveCount)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/${optyActiveCount}`}
                   style={{
                     '--text-width': '120px',
                     '--fill-color': 'linear-gradient(to right, var(--adm-color-warning), var(--adm-color-success))',
@@ -168,6 +170,8 @@ export const Opportunity: React.FC = () => {
         isPaymentModal={isModalPayment}
         payments={currentMonthPayments}
         paymentsCount={currentMonthPaymentsCount}
+        optyActiveCount={optyActiveCount}
+        optyAllCount={optyAllCount}
       />
     </>
   );
