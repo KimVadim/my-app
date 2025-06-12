@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { RefObject } from 'react';
 import { Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -6,9 +6,10 @@ import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card, CalendarPicker } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button, Divider, Space, Card, Form, DatePickerRef, DatePicker } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
+import dayjs from 'dayjs';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -25,8 +26,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   );
-  const singleDate: Date = new Date('2025-06-03')
-  const [visible1, setVisible1] = useState(false)
 
   const handleSubmit = (optyId: string) => {
     setLoading(true);
@@ -36,6 +35,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setIsModalOpen(false);
     });
   };
+
+  const onFinish = (values: any) => {
+    Dialog.alert({
+      content: <pre>{JSON.stringify(values, null, 2)}</pre>,
+    })
+  }
 
   return (
     <Popup
@@ -101,24 +106,26 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <span>
                 <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
               </span>
-
-              <Button
-                color="warning"
-                size="small"
-                style={{ width: 100 }}
-                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
-                onClick={() => setVisible1(true)}
-              >
-                Изменить
-              </Button>
-              <CalendarPicker
-                visible={visible1}
-                selectionMode='single'
-                defaultValue={singleDate}
-                onClose={() => setVisible1(false)}
-                onMaskClick={() => setVisible1(false)}
-              />
             </div>
+            <Form
+              name='form'
+              onFinish={onFinish}
+            >
+              <Form.Item
+                name='birthday'
+                label={OpportunityField.PayDateLabel}
+                //trigger='onConfirm'
+                onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
+                  datePickerRef.current?.open()
+                }}
+              >
+                <DatePicker>
+                  {value =>
+                    value ? dayjs(value).format('DD.MM.YYYY') : 'Укажите дату'
+                  }
+                </DatePicker>
+              </Form.Item>
+            </Form>
           </Card>
           <Divider>Платежи</Divider>
           <Steps direction='vertical'>
