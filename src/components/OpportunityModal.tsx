@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -6,7 +6,7 @@ import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button, Divider, Space, Card, CalendarPicker } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 
@@ -25,6 +25,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   );
+  const singleDate: Date = new Date('2025-06-03')
+  const [visible1, setVisible1] = useState(false)
 
   const handleSubmit = (optyId: string) => {
     setLoading(true);
@@ -63,7 +65,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <Button
                 color="warning"
                 size="small"
-                style={{ width: 130 }}
+                style={{ width: 110 }}
                 disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
                 onClick={async () => {
                   const confirmed = await Dialog.confirm({
@@ -95,9 +97,28 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             <p className="opty-card">
               <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
             </p>
-            <p className="opty-card">
-              <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
-            </p>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+              <span>
+                <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
+              </span>
+
+              <Button
+                color="warning"
+                size="small"
+                style={{ width: 100 }}
+                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
+                onClick={() => setVisible1(true)}
+              >
+                Изменить
+              </Button>
+              <CalendarPicker
+                visible={visible1}
+                selectionMode='single'
+                defaultValue={singleDate}
+                onClose={() => setVisible1(false)}
+                onMaskClick={() => setVisible1(false)}
+              />
+            </div>
           </Card>
           <Divider>Платежи</Divider>
           <Steps direction='vertical'>

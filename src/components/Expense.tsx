@@ -42,7 +42,8 @@ export const Expense: React.FC = () => {
   useEffect(() => {
     if (searchText) {
       const filtered = expenseData.filter((item) =>
-        item[ExpenseFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase())
+        item[ExpenseFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) |
+        item[ExpenseFieldData.Comment]?.toString().toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);
     } else {

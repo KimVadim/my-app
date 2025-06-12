@@ -12,7 +12,7 @@ export enum ExpenseType {
 }
 
 export const EXPENSE_TYPE = [
-  { value: ExpenseType.Rent, label: ExpenseType.Rent },
+  //{ value: ExpenseType.Rent, label: ExpenseType.Rent },
   //{ value: ExpenseType.Deposit, label: ExpenseType.Deposit },
   //{ value: ExpenseType.Return, label: ExpenseType.Return },
   { value: ExpenseType.Expense, label: ExpenseType.Expense },

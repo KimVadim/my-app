@@ -66,7 +66,8 @@ export const Opportunity: React.FC = () => {
   useEffect(() => {
     if (searchText) {
       const filtered = optyData.filter((item) =>
-        item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase())
+        item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) |
+        item[OpportunityFieldData.FullName]?.toString().toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);
     } else {
@@ -120,7 +121,7 @@ export const Opportunity: React.FC = () => {
             </Row>
             <Row align="middle" gutter={15}>
               <Col flex="auto">
-                <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
+                {currentMonthPaymentsCount && <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
                 <ProgressBar
                   percent={(currentMonthPaymentsCount/optyActiveCount)*100}
                   text={`${Math.floor(((currentMonthPaymentsCount/optyActiveCount)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/${optyActiveCount}`}
@@ -129,7 +130,7 @@ export const Opportunity: React.FC = () => {
                     '--fill-color': 'linear-gradient(to right, var(--adm-color-warning), var(--adm-color-success))',
                   }}
                 />
-                </div>
+                </div>}
               </Col>
               <Col>
                 <Button
