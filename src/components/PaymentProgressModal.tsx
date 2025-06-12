@@ -35,7 +35,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            bodyStyle={{ height: '33vh' }}
+            bodyStyle={{ height: '32vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}
@@ -88,13 +88,13 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                             percent={27/optyActiveCount*100}
                             style={{'--fill-color': 'var(--adm-color-success)',}}
                         >
-                            {optyActiveCount} зак
+                            {optyActiveCount}/зак
                         </ProgressCircle>
                         <ProgressCircle
                             percent={(optyAllCount-optyActiveCount)/optyAllCount*100}
                             style={{'--fill-color': 'var(--adm-color-danger)',}}
                         >
-                            {optyAllCount - optyActiveCount} рас
+                            {optyAllCount - optyActiveCount}/рас
                         </ProgressCircle>
                     </Space>
                 </p>

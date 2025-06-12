@@ -31,14 +31,14 @@ export const IncomeReport: React.FC = () => {
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
   const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
-  
+
   const getLastSixMonths = () =>
     [...Array(6)].map((_, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - i);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     });
-  
+
   const filteredData = useMemo(() => {
     if (selectedMonth === 'last6months') {
       const lastSixMonths = getLastSixMonths();
@@ -48,7 +48,7 @@ export const IncomeReport: React.FC = () => {
     }
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
-  
+
   const ensureAllTypes = () => {
     return Array.from(new Set(filteredData.map((item) => item.month))).flatMap((month) =>
       PaymentTypes.map((type) => {
@@ -61,12 +61,12 @@ export const IncomeReport: React.FC = () => {
       })
     );
   };
-  
+
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
     if (e.key) navigate(e.key);
   };
-  
+
   const totalSum = useMemo(() => filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const completedData = ensureAllTypes();
   const chartConfig: Record<string, any> = {
