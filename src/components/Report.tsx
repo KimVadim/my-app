@@ -31,7 +31,6 @@ export const IncomeReport: React.FC = () => {
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
   const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
-
   const getLastSixMonths = () =>
     [...Array(6)].map((_, i) => {
       const date = new Date();

@@ -38,7 +38,7 @@ export const Expense: React.FC = () => {
       fetchData();
       isCalledRef.current = true;
     }
-  }, [dispatch]);
+  }, [dispatch, optyData]);
   useEffect(() => {
     if (searchText) {
       const filtered = expenseData.filter((item) =>

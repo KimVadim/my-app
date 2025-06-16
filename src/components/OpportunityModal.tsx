@@ -1,12 +1,12 @@
-import React, { RefObject } from 'react';
-import { Spin } from 'antd';
+import React from 'react';
+import { DatePicker, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card, Form, DatePickerRef, DatePicker } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -35,13 +35,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setIsModalOpen(false);
     });
   };
-
-  const onFinish = (values: any) => {
-    Dialog.alert({
-      content: <pre>{JSON.stringify(values, null, 2)}</pre>,
-    })
-  }
-
+console.log(dayjs(optyPayDate))
+const parsedDate = dayjs(optyPayDate);
   return (
     <Popup
       visible={isModalOpen}
@@ -105,27 +100,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
                 <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
+                <DatePicker
+                  format={FieldFormat.Date} // "DD.MM.YYYY"
+                  inputReadOnly={true}
+                  placeholder={FieldPlaceholder.Date} // "Выберите дату"
+                  disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
+                  //defaultValue={optyPayDate ? parsedDate : undefined}
+                  //style={{ marginLeft: 8 }} // Отступ для визуального разделения
+                />
               </span>
             </div>
-            <Form
-              name='form'
-              onFinish={onFinish}
-            >
-              <Form.Item
-                name='birthday'
-                label={OpportunityField.PayDateLabel}
-                //trigger='onConfirm'
-                onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
-                  datePickerRef.current?.open()
-                }}
-              >
-                <DatePicker>
-                  {value =>
-                    value ? dayjs(value).format('DD.MM.YYYY') : 'Укажите дату'
-                  }
-                </DatePicker>
-              </Form.Item>
-            </Form>
           </Card>
           <Divider>Платежи</Divider>
           <Steps direction='vertical'>
