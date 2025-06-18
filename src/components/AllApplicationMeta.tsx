@@ -1,9 +1,9 @@
 import { Table, Tag } from "antd";
-import { ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, Stage } from "../constants/appConstant.ts"
+import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, Stage } from "../constants/appConstant.ts"
 import React from 'react';
 import { Product } from "../constants/dictionaries.ts";
 
-export const opportunityMeta = [{ 
+export const opportunityMeta = [{
   title: OpportunityField.OptyNameLabel,
   dataIndex: OpportunityFieldData.Stage,
   key: OpportunityFieldData.Stage,
@@ -19,7 +19,7 @@ export const opportunityMeta = [{
   width: 235,
   }, {
     title: OpportunityField.FullNameLabel,
-    dataIndex: OpportunityFieldData.FullName, 
+    dataIndex: OpportunityFieldData.FullName,
     key: OpportunityFieldData.FullName,
     ellipsis: true,
     render: (full_name: String, record: any) => {
@@ -30,7 +30,7 @@ export const opportunityMeta = [{
 export const paymentMeta = [
   {
     title: OpportunityField.PaymentTypeLabel,
-    dataIndex: OpportunityFieldData.PaymentType, 
+    dataIndex: OpportunityFieldData.PaymentType,
     key: OpportunityFieldData.PaymentType,
   }, {
     title: OpportunityField.ProductLabel,
@@ -43,14 +43,14 @@ export const paymentMeta = [
         [Product.Deposit]: 'Депозит',
         [Product.Return]:	'Депозит возврат',
       };
-  
+
       return <Tag color="orange">{productMapping[product] || Product.UnknownValue}</Tag>;
     },
   }, {
     title: OpportunityField.AmountLabel,
     dataIndex: OpportunityFieldData.Amount,
     key: OpportunityFieldData.Amount,
-  }, { 
+  }, {
     title: OpportunityField.PaymentDateLabel,
     dataIndex: OpportunityFieldData.OptyDateTime,
     key: OpportunityFieldData.OptyDateTime,
@@ -74,6 +74,19 @@ export const expenseMeta = [{
       {apartNum && <Tag color={"red"}>{apartNum}</Tag>}
       <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
       <strong className="full-name">{record?.[ExpenseFieldData.Sum]}</strong>
+    </>
+  },
+  width: 200,
+}, Table.EXPAND_COLUMN];
+
+export const contactMeta = [{
+  title: ContactField.ContactLabel,
+  dataIndex: ContactFieldData.FirstName,
+  key: ContactFieldData.FirstName,
+  render: (status: String, record: any) => {
+    return <>
+      <Tag color={"#2db7f5"}>{record?.[ContactFieldData.Type]}</Tag>
+      <Tag color="blue">{`${record?.[ContactFieldData.FirstName]} ${record?.[ContactFieldData.LastName]}`}</Tag>
     </>
   },
   width: 200,

@@ -1,19 +1,19 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Contact {
   id: string;
-  firstName: string
+  firstName: string;
   lastName: string;
   phone: string;
   status: string;
   title: string;
-  company: string;
-  email: string;
+  type: string;
+  description: string;
 }
 
 // Определяем интерфейс состояния
 interface contactState {
-  contact: Contact[]
+  contact: Contact[];
 }
 
 // Начальное состояние
@@ -23,7 +23,7 @@ const initialState: contactState = {
 
 // Создаём slice
 export const contactSlice = createSlice({
-  name: "contact",
+  name: 'contact',
   initialState,
   reducers: {
     setContact: (state, action: PayloadAction<Contact[]>) => {

@@ -35,7 +35,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            bodyStyle={{ height: '32vh' }}
+            bodyStyle={{ height: '33vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}

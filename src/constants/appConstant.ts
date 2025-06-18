@@ -6,6 +6,7 @@ export enum ModalTitle {
   Expenses = 'Расходы',
   OpportunityDetail = 'Детали договора',
   PaymentsMonthProgress = 'Платежи за текущий месяц',
+  Contacts = 'Контакты',
 }
 
 export enum FieldPlaceholder {
@@ -16,6 +17,7 @@ export enum FieldPlaceholder {
   SearchApartNum = 'Поиск по номеру квартиры...',
   EnterUsername = 'Введите имя пользователя...',
   EnterPassword = 'Введите пароль...',
+  EnterContactData = 'Введите данные контакта...',
 }
 
 export enum FieldFormat {
@@ -205,3 +207,38 @@ export interface LoginData {
 }
 
 export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат'];
+
+//Контакты
+export enum ContactFieldData {
+  Id = 'ID',
+  FirstName = 'First Name',
+  LastName = 'Last Name',
+  ApartNum = 'Title',
+  Type = 'Type',
+  Phone = 'Phone',
+  Description = 'Description',
+  Status = 'Status',
+}
+
+export interface AddContact {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  type: string;
+  description: string;
+}
+
+export enum ContactField {
+  ContactLabel = 'Все контакты',
+  LastNameLabel = 'Фамилия',
+  FirstNameLabel = 'Имя',
+  PhoneLabel = 'Контактный телефон',
+  TypeLabel = 'Услуга',
+  DescriptionLabel = 'Описание',
+
+  LastName = 'lastName',
+  FirstName = 'firstName',
+  Phone = 'phone',
+  Type = 'type',
+  Description = 'description',
+}

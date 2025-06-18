@@ -10,7 +10,7 @@ function HomePage() {
   const [isAddPayment, setIsAddPayment] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
   const [loading, setLoading] = React.useState<boolean>(false);
-  
+
   return (
     <>
       <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
@@ -18,18 +18,18 @@ function HomePage() {
         <AddFloatButton
           setIsAddOpty={setIsAddOpty}
           setIsAddPayment={setIsAddPayment}
-          setIsAdExpense={setIsAddExpense}
+          setIsAddExpense={setIsAddExpense}
         />
-        {isAddOpty && <AddOpportunutyModal 
+        {isAddOpty && <AddOpportunutyModal
           setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
           setLoading={setLoading} loading={loading}
         />}
-        {isAddPayment && <AddPaymentModal 
+        {isAddPayment && <AddPaymentModal
           setIsAddPayment={setIsAddPayment} isAddPayment={isAddPayment}
           setLoading={setLoading} loading={loading}
         />}
         {isAddExpense && <AddExpenseModal
-          setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense} 
+          setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}
         />}
       </div>
     </>

@@ -22,6 +22,7 @@ export const menuItems: MenuItem[] = [
     children: [
       { label: 'Договора', key: '/opty' },
       { label: 'Расходы', key: '/expense' },
+      { label: 'Контакты', key: '/contacts' },
       {
         type: 'group',
         label: 'Отчеты',

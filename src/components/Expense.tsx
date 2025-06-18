@@ -106,7 +106,7 @@ export const Expense: React.FC = () => {
           }}
         />
         <AddFloatButton
-          setIsAdExpense={setIsAddExpense}
+          setIsAddExpense={setIsAddExpense}
         />
         {isAddExpense && <AddExpenseModal
           setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}

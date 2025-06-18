@@ -35,8 +35,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       setIsModalOpen(false);
     });
   };
-console.log(dayjs(optyPayDate))
-const parsedDate = dayjs(optyPayDate);
+
+  const parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
     <Popup
       visible={isModalOpen}

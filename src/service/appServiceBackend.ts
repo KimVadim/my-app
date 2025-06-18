@@ -5,6 +5,7 @@ import { AppDispatch } from '../store.ts';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import {
+  AddContact,
   AddExpense,
   AddOpportunuty,
   AddPayment,
@@ -27,6 +28,7 @@ export const endpoints = {
   CLOSE_OPTY: `${API_URL}/endpoints/close-opty`,
   MONTH_PAYMENT: `${API_URL}/endpoints/month-payments`,
   EXPENSES: `${API_URL}/endpoints/expenses`,
+  CONTACT: `${API_URL}/endpoints/contact`,
 };
 
 export const getSheetData = async (dispatch: AppDispatch) => {
@@ -218,6 +220,29 @@ export const getExpenseData = async (dispatch: AppDispatch) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const addContact = async (values: AddContact) => {
+  try {
+    const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.phone,
+      type: values.type,
+      description: values.description,
+    };
+
+    const response = await axios.post(endpoints.CONTACT, payload);
+
+    console.log('Ответ сервера:', response.data);
+    return response?.data?.message?.con_id;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.data);
     } else {
       console.error('Непредвиденная ошибка:', error);
     }
