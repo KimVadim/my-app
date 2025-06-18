@@ -85,6 +85,13 @@ export const contactMeta = [{
   key: ContactFieldData.FirstName,
   render: (status: String, record: any) => {
     return <>
+      <a
+        className="phone-link"
+        href={`tel:${record?.[ContactFieldData.Phone]}`}
+        style={{ textDecoration: "none", color: "blue" }}
+      >
+        <Tag color="orange">Позвонить</Tag>
+      </a>
       <Tag color={"#2db7f5"}>{record?.[ContactFieldData.Type]}</Tag>
       <Tag color="blue">{`${record?.[ContactFieldData.FirstName]} ${record?.[ContactFieldData.LastName]}`}</Tag>
     </>
