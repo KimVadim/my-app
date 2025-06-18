@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { contactMeta } from "./AllApplicationMeta.tsx";
 import { ContactFieldData, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
-import { formatPhoneNumber } from "../service/utils.ts";
 import { AddContactModal } from "./AddContactModal.tsx";
 
 export const Contacts: React.FC = () => {
@@ -76,13 +75,6 @@ export const Contacts: React.FC = () => {
           expandable={{
             expandedRowRender: (record) => (
               <p style={{ margin: 0 }}>
-                <a
-                  className="phone-link"
-                  href={`tel:${record?.[ContactFieldData.Phone]}`}
-                  style={{ textDecoration: "none", color: "blue" }}
-                >
-                  {formatPhoneNumber(record?.[ContactFieldData.Phone])}
-                </a>
                 {record?.[ContactFieldData.Description]}
               </p>
             ),
