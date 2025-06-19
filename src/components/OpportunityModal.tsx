@@ -36,7 +36,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     });
   };
 
-  const parsedDate = optyPayDate && dayjs(optyPayDate);
+  const log = (value: any, mode: string) => {
+    console.log(value)
+    console.log(mode)
+  }
+
+  let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
     <Popup
       visible={isModalOpen}
@@ -105,8 +110,11 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   inputReadOnly={true}
                   placeholder={FieldPlaceholder.Date} // "Выберите дату"
                   disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
-                  //defaultValue={optyPayDate ? parsedDate : undefined}
+                  defaultValue={optyPayDate ? parsedDate : undefined}
                   //style={{ marginLeft: 8 }} // Отступ для визуального разделения
+                  allowClear={false}
+                  onPanelChange={(value, mode) => log(value, mode)}
+                  needConfirm={true}
                 />
               </span>
             </div>

@@ -168,7 +168,7 @@ export enum ExpenseField {
   ApartNumLabel = 'Номер квартиры',
   PaymnetTypeLabel = 'Получатель',
   CommentLabel = 'Комментарий',
-  ExpenseLabel = 'Данные платежа',
+  ExpenseLabel = 'Тип / Дата / Сумма',
 
   Product = 'product',
   Amount = 'amount',
@@ -229,7 +229,7 @@ export interface AddContact {
 }
 
 export enum ContactField {
-  ContactLabel = 'Все контакты',
+  ContactLabel = 'Услуга / ФИО / Описание',
   LastNameLabel = 'Фамилия',
   FirstNameLabel = 'Имя',
   PhoneLabel = 'Контактный телефон',
