@@ -91,9 +91,9 @@ export const contactMeta = [{
   },
   width: 200,
 }, {
-  title: 'Действие',
+  title: 'Дейст.',
   key: 'action',
-  width: 40,
+  width: 30,
   render: (_, record) => (
     <Space size="middle">
       <a

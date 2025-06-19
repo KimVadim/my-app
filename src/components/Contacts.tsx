@@ -78,6 +78,7 @@ export const Contacts: React.FC = () => {
                 {record?.[ContactFieldData.Description]}
               </p>
             ),
+            rowExpandable: (record) => !!record?.[ContactFieldData.Description],
           }}
           size="middle"
           pagination={{
