@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Space, Table, Tag } from "antd";
 import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, Stage } from "../constants/appConstant.ts"
 import React from 'react';
 import { Product } from "../constants/dictionaries.ts";
@@ -85,16 +85,24 @@ export const contactMeta = [{
   key: ContactFieldData.FirstName,
   render: (status: String, record: any) => {
     return <>
-      <a
-        className="phone-link"
-        href={`tel:${record?.[ContactFieldData.Phone]}`}
-        style={{ textDecoration: "none", color: "blue" }}
-      >
-        <Tag color="orange">Позвонить</Tag>
-      </a>
       <Tag color={"#2db7f5"}>{record?.[ContactFieldData.Type]}</Tag>
       <Tag color="blue">{`${record?.[ContactFieldData.FirstName]} ${record?.[ContactFieldData.LastName]}`}</Tag>
     </>
   },
   width: 200,
+}, {
+  title: 'Действие',
+  key: 'action',
+  width: 40,
+  render: (_, record) => (
+    <Space size="middle">
+      <a
+        className="phone-link"
+        href={`tel:${record?.[ContactFieldData.Phone]}`}
+        style={{ textDecoration: "none", color: "blue" }}
+      >
+        Звонок
+      </a>
+    </Space>
+  ),
 }, Table.EXPAND_COLUMN];
