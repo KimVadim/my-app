@@ -86,7 +86,7 @@ export const contactMeta = [{
   render: (status: String, record: any) => {
     return <>
       <Tag color={"#2db7f5"}>{record?.[ContactFieldData.Type]}</Tag>
-      <Tag color="blue">{`${record?.[ContactFieldData.FirstName]} ${record?.[ContactFieldData.LastName]}`}</Tag>
+      <Tag color="blue">{`${record?.[ContactFieldData.FirstName]}`}</Tag>
     </>
   },
   width: 200,

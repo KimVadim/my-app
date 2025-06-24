@@ -17,13 +17,14 @@ export const Contacts: React.FC = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const contactAllData = useSelector((state: RootState) => state.contact.contact);
   const [isAddContact, setIsAddContact] = useState(false);
-  const contactData = contactAllData.filter((x) => x[ContactFieldData.Type] !== 'Renter')
+  const contactData = contactAllData.filter((x) => x[ContactFieldData.Type] !== 'Renter');
+  contactData.sort((a, b) => a[ContactFieldData.Type].localeCompare(b[ContactFieldData.Type]));
 
   useEffect(() => {
     if (searchText) {
       const filtered = contactData.filter((item) =>
       item[ContactFieldData.FirstName]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
-      item[ContactFieldData.LastName]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+      item[ContactFieldData.Type]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
       item[ContactFieldData.Phone]?.toString().toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);

@@ -48,15 +48,10 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({setIsAddContact
           onFinish={handleSubmit}
           initialValues={{
             phone: '+7',
+            lastName: 'Service',
           }}
         >
-          <Form.Item
-            label={ContactField.LastNameLabel}
-            name={ContactField.LastName}
-            rules={[FieldRules.Required, FieldRules.ClientName]}
-          >
-            <Input />
-          </Form.Item>
+          <Form.Item name={ContactField.LastName} hidden={true} ></Form.Item>
           <Form.Item
             label={ContactField.FirstNameLabel}
             name={ContactField.FirstName}
