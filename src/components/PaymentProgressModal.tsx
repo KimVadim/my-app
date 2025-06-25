@@ -85,17 +85,19 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 <p>
                     <Space style={{ '--gap': '24px' }}>
                         <ProgressCircle
-                            percent={27/optyActiveCount*100}
+                            percent={(optyActiveCount/27)*100}
                             style={{'--fill-color': 'var(--adm-color-success)',}}
                         >
                             {optyActiveCount}/зак
                         </ProgressCircle>
+                        <div style={{ marginTop: '17px' }}><b>{Math.floor((optyActiveCount/27)*100)}% общ/зак</b></div>
                         <ProgressCircle
                             percent={(optyAllCount-optyActiveCount)/optyAllCount*100}
                             style={{'--fill-color': 'var(--adm-color-danger)',}}
                         >
                             {optyAllCount - optyActiveCount}/рас
                         </ProgressCircle>
+                        <div style={{ marginTop: '17px' }}><b>{Math.floor((optyAllCount-optyActiveCount)/optyAllCount*100)}% общ/рас</b></div>
                     </Space>
                 </p>
             </Card>

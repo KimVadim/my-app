@@ -188,7 +188,7 @@ export const IncomeReport: React.FC = () => {
         </Col>
       </Row>
       <Row align="middle" gutter={15}>
-        <Col flex="auto" style={{ maxWidth: '500px' }}>
+        <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px' }}>
           <PaymentProgreesBar
             setIsPaymentModal={setIsModalPayment}
             isPaymentModal={isModalPayment}
