@@ -81,7 +81,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                         ))
                     }
                 </p>
-                <p>Всего платежей: {paymentsCount} из 27</p>
+                <p>Всего платежей: {paymentsCount} из {optyActiveCount}</p>
                 <p>
                     <Space style={{ '--gap': '24px' }}>
                         <ProgressCircle

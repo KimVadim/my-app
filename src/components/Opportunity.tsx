@@ -8,9 +8,9 @@ import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import '../App.css';
 import { useNavigate } from "react-router-dom";
-import { ProgressBar, Toast } from "antd-mobile";
-import { PaymentProgreesModal } from "./PaymentProgressModal.tsx";
+import { Toast } from "antd-mobile";
 import { SettingOutlined } from '@ant-design/icons';
+import { PaymentProgreesBar } from "./PaymentProgressBar.tsx";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -45,18 +45,7 @@ export const Opportunity: React.FC = () => {
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const isCalledRef = useRef(false);
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
-  const quotesData = useSelector((state: RootState) => state.quote.quote);
-  const currentMonthPayments = quotesData?.filter(item => {
-    const payDate = new Date(item['Date/Time']);
-    return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item['Product']);
-  }) || [];
-  const currentMonthPaymentsCount = currentMonthPayments.length;
-  const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
-  const optyAllCount = optyData.length;
 
   useEffect(() => {
     if (!isCalledRef.current) {
@@ -121,18 +110,10 @@ export const Opportunity: React.FC = () => {
               </Col>
             </Row>
             <Row align="middle" gutter={15}>
-              <Col flex="auto">
-                {currentMonthPaymentsCount > 0 && <div onClick={() => setIsModalPayment(true)} style={{ cursor: 'pointer' }}>
-                <ProgressBar
-                  percent={(currentMonthPaymentsCount/optyActiveCount)*100}
-                  text={`${Math.floor(((currentMonthPaymentsCount/optyActiveCount)*100) * 10) / 10}% плат. ${currentMonthPaymentsCount}/${optyActiveCount}`}
-                  style={{
-                    '--text-width': '120px',
-                    '--fill-color': 'linear-gradient(to right, var(--adm-color-warning), var(--adm-color-success))',
-                  }}
-                />
-                </div>}
-              </Col>
+              <PaymentProgreesBar
+                setIsPaymentModal={setIsModalPayment}
+                isPaymentModal={isModalPayment}
+              />
               <Col>
                 <Button
                   type="primary"
@@ -166,14 +147,6 @@ export const Opportunity: React.FC = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         record={selectedRecord}
-      />
-      <PaymentProgreesModal
-        setIsPaymentModal={setIsModalPayment}
-        isPaymentModal={isModalPayment}
-        payments={currentMonthPayments}
-        paymentsCount={currentMonthPaymentsCount}
-        optyActiveCount={optyActiveCount}
-        optyAllCount={optyAllCount}
       />
     </>
   );

@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
 import { PaymentTypes } from '../constants/appConstant.ts';
+import { PaymentProgreesBar } from './PaymentProgressBar.tsx';
 
 const { Option } = Select;
 
@@ -17,6 +18,7 @@ export const IncomeReport: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState('line');
   const [selectedMonth, setSelectedMonth] = useState<string | null>('last6months');
+  const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -185,7 +187,14 @@ export const IncomeReport: React.FC = () => {
           <strong>Отчёт по доходам</strong>
         </Col>
       </Row>
-
+      <Row align="middle" gutter={15}>
+        <Col flex="auto" style={{ maxWidth: '500px' }}>
+          <PaymentProgreesBar
+            setIsPaymentModal={setIsModalPayment}
+            isPaymentModal={isModalPayment}
+          />
+        </Col>
+      </Row>
       <Menu
         onClick={(e) => setCurrent(e.key)}
         selectedKeys={[current]}
@@ -193,7 +202,6 @@ export const IncomeReport: React.FC = () => {
         items={ItemsReport}
         style={{ marginBottom: 16 }}
       />
-
       <div style={{ marginBottom: 16 }}>
         <Select
           placeholder="Фильтр по месяцу"

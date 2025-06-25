@@ -84,7 +84,7 @@ export const Contacts: React.FC = () => {
           size="middle"
           pagination={{
             position: ["bottomCenter"],
-            pageSize: 20,
+            pageSize: 100,
           }}
         />
         <AddFloatButton
