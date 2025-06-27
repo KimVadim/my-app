@@ -20,9 +20,10 @@ export const menuItems: MenuItem[] = [
     key: 'SubMenu',
     icon: <SettingOutlined />,
     children: [
-      { label: 'Договора', key: '/opty' },
-      { label: 'Расходы', key: '/expense' },
+      { label: 'Договора', key: '/opportunities' },
+      { label: 'Платежи', key: '/payments' },
       { label: 'Контакты', key: '/contacts' },
+      { label: 'Расходы', key: '/expenses' },
       {
         type: 'group',
         label: 'Отчеты',

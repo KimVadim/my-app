@@ -7,6 +7,7 @@ export enum ModalTitle {
   OpportunityDetail = 'Детали договора',
   PaymentsMonthProgress = 'Платежи за текущий месяц',
   Contacts = 'Контакты',
+  Payments = 'Платежи',
 }
 
 export enum FieldPlaceholder {
@@ -241,4 +242,18 @@ export enum ContactField {
   Phone = 'phone',
   Type = 'type',
   Description = 'description',
+}
+
+export enum PaymentsFieldData {
+  Id = 'ID',
+  OptyId = 'Opportunity',
+  ContactId = 'Contact',
+  Amount = 'Amount',
+  Created = 'Date/Time',
+}
+
+export enum PaymentsField {
+  PaymentsLabel = '№ / Дата / Сумма / ФИО',
+
+  Payment = 'payment',
 }

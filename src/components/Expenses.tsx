@@ -10,7 +10,7 @@ import { ExpenseFieldData, FieldPlaceholder, ModalTitle } from "../constants/app
 import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddExpenseModal } from "./AddExpenseModal.tsx";
 
-export const Expense: React.FC = () => {
+export const Expenses: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState("line");

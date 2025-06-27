@@ -5,8 +5,9 @@ import Login from './components/Login.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute.tsx';
 import { IncomeReport } from './components/Report.tsx';
-import { Expense } from './components/Expense.tsx';
+import { Expenses } from './components/Expenses.tsx';
 import { Contacts } from './components/Contacts.tsx';
+import { Payments } from './components/Payments.tsx';
 
 function App() {
   return (
@@ -14,10 +15,11 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/opty" element={<HomePage/>} />
+          <Route path="/opportunities" element={<HomePage/>} />
           <Route path="/incomereport" element={<IncomeReport/>} />
-          <Route path='/expense' element={<Expense/>} />
+          <Route path='/expenses' element={<Expenses/>} />
           <Route path='/contacts' element={<Contacts/>} />
+          <Route path='/payments' element={<Payments/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>
