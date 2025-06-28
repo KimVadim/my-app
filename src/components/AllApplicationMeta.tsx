@@ -89,18 +89,12 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
     <>
       <Row>
         <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
-        <Tag color="blue">
-          {new Intl.DateTimeFormat('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: '2-digit',
-          }).format(date)}
-        </Tag>
+        <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
         <Tag color="red">{`${record?.[PaymentsFieldData.Amount]}`}</Tag>
       </Row>
       <Row>
-        <Text type="secondary">{` ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)} - ${record?.[PaymentsFieldData.PaymentType]}`}</Text>
+        <Text type="secondary">{`${record?.[PaymentsFieldData.PaymentType]} - ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
       </Row>
 
     </>
