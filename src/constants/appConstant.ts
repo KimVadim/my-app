@@ -250,6 +250,8 @@ export enum PaymentsFieldData {
   ContactId = 'Contact',
   Amount = 'Amount',
   Created = 'Date/Time',
+  PaymentType = 'Notes',
+  Product = 'Product',
 }
 
 export enum PaymentsField {

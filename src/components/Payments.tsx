@@ -1,4 +1,4 @@
-import { Col, Menu, MenuProps, Row, Spin, Table } from "antd";
+import { Col, Menu, MenuProps, Row, Spin, Table, Tag } from "antd";
 import React, { useState } from "react";
 import { menuItems } from "./Opportunity.tsx";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,8 @@
-import { Space, Table, Tag, Typography } from "antd";
+import { Row, Space, Table, Tag, Typography } from "antd";
 import { ContactField, ContactFieldData, ExpenseField, ExpenseFieldData, OpportunityField, OpportunityFieldData, PaymentsField, PaymentsFieldData, Stage } from "../constants/appConstant.ts"
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
+import { productMap } from "../constants/dictionaries.ts";
 
 export const opportunityMeta = [{
   title: OpportunityField.OptyNameLabel,
@@ -86,10 +87,22 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
   const { Text } = Typography;
   return (
     <>
-      <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
-      <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
-      <Tag color="green">{`${record?.[PaymentsFieldData.Amount]}`}</Tag>
-      <Text type="secondary">{filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 20)}...</Text>
+      <Row>
+        <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
+        <Tag color="blue">
+          {new Intl.DateTimeFormat('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+          }).format(date)}
+        </Tag>
+        <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
+        <Tag color="red">{`${record?.[PaymentsFieldData.Amount]}`}</Tag>
+      </Row>
+      <Row>
+        <Text type="secondary">{` ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)} - ${record?.[PaymentsFieldData.PaymentType]}`}</Text>
+      </Row>
+
     </>
   );
 };
