@@ -22,7 +22,7 @@ export const menuItems: MenuItem[] = [
     children: [
       {
         type: 'group',
-        label: 'Основные экраны',
+        label: 'Основные',
         children: [
           { label: 'Договора', key: '/opportunities' },
           { label: 'Платежи', key: '/payments' },
@@ -34,7 +34,7 @@ export const menuItems: MenuItem[] = [
         type: 'group',
         label: 'Отчеты',
         children: [
-          { label: 'Отчет по доходам', key: '/incomereport' },
+          { label: 'Доходы', key: '/incomereport' },
         ],
       },
     ],

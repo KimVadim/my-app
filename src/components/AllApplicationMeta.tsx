@@ -71,7 +71,7 @@ export const contactMeta = [
           href={`tel:${record?.[ContactFieldData.Phone]}`}
           style={{ textDecoration: "none", color: "blue" }}
         >
-          Звонок
+          Позвонить
         </a>
       </Space>
     ),
