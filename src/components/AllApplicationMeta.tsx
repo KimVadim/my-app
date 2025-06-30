@@ -94,7 +94,8 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
         <Tag color="red">{`${record?.[PaymentsFieldData.Amount]}`}</Tag>
       </Row>
       <Row>
-        <Text type="secondary">{`${record?.[PaymentsFieldData.PaymentType]} - ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
+        <Text type="success">{`${record?.[PaymentsFieldData.PaymentType]}`}</Text>
+        <Text type="secondary">{` - ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
       </Row>
 
     </>
