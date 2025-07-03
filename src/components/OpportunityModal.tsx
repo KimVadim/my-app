@@ -97,7 +97,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               </a>
             </p>
             <p className="opty-card">
-              <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {record?.[OpportunityFieldData.Amount]}
+              <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
             </p>
             <p className="opty-card">
               <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
@@ -129,7 +129,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   title={`
                     ${date.toLocaleDateString("ru-RU")} /
                     ${productMap[item[OpportunityFieldData.Product] as keyof typeof productMap]} /
-                    ${item[OpportunityFieldData.PaymentType]} / ${item[OpportunityFieldData.Amount]}
+                    ${item[OpportunityFieldData.PaymentType]} / ${Number(item[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
                   `}
                   status={
                     item[OpportunityFieldData.Product] === Product.Deposit
