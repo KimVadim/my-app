@@ -24,7 +24,7 @@ export const Payments: React.FC = () => {
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц с ведущим нулём
         const year = date.getFullYear();
         return `${year}-${month}`;
-      }).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+      }).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
     )
   );
 
