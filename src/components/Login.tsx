@@ -36,7 +36,7 @@ const Login: React.FC = () => {
   return (
     <Space justify='center' block>
     <Form
-      labelCol={{ span: 8 }}
+      labelCol={{ span: 10 }}
       wrapperCol={{ span: 16 }}
       style={{
         paddingTop: '75%'
@@ -44,7 +44,7 @@ const Login: React.FC = () => {
       onFinish={handleSubmit}
     >
       <Form.Item<FieldType>
-        label='Имя пользователя'
+        label='Пользователя'
         name='username'
         rules={[{ required: true, message: FieldPlaceholder.EnterUsername }]}
       >
