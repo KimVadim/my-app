@@ -14,10 +14,15 @@ export const opportunityMeta = [{
     return <>
       <Tag color={"#2db7f5"}>{record?.[OpportunityFieldData.ApartNum]}</Tag>
       <Tag color={status === Stage.Signed ? "green" : "red"}>{status}</Tag>
-      <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
+      <Tag color="blue">
+        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
+      </Tag>
+      <Tag color="red">{(Number(record?.[OpportunityFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
     </>
   },
-  width: 235,
+  width: 265,
   }, {
     title: OpportunityField.FullNameLabel,
     dataIndex: OpportunityFieldData.FullName,
@@ -38,13 +43,25 @@ export const expenseMeta = [{
 
     return <>
       <Tag color={"#2db7f5"}>{record?.[ExpenseFieldData.Type]}</Tag>
+      <Tag color="blue">
+        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
+      </Tag>
       {apartNum && <Tag color={"red"}>{apartNum}</Tag>}
-      <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
-      <strong className="full-name">{record?.[ExpenseFieldData.Sum]}</strong>
     </>
   },
-  width: 200,
-}, Table.EXPAND_COLUMN];
+  width: 220,
+}, {
+    title: ExpenseField.AmountLabel,
+    dataIndex: ExpenseFieldData.Sum,
+    key: ExpenseField.Amount,
+    width: 90,
+      render: (status: String, record: any) => {
+      return <Tag color="red">{Number(record?.[ExpenseFieldData.Sum])?.toLocaleString("ru-RU")}</Tag>
+
+    },
+  }, Table.EXPAND_COLUMN];
 
 export const contactMeta = [
   {

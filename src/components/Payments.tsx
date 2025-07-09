@@ -12,16 +12,18 @@ const { Option } = Select;
 
 export const Payments: React.FC = () => {
   const navigate = useNavigate();
+  const date = new Date();
+  const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
   const [current, setCurrent] = useState("line");
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedMonth, setSelectedMonth] = useState<string | null>();
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(month);
   const [isModalPayment, setIsModalPayment] = useState(false);
   const paymentsData = useSelector((state: RootState) => state.quote.quote);
   const months = Array.from(
     new Set(
       paymentsData.map((item) => {
         const date = new Date(item[PaymentsFieldData.Created]);
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяц с ведущим нулём
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         return `${year}-${month}`;
       }).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
@@ -75,7 +77,7 @@ export const Payments: React.FC = () => {
           </Col>
         </Row>
           <Row align="middle" gutter={15}>
-            <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px' }}>
+            <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px', marginBottom: '10px' }}>
               <PaymentProgreesBar
                 setIsPaymentModal={setIsModalPayment}
                 isPaymentModal={isModalPayment}

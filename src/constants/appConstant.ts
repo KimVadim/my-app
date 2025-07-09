@@ -169,7 +169,7 @@ export enum ExpenseField {
   ApartNumLabel = 'Номер квартиры',
   PaymnetTypeLabel = 'Получатель',
   CommentLabel = 'Комментарий',
-  ExpenseLabel = 'Тип / Дата / Сумма',
+  ExpenseLabel = 'Тип / № / Дата расхода',
 
   Product = 'product',
   Amount = 'amount',
