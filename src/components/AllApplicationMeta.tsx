@@ -110,7 +110,7 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
         <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
         <Tag color="red">{Number(record?.[PaymentsFieldData.Amount])?.toLocaleString("ru-RU")}</Tag>
       </Row>
-      <Row>
+      <Row style={{marginTop: '7px'}}>
         <Text type="success">{`${record?.[PaymentsFieldData.PaymentType]}`}</Text>
         <Text type="secondary">{` - ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
       </Row>

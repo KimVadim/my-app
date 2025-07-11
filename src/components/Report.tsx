@@ -77,6 +77,20 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
+      legend: {
+        marker: {
+          symbol: 'square',
+          style: {
+            fill: '#ff4d4f',
+            stroke: '#000',
+            lineWidth: 1,
+            width: 10,
+            height: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.2)',
+            shadowBlur: 4,
+          },
+        }
+      },
       xAxis: {
         label: {
           rotate: -45,
@@ -93,7 +107,7 @@ export const IncomeReport: React.FC = () => {
         shape: 'circle',
         style: ({ type }) => ({
           stroke: '#fff',
-          lineWidth: 2,
+          lineWidth: 20,
           fillOpacity: 1,
           shadowBlur: 6,
           shadowColor: 'rgba(0,0,0,0.2)',
@@ -211,7 +225,7 @@ export const IncomeReport: React.FC = () => {
           value={selectedMonth}
         >
           <Option key="last6months" value="last6months">
-            Последние 6 мес.
+            Последние 7 мес.
           </Option>
           {months.map((month) => (
             <Option key={String(month)} value={String(month)}>

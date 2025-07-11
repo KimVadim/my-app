@@ -102,7 +102,7 @@ export enum OpportunityField {
   AmountLabel = 'Сумма',
   FullNameLabel = 'ФИО',
   OptyAmountLabel = 'Сумма договора',
-  OptyNameLabel = '№ / Статус / Дата договора',
+  OptyNameLabel = '№ / Статус / Дата / Сумма',
 
   LastName = 'lastName',
   FisrtName = 'firstName',

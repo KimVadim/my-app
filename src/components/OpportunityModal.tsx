@@ -70,7 +70,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <Button
                 color="warning"
                 size="small"
-                style={{ width: 110 }}
+                style={{ width: 110, marginTop: '-5px' }}
                 disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
                 onClick={async () => {
                   const confirmed = await Dialog.confirm({
