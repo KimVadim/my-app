@@ -207,7 +207,7 @@ export interface LoginData {
   password: string;
 }
 
-export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат'];
+export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат', 'Расход'];
 
 //Контакты
 export enum ContactFieldData {
