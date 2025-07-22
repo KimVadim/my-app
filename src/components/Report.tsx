@@ -67,7 +67,6 @@ export const IncomeReport: React.FC = () => {
     setCurrent(e.key);
     if (e.key) navigate(e.key);
   };
-
   const totalSum = useMemo(() => filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const completedData = ensureAllTypes();
   const chartConfig: Record<string, any> = {
@@ -79,12 +78,13 @@ export const IncomeReport: React.FC = () => {
       colorField: 'type',
       legend: {
         marker: {
-          symbol: 'square',
+          symbol: 'line',
           style: {
             fill: '#ff4d4f',
             stroke: '#000',
             lineWidth: 1,
-            width: 10,
+            //r: 8,
+            width: 20,
             height: 10,
             shadowColor: 'rgba(0, 0, 0, 0.2)',
             shadowBlur: 4,
