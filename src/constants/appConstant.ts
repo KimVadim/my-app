@@ -266,3 +266,8 @@ export enum PaymentsField {
 
   Payment = 'payment',
 }
+
+export interface UpdateOptyPayDate {
+  optyId: string;
+  paymentDate: string;
+}

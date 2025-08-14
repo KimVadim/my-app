@@ -12,6 +12,7 @@ import {
   FieldFormat,
   Stage,
   Status,
+  UpdateOptyPayDate,
 } from '../constants/appConstant.ts';
 import { Product } from '../constants/dictionaries.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
@@ -29,6 +30,7 @@ export const endpoints = {
   MONTH_PAYMENT: `${API_URL}/endpoints/month-payments`,
   EXPENSES: `${API_URL}/endpoints/expenses`,
   CONTACT: `${API_URL}/endpoints/contact`,
+  UPDATE_OPTY: `${API_URL}/endpoints/update-opty`,
 };
 
 export const getSheetData = async (dispatch: AppDispatch) => {
@@ -237,6 +239,26 @@ export const addContact = async (values: AddContact) => {
     };
 
     const response = await axios.post(endpoints.CONTACT, payload);
+
+    console.log('Ответ сервера:', response.data);
+    return response?.data?.message?.con_id;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.data);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const updateOptyPayDate = async (values: UpdateOptyPayDate) => {
+  try {
+    const payload = {
+      optyId: values.optyId,
+      paymentDate: values.paymentDate,
+    };
+
+    const response = await axios.post(endpoints.UPDATE_OPTY, payload);
 
     console.log('Ответ сервера:', response.data);
     return response?.data?.message?.con_id;

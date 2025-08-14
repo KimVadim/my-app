@@ -5,8 +5,8 @@ import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { closeOpty, getSheetData } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card } from 'antd-mobile'
+import { closeOpty, getSheetData, updateOptyPayDate } from '../service/appServiceBackend.ts';
+import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -36,10 +36,15 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     });
   };
 
-  const log = (value: any, mode: string) => {
-    console.log(value)
-    console.log(mode)
-  }
+  const handleUpdateOpty = (values: string) => {
+    setLoading(true);
+    updateOptyPayDate({optyId , paymentDate: values}).then(() => {
+      getSheetData(dispatch);
+      setLoading(false);
+      setIsModalOpen(false);
+      Toast.show({content: <div><b>Готово!</b><div>Дата платежа обновлена</div></div>, icon: 'success', duration: 3000 })
+    });
+  };
 
   let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
@@ -87,6 +92,9 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 Расторгнуть
               </Button>
             </div>
+            <p className="opty-card">
+              <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
+            </p>
             <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
               <a
                 className="phone-link"
@@ -97,24 +105,33 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               </a>
             </p>
             <p className="opty-card">
-              <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
-            </p>
-            <p className="opty-card">
               <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
             </p>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OpportunityField.PayDateLabel}: `}</strong> {optyPayDate.toLocaleDateString("ru-RU")}
+                <strong>{`${OpportunityField.PayDateLabel}: `}</strong>
                 <DatePicker
-                  format={FieldFormat.Date} // "DD.MM.YYYY"
+                  format={FieldFormat.Date}
                   inputReadOnly={true}
-                  placeholder={FieldPlaceholder.Date} // "Выберите дату"
+                  placeholder={FieldPlaceholder.Date}
                   disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
-                  defaultValue={optyPayDate ? parsedDate : undefined}
-                  //style={{ marginLeft: 8 }} // Отступ для визуального разделения
+                  value={optyPayDate ? parsedDate : undefined}
                   allowClear={false}
-                  onPanelChange={(value, mode) => log(value, mode)}
                   needConfirm={true}
+                  onChange={(value) => {
+                    value?.['$D'] && value?.['$M'] && value?.['$y'] && handleUpdateOpty(`${value['$M']+1}/${value['$D']}/${value['$y']}`)
+                  }}
+                  /*onChange={async (value) => {
+                    const confirmed = await value?.['$D'] && value?.['$M'] && value?.['$y'] && Dialog.confirm({
+                      content: `${MODAL_TEXT.OptyCloseText} ${value['$D']}.${value['$M']+1}.${value['$y']}`,
+                      cancelText: BUTTON_TEXT.Cancel,
+                      confirmText: BUTTON_TEXT.Ok,
+                    });
+
+                    if (confirmed) {
+                      handleUpdateOpty(`${value['$M']+1}/${value['$D']}/${value['$y']}`);
+                    }
+                  }}*/
                 />
               </span>
             </div>
