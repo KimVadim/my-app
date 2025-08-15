@@ -77,6 +77,14 @@ export const IncomeReport: React.FC = () => {
       seriesField: 'type',
       colorField: 'type',
       legend: {
+        selected: {
+          'Аренда': true,
+          'Депозит': false,
+          'Депозит возврат': false,
+          'Расход': false,
+          'Комм. Алатау': false,
+          'Комм. Павленко': false,
+        },
         marker: {
           symbol: 'line',
           style: {
