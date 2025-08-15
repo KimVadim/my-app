@@ -34,7 +34,7 @@ export const IncomeReport: React.FC = () => {
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
   const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
   const getLastSixMonths = () =>
-    [...Array(7)].map((_, i) => {
+    [...Array(6)].map((_, i) => {
       const date = new Date();
       date.setMonth(date.getMonth() - i);
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
