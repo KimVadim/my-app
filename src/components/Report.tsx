@@ -225,7 +225,7 @@ export const IncomeReport: React.FC = () => {
           value={selectedMonth}
         >
           <Option key="last6months" value="last6months">
-            Последние 7 мес.
+            Последние 6 мес.
           </Option>
           {months.map((month) => (
             <Option key={String(month)} value={String(month)}>
