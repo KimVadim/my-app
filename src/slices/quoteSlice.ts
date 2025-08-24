@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Quote {
   id: string;
-  opportunityId: string
+  opportunityId: string;
   contactId: string;
   apartNum: string;
   productId: string;
@@ -11,19 +11,16 @@ interface Quote {
   payDate: string;
 }
 
-// Определяем интерфейс состояния
 interface quoteState {
-  quote: Quote[]
+  quote: Quote[];
 }
 
-// Начальное состояние
 const initialState: quoteState = {
   quote: [],
 };
 
-// Создаём slice
 export const quoteSlice = createSlice({
-  name: "quote",
+  name: 'quote',
   initialState,
   reducers: {
     setQuote: (state, action: PayloadAction<Quote[]>) => {
@@ -32,6 +29,5 @@ export const quoteSlice = createSlice({
   },
 });
 
-// Экспортируем actions и reducer
 export const { setQuote } = quoteSlice.actions;
 export default quoteSlice.reducer;

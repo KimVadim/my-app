@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
-import { PaymentTypes } from '../constants/appConstant.ts';
+import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
 import { PaymentProgreesBar } from './PaymentProgressBar.tsx';
 
 const { Option } = Select;
@@ -50,7 +50,7 @@ export const IncomeReport: React.FC = () => {
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
 
-  const ensureAllTypes = () => {
+  const ensureAllTypes = (PaymentTypes: any) => {
     return Array.from(new Set(filteredData.map((item) => item.month))).flatMap((month) =>
       PaymentTypes.map((type) => {
         const existing = filteredData.find((item) => item.month === month && item.type === type);
@@ -68,10 +68,10 @@ export const IncomeReport: React.FC = () => {
     if (e.key) navigate(e.key);
   };
   const totalSum = useMemo(() => filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const completedData = ensureAllTypes();
+  //const completedData = ensureAllTypes();
   const chartConfig: Record<string, any> = {
     line: {
-      data: completedData,
+      data: ensureAllTypes(PaymentTypes),
       xField: 'month',
       yField: 'value',
       seriesField: 'type',
@@ -79,7 +79,7 @@ export const IncomeReport: React.FC = () => {
       legend: {
         selected: {
           'Аренда': true,
-          'Депозит': false,
+          'Депозит': true,
           'Депозит возврат': false,
           'Расход': false,
           'Комм. Алатау': false,
@@ -91,7 +91,123 @@ export const IncomeReport: React.FC = () => {
             fill: '#ff4d4f',
             stroke: '#000',
             lineWidth: 1,
-            //r: 8,
+            width: 20,
+            height: 10,
+            shadowColor: 'rgba(0, 0, 0, 0.2)',
+            shadowBlur: 4,
+          },
+        }
+      },
+      xAxis: {
+        label: {
+          rotate: -45,
+          offset: 10,
+        },
+      },
+      yAxis: {
+        label: {
+          formatter: (value) => `${(value / 1000).toFixed(0)} KZT`,
+        },
+      },
+      point: {
+        size: 10,
+        shape: 'circle',
+        style: ({ type }) => ({
+          stroke: '#fff',
+          lineWidth: 20,
+          fillOpacity: 1,
+          shadowBlur: 6,
+          shadowColor: 'rgba(0,0,0,0.2)',
+          ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
+          ...(type === 'Депозит' && { fill: 'green', size: 12 })
+        }),
+      },
+      label: {
+        formatter: (datum: number) => {
+          if (!datum || datum === undefined) return '';
+          return new Intl.NumberFormat('ru-RU', {
+            style: 'currency',
+            currency: 'KZT',
+            maximumFractionDigits: 0,
+          }).format(datum / 1000);
+        },
+        style: {
+          fill: '#000',
+          fontSize: 14,
+          fontWeight: 700,
+          stroke: '#fff',
+          strokeWidth: 3,
+          shadowColor: 'rgba(0,0,0,0.1)',
+          shadowBlur: 3,
+        },
+        position: 'top',
+        offsetY: -20,
+        layout: [{ type: 'interval-hide-overlap' }],
+      },
+      tooltip: {
+        formatter: (datum: any) => {
+          if (!['Аренда', 'Депозит'].includes(datum.type)) return null;
+          return {
+            name: datum.type,
+            value: new Intl.NumberFormat('ru-RU', {
+              style: 'currency',
+              currency: 'KZT',
+              maximumFractionDigits: 0,
+            }).format(datum.value),
+          };
+        },
+        domStyles: {
+          'g2-tooltip': {
+            background: '#fff',
+            borderRadius: '4px',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            padding: '8px 12px',
+          },
+          'g2-tooltip-title': {
+            fontWeight: 'bold',
+            marginBottom: '8px',
+          },
+          'g2-tooltip-list-item': {
+            fontSize: '12px',
+            color: '#333',
+          },
+        },
+        showTitle: true,
+        title: (title: string) => title,
+        showMarkers: true,
+        crosshairs: {
+          type: 'x',
+          line: {
+            style: {
+              stroke: '#000',
+              lineWidth: 2,
+              opacity: 0.5,
+            },
+          },
+        },
+      }
+    },
+    lineExpenses: {
+      data: ensureAllTypes(ExpensesTypes),
+      xField: 'month',
+      yField: 'value',
+      seriesField: 'type',
+      colorField: 'type',
+      legend: {
+        selected: {
+          'Аренда': true,
+          'Депозит': true,
+          'Депозит возврат': false,
+          'Расход': false,
+          'Комм. Алатау': false,
+          'Комм. Павленко': false,
+        },
+        marker: {
+          symbol: 'line',
+          style: {
+            fill: '#ff4d4f',
+            stroke: '#000',
+            lineWidth: 1,
             width: 20,
             height: 10,
             shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -194,6 +310,10 @@ export const IncomeReport: React.FC = () => {
     line: <Line {...chartConfig.line} />,
   };
 
+  const chartMap2: Record<string, React.JSX.Element> = {
+    line: <Line {...chartConfig.lineExpenses} />,
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
@@ -254,6 +374,9 @@ export const IncomeReport: React.FC = () => {
           }).format(totalSum)}
         </strong>
       </div>
+
+      {chartMap2[current]}
+
     </div>
   );
 };

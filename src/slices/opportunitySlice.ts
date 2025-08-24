@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Opportunity {
   id: string;
@@ -13,19 +13,16 @@ interface Opportunity {
   phone: string;
 }
 
-// Определяем интерфейс состояния
 interface OpportunityState {
   opportunity: Opportunity[];
 }
 
-// Начальное состояние
 const initialState: OpportunityState = {
   opportunity: [],
 };
 
-// Создаём slice
 export const opportunitySlice = createSlice({
-  name: "opportunity",
+  name: 'opportunity',
   initialState,
   reducers: {
     setOpportunity: (state, action: PayloadAction<Opportunity[]>) => {
@@ -34,6 +31,5 @@ export const opportunitySlice = createSlice({
   },
 });
 
-// Экспортируем actions и reducer
 export const { setOpportunity } = opportunitySlice.actions;
 export default opportunitySlice.reducer;

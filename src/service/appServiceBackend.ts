@@ -17,6 +17,7 @@ import {
 import { Product } from '../constants/dictionaries.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
 import { setExpense } from '../slices/expenseSlice.ts';
+import { setAccessGroup } from '../slices/accessGroupSlice.ts';
 
 export const API_URL = 'https://palvenko-production.up.railway.app';
 
@@ -31,6 +32,7 @@ export const endpoints = {
   EXPENSES: `${API_URL}/endpoints/expenses`,
   CONTACT: `${API_URL}/endpoints/contact`,
   UPDATE_OPTY: `${API_URL}/endpoints/update-opty`,
+  ACCESS_GROUP: `${API_URL}/endpoints/access-group`,
 };
 
 export const getSheetData = async (dispatch: AppDispatch) => {
@@ -219,6 +221,26 @@ export const getExpenseData = async (dispatch: AppDispatch) => {
     const expense = data.message?.expenses || [];
 
     dispatch(setExpense(expense));
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
+export const getAccessGroupData = async (
+  dispatch: AppDispatch,
+  login: string
+) => {
+  try {
+    const { data } = await axios.get(endpoints.ACCESS_GROUP, {
+      params: { login },
+    });
+    const accessGroup = data.message?.access_group || [];
+
+    dispatch(setAccessGroup(accessGroup));
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Ошибка запроса:', error.response?.status);
