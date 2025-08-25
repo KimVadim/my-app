@@ -10,6 +10,7 @@ import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ItemsReport } from '../constants/dictionaries.ts';
 import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
 import { PaymentProgreesBar } from './PaymentProgressBar.tsx';
+import { CapsuleTabs } from 'antd-mobile'
 
 const { Option } = Select;
 
@@ -144,48 +145,6 @@ export const IncomeReport: React.FC = () => {
         offsetY: -20,
         layout: [{ type: 'interval-hide-overlap' }],
       },
-      tooltip: {
-        formatter: (datum: any) => {
-          if (!['Аренда', 'Депозит'].includes(datum.type)) return null;
-          return {
-            name: datum.type,
-            value: new Intl.NumberFormat('ru-RU', {
-              style: 'currency',
-              currency: 'KZT',
-              maximumFractionDigits: 0,
-            }).format(datum.value),
-          };
-        },
-        domStyles: {
-          'g2-tooltip': {
-            background: '#fff',
-            borderRadius: '4px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            padding: '8px 12px',
-          },
-          'g2-tooltip-title': {
-            fontWeight: 'bold',
-            marginBottom: '8px',
-          },
-          'g2-tooltip-list-item': {
-            fontSize: '12px',
-            color: '#333',
-          },
-        },
-        showTitle: true,
-        title: (title: string) => title,
-        showMarkers: true,
-        crosshairs: {
-          type: 'x',
-          line: {
-            style: {
-              stroke: '#000',
-              lineWidth: 2,
-              opacity: 0.5,
-            },
-          },
-        },
-      }
     },
     lineExpenses: {
       data: ensureAllTypes(ExpensesTypes),
@@ -261,48 +220,6 @@ export const IncomeReport: React.FC = () => {
         offsetY: -20,
         layout: [{ type: 'interval-hide-overlap' }],
       },
-      tooltip: {
-        formatter: (datum: any) => {
-          if (!['Аренда', 'Депозит'].includes(datum.type)) return null;
-          return {
-            name: datum.type,
-            value: new Intl.NumberFormat('ru-RU', {
-              style: 'currency',
-              currency: 'KZT',
-              maximumFractionDigits: 0,
-            }).format(datum.value),
-          };
-        },
-        domStyles: {
-          'g2-tooltip': {
-            background: '#fff',
-            borderRadius: '4px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            padding: '8px 12px',
-          },
-          'g2-tooltip-title': {
-            fontWeight: 'bold',
-            marginBottom: '8px',
-          },
-          'g2-tooltip-list-item': {
-            fontSize: '12px',
-            color: '#333',
-          },
-        },
-        showTitle: true,
-        title: (title: string) => title,
-        showMarkers: true,
-        crosshairs: {
-          type: 'x',
-          line: {
-            style: {
-              stroke: '#000',
-              lineWidth: 2,
-              opacity: 0.5,
-            },
-          },
-        },
-      }
     },
   };
 
@@ -363,19 +280,23 @@ export const IncomeReport: React.FC = () => {
         </Select>
       </div>
 
-      {chartMap[current]}
-
-      <div style={{ marginTop: 16 }}>
-        <strong>
-          Итого:{' '}
-          {new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'KZT',
-          }).format(totalSum)}
-        </strong>
-      </div>
-
-      {chartMap2[current]}
+      <CapsuleTabs>
+        <CapsuleTabs.Tab title='Доходы' key='fruits'>
+          {chartMap[current]}
+          <div style={{ marginTop: 16 }}>
+            <strong>
+              Итого:{' '}
+              {new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(totalSum)}
+            </strong>
+          </div>
+        </CapsuleTabs.Tab>
+        <CapsuleTabs.Tab title='Расходы' key='vegetables'>
+          {chartMap2[current]}
+        </CapsuleTabs.Tab>
+      </CapsuleTabs>
 
     </div>
   );
