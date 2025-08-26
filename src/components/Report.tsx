@@ -99,6 +99,7 @@ export const IncomeReport: React.FC = () => {
   const paymentSum = useMemo(() => filteredData.filter((x) => x.type === 'Аренда').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const depositSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const depositReturnSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит возврат').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const expensesSum = useMemo(() => filteredData.filter((x) => x.type === 'Расход').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const chartConfig: Record<string, any> = {
     line: {
       data: ensureAllTypes(PaymentTypes),
@@ -283,6 +284,13 @@ export const IncomeReport: React.FC = () => {
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Расходы' key='vegetables'>
           {chartMap2[current]}
+          <div style={{ marginTop: '16px' }}>
+            <Text type="danger">{`Расходы: ${new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(expensesSum)}`}
+            </Text>
+          </div>
         </CapsuleTabs.Tab>
       </CapsuleTabs>
     </div>
