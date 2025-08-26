@@ -285,7 +285,6 @@ export const IncomeReport: React.FC = () => {
           {chartMap2[current]}
         </CapsuleTabs.Tab>
       </CapsuleTabs>
-
     </div>
   );
 };
