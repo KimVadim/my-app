@@ -34,7 +34,7 @@ export const menuItems: MenuItem[] = [
         type: 'group',
         label: 'Отчеты',
         children: [
-          { label: 'Доходы', key: '/incomereport' },
+          { label: 'Отчеты', key: '/incomereport' },
         ],
       },
     ],

@@ -112,7 +112,7 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
       </Row>
       <Row style={{marginTop: '7px'}}>
         <Text type="success">{`${record?.[PaymentsFieldData.PaymentType]}`}</Text>
-        <Text type="secondary">{` - ${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
+        <Text type="secondary" style={{marginLeft: '7px'}}>{`${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
       </Row>
 
     </>

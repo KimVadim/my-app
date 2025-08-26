@@ -1,18 +1,46 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Menu, Row, Select } from 'antd';
+import { Col, Menu, Row, Select, Typography } from 'antd';
 import type { MenuProps } from 'antd';
 import { Line } from '@ant-design/charts';
 import { useNavigate } from 'react-router-dom';
-import { menuItems } from './Opportunity.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
-import { ItemsReport } from '../constants/dictionaries.ts';
 import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
 import { PaymentProgreesBar } from './PaymentProgressBar.tsx';
 import { CapsuleTabs } from 'antd-mobile'
+import { SettingOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
+type MenuItem = Required<MenuProps>['items'][number];
+const menuItems: MenuItem[] = [
+  {
+    label: 'Меню',
+    key: 'SubMenu',
+    icon: <SettingOutlined />,
+    children: [
+      {
+        type: 'group',
+        label: 'Основные',
+        children: [
+          { label: 'Договора', key: '/opportunities' },
+          { label: 'Платежи', key: '/payments' },
+          { label: 'Контакты', key: '/contacts' },
+          { label: 'Расходы', key: '/expenses' },
+        ],
+      },
+      {
+        type: 'group',
+        label: 'Отчеты',
+        children: [
+          { label: 'Отчеты', key: '/incomereport', disabled: true, },
+        ],
+      },
+    ],
+  },
+];
+
+const { Text } = Typography;
 
 export const IncomeReport: React.FC = () => {
   const navigate = useNavigate();
@@ -68,8 +96,9 @@ export const IncomeReport: React.FC = () => {
     setCurrent(e.key);
     if (e.key) navigate(e.key);
   };
-  const totalSum = useMemo(() => filteredData.reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  //const completedData = ensureAllTypes();
+  const paymentSum = useMemo(() => filteredData.filter((x) => x.type === 'Аренда').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const depositSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const depositReturnSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит возврат').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const chartConfig: Record<string, any> = {
     line: {
       data: ensureAllTypes(PaymentTypes),
@@ -77,28 +106,7 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
-      legend: {
-        selected: {
-          'Аренда': true,
-          'Депозит': true,
-          'Депозит возврат': false,
-          'Расход': false,
-          'Комм. Алатау': false,
-          'Комм. Павленко': false,
-        },
-        marker: {
-          symbol: 'line',
-          style: {
-            fill: '#ff4d4f',
-            stroke: '#000',
-            lineWidth: 1,
-            width: 20,
-            height: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.2)',
-            shadowBlur: 4,
-          },
-        }
-      },
+      tooltip: false,
       xAxis: {
         label: {
           rotate: -45,
@@ -152,28 +160,7 @@ export const IncomeReport: React.FC = () => {
       yField: 'value',
       seriesField: 'type',
       colorField: 'type',
-      legend: {
-        selected: {
-          'Аренда': true,
-          'Депозит': true,
-          'Депозит возврат': false,
-          'Расход': false,
-          'Комм. Алатау': false,
-          'Комм. Павленко': false,
-        },
-        marker: {
-          symbol: 'line',
-          style: {
-            fill: '#ff4d4f',
-            stroke: '#000',
-            lineWidth: 1,
-            width: 20,
-            height: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.2)',
-            shadowBlur: 4,
-          },
-        }
-      },
+      tooltip: false,
       xAxis: {
         label: {
           rotate: -45,
@@ -254,14 +241,7 @@ export const IncomeReport: React.FC = () => {
           />
         </Col>
       </Row>
-      <Menu
-        onClick={(e) => setCurrent(e.key)}
-        selectedKeys={[current]}
-        mode="horizontal"
-        items={ItemsReport}
-        style={{ marginBottom: 16 }}
-      />
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ marginBottom: '7px', marginTop: '10px' }}>
         <Select
           placeholder="Фильтр по месяцу"
           style={{ width: 200 }}
@@ -283,14 +263,22 @@ export const IncomeReport: React.FC = () => {
       <CapsuleTabs>
         <CapsuleTabs.Tab title='Доходы' key='fruits'>
           {chartMap[current]}
-          <div style={{ marginTop: 16 }}>
-            <strong>
-              Итого:{' '}
-              {new Intl.NumberFormat('ru-RU', {
+          <div style={{ marginTop: '16px' }}>
+            <Text type="success">{`Доходы: ${new Intl.NumberFormat('ru-RU', {
                 style: 'currency',
                 currency: 'KZT',
-              }).format(totalSum)}
-            </strong>
+              }).format(paymentSum)}`}
+            </Text>
+            <br/><Text type="warning">{`Депозит: ${new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(depositSum)}`}
+            </Text>
+            <br/><Text type="danger">{`Депозит возврат: ${new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(depositReturnSum)}`}
+            </Text>
           </div>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Расходы' key='vegetables'>
