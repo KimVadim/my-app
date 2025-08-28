@@ -33,7 +33,7 @@ const menuItems: MenuItem[] = [
         type: 'group',
         label: 'Отчеты',
         children: [
-          { label: 'Отчеты', key: '/incomereport', disabled: true, },
+          { label: 'Отчеты', key: '/incomereport', disabled: true },
         ],
       },
     ],
@@ -100,6 +100,9 @@ export const IncomeReport: React.FC = () => {
   const depositSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const depositReturnSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит возврат').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
   const expensesSum = useMemo(() => filteredData.filter((x) => x.type === 'Расход').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const serviceAlatauSum = useMemo(() => filteredData.filter((x) => x.type === 'Комм. Алатау').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+  const servicePavlenkoSum = useMemo(() => filteredData.filter((x) => x.type === 'Комм. Павленко').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
+
   const chartConfig: Record<string, any> = {
     line: {
       data: ensureAllTypes(PaymentTypes),
@@ -289,6 +292,16 @@ export const IncomeReport: React.FC = () => {
                 style: 'currency',
                 currency: 'KZT',
               }).format(expensesSum)}`}
+            </Text>
+            <br/><Text type="warning">{`Комм. Алатау: ${new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(serviceAlatauSum)}`}
+            </Text>
+            <br/><Text type="warning">{`Комм. Павленко: ${new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'KZT',
+              }).format(servicePavlenkoSum)}`}
             </Text>
           </div>
         </CapsuleTabs.Tab>

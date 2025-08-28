@@ -104,17 +104,28 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
   const { Text } = Typography;
   return (
     <>
-      <Row>
+      <Row wrap={false}>
         <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
         <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
-        <Tag color="red">{Number(record?.[PaymentsFieldData.Amount])?.toLocaleString("ru-RU")}</Tag>
-      </Row>
-      <Row style={{marginTop: '7px'}}>
-        <Text type="success">{`${record?.[PaymentsFieldData.PaymentType]}`}</Text>
-        <Text type="secondary" style={{marginLeft: '7px'}}>{`${filteredOpty?.[0]?.[OpportunityFieldData.FullName].slice(0, 100)}`}</Text>
-      </Row>
+        <Tag color="red">{(Number(record?.[PaymentsFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
+        <Text type="secondary">
+          {(() => {
+            const fullName = filteredOpty?.[0]?.[OpportunityFieldData.FullName];
+            if (!fullName) return '';
 
+            const trimmed = fullName.trim();
+            const spaceIndex = trimmed.indexOf(' ');
+
+            if (spaceIndex === -1) return trimmed;
+
+            const firstName = trimmed.substring(0, spaceIndex);
+            const lastNameFirstChar = trimmed.substring(spaceIndex + 1, spaceIndex + 2);
+
+            return `${firstName} ${lastNameFirstChar}`;
+          })()}
+        </Text>
+      </Row>
     </>
   );
 };

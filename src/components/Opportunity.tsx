@@ -1,4 +1,4 @@
-import { Button, Spin, Table, Menu, Row, Col, Input, MenuProps } from "antd";
+import { Button, Spin, Table, Row, Col, Input } from "antd";
 import React, { useEffect, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,47 +7,15 @@ import { getSheetData } from "../service/appServiceBackend.ts";
 import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import '../App.css';
-import { useNavigate } from "react-router-dom";
 import { Toast } from "antd-mobile";
-import { SettingOutlined } from '@ant-design/icons';
 import { PaymentProgreesBar } from "./PaymentProgressBar.tsx";
-
-type MenuItem = Required<MenuProps>['items'][number];
-
-export const menuItems: MenuItem[] = [
-  {
-    label: 'Меню',
-    key: 'SubMenu',
-    icon: <SettingOutlined />,
-    children: [
-      {
-        type: 'group',
-        label: 'Основные',
-        children: [
-          { label: 'Договора', key: '/opportunities' },
-          { label: 'Платежи', key: '/payments' },
-          { label: 'Контакты', key: '/contacts' },
-          { label: 'Расходы', key: '/expenses' },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Отчеты',
-        children: [
-          { label: 'Отчеты', key: '/incomereport' },
-        ],
-      },
-    ],
-  },
-];
+import { MenuComp } from "./Menu.tsx";
 
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalPayment, setIsModalPayment] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
-  const [current, setCurrent] = useState('mail');
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -72,12 +40,6 @@ export const Opportunity: React.FC = () => {
     }
   }, [searchText, optyData]);
 
-  const onClickMenu: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
-    if (e.key) {
-      navigate(e.key)
-    }
-  };
   const actions ={
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
@@ -97,12 +59,7 @@ export const Opportunity: React.FC = () => {
           title={() => <>
             <Row align="middle" gutter={15}>
               <Col flex="auto" style={{ maxWidth: '111px' }}>
-                <Menu
-                  onClick={onClickMenu}
-                  selectedKeys={[current]}
-                  mode="horizontal"
-                  items={menuItems}
-                />
+                <MenuComp/>
               </Col>
               <Col>
                 <strong>{ModalTitle.AllOpportunity}</strong>

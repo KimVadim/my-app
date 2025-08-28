@@ -1,7 +1,5 @@
-import { Col, Menu, MenuProps, Row, Spin, Table, Tag, Input } from "antd";
+import { Col, Row, Spin, Table, Tag, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
-import { menuItems } from "./Opportunity.tsx";
-import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
@@ -9,11 +7,10 @@ import { expenseMeta } from "./AllApplicationMeta.tsx";
 import { ExpenseFieldData, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddExpenseModal } from "./AddExpenseModal.tsx";
+import { MenuComp } from "./Menu.tsx";
 
 export const Expenses: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [current, setCurrent] = useState("line");
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,11 +48,6 @@ export const Expenses: React.FC = () => {
     }
   }, [searchText, expenseData]);
 
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
-
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
@@ -67,12 +59,7 @@ export const Expenses: React.FC = () => {
       <Spin spinning={loading}>
         <Row align="middle" gutter={15} style={{ marginBottom: 16 }}>
           <Col flex="auto" style={{ maxWidth: "111px" }}>
-            <Menu
-              onClick={onClick}
-              selectedKeys={[current]}
-              mode="horizontal"
-              items={menuItems}
-            />
+            <MenuComp/>
           </Col>
           <Col>
             <strong>{ModalTitle.Expenses}</strong>

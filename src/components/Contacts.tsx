@@ -1,17 +1,14 @@
-import { Col, Menu, MenuProps, Row, Spin, Table, Input } from "antd";
+import { Col, Row, Spin, Table, Input } from "antd";
 import React, { useEffect, useState } from "react";
-import { menuItems } from "./Opportunity.tsx";
-import { useNavigate } from "react-router-dom";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { contactMeta } from "./AllApplicationMeta.tsx";
 import { ContactFieldData, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddContactModal } from "./AddContactModal.tsx";
+import { MenuComp } from "./Menu.tsx";
 
 export const Contacts: React.FC = () => {
-  const navigate = useNavigate();
-  const [current, setCurrent] = useState("line");
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>([]);
@@ -33,11 +30,6 @@ export const Contacts: React.FC = () => {
     }
   }, [searchText, contactAllData]);
 
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
-
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
@@ -49,12 +41,7 @@ export const Contacts: React.FC = () => {
       <Spin spinning={loading}>
         <Row align="middle" gutter={15} style={{ marginBottom: 16 }}>
           <Col flex="auto" style={{ maxWidth: "111px" }}>
-            <Menu
-              onClick={onClick}
-              selectedKeys={[current]}
-              mode="horizontal"
-              items={menuItems}
-            />
+            <MenuComp/>
           </Col>
           <Col>
             <strong>{ModalTitle.Contacts}</strong>

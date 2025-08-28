@@ -1,20 +1,17 @@
-import { Col, Menu, MenuProps, Row, Select, Spin, Table } from "antd";
+import { Col, Row, Select, Spin, Table } from "antd";
 import React, { useState } from "react";
-import { menuItems } from "./Opportunity.tsx";
-import { useNavigate } from "react-router-dom";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { paymentsMeta } from "./AllApplicationMeta.tsx";
 import { ModalTitle, PaymentsFieldData } from "../constants/appConstant.ts";
 import { PaymentProgreesBar } from "./PaymentProgressBar.tsx";
+import { MenuComp } from "./Menu.tsx";
 
 const { Option } = Select;
 
 export const Payments: React.FC = () => {
-  const navigate = useNavigate();
   const date = new Date();
   const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const [current, setCurrent] = useState("line");
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(month);
   const [isModalPayment, setIsModalPayment] = useState(false);
@@ -29,11 +26,6 @@ export const Payments: React.FC = () => {
       }).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
     )
   );
-
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
 
   const filteredData = selectedMonth
   ? paymentsData.filter((item) => {
@@ -50,12 +42,7 @@ export const Payments: React.FC = () => {
       <Spin spinning={loading}>
         <Row align="middle" gutter={15} >
           <Col flex="auto" style={{ maxWidth: "111px" }}>
-            <Menu
-              onClick={onClick}
-              selectedKeys={[current]}
-              mode="horizontal"
-              items={menuItems}
-            />
+            <MenuComp/>
           </Col>
           <Col>
             <strong>{ModalTitle.Payments}</strong>

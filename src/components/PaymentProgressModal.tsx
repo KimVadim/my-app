@@ -53,7 +53,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     return (
                         <Badge count={counts?.[apartNum] > 1 ? counts[apartNum] : null} size="small" offset={[-10, 0]}>
                             <Tag
-                                color={hasPayment ? "green" : "default"}
+                                color={hasPayment ? "green" : "rgba(188, 179, 178, 1)"}
                                 key={`${floorNumber}-${index}`}
                             >
                                 {apartNum}

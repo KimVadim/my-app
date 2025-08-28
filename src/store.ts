@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/userSlice.ts'; // Подключаем наш reducer
+import userReducer from './slices/userSlice.ts';
 import opportunityReducer from './slices/opportunitySlice.ts';
 import quoteReducer from './slices/quoteSlice.ts';
 import contactReducer from './slices/contactSlice.ts';

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
-  login: String;
+  login: string | null;
 }
 
 const initialState: UserState = {
-  login: '',
+  login: localStorage.getItem('login'),
 };
 
 export const userSlice = createSlice({
