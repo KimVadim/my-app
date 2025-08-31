@@ -63,12 +63,13 @@ export const IncomeReport: React.FC = () => {
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
   const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
   const getLastSixMonths = () =>
-    [...Array(6)].map((_, i) => {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    });
+  [...Array(6)].map((_, i) => {
+    const date = new Date();
+    date.setDate(1);
+    date.setMonth(date.getMonth() - i);
 
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  });
   const filteredData = useMemo(() => {
     if (selectedMonth === 'last6months') {
       const lastSixMonths = getLastSixMonths();
@@ -266,44 +267,49 @@ export const IncomeReport: React.FC = () => {
 
       <CapsuleTabs>
         <CapsuleTabs.Tab title='Доходы' key='fruits'>
-          {chartMap[current]}
-          <div style={{ marginTop: '16px' }}>
-            <Text type="success">{`Доходы: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(paymentSum)}`}
-            </Text>
-            <br/><Text type="warning">{`Депозит: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(depositSum)}`}
-            </Text>
-            <br/><Text type="danger">{`Депозит возврат: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(depositReturnSum)}`}
-            </Text>
+          <div style={{ width: '100%' }}>
+            {chartMap[current]}
+            <div style={{ marginTop: '16px' }}>
+              <Text type="success">{`Доходы: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(paymentSum)}`}
+              </Text>
+              <br/><Text type="warning">{`Депозит: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(depositSum)}`}
+              </Text>
+              <br/><Text type="danger">{`Депозит возврат: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(depositReturnSum)}`}
+              </Text>
+            </div>
           </div>
         </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='Расходы' key='vegetables'>
-          {chartMap2[current]}
-          <div style={{ marginTop: '16px' }}>
-            <Text type="danger">{`Расходы: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(expensesSum)}`}
-            </Text>
-            <br/><Text type="warning">{`Комм. Алатау: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(serviceAlatauSum)}`}
-            </Text>
-            <br/><Text type="warning">{`Комм. Павленко: ${new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'KZT',
-              }).format(servicePavlenkoSum)}`}
-            </Text>
+        <CapsuleTabs.Tab title='Расходы' key='vegetables' >
+          <div style={{ width: '100%' }}>
+            {chartMap2[current]}
+            <div style={{ marginTop: '16px'}}>
+              <Text type="danger">{`Расходы: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(expensesSum)}`}
+              </Text>
+              <br/><Text type="warning">{`Комм. Алатау: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(serviceAlatauSum)}`}
+              </Text>
+              <br/><Text type="warning">{`Комм. Павленко: ${new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'KZT',
+                }).format(servicePavlenkoSum)}`}
+              </Text>
+            </div>
           </div>
+
         </CapsuleTabs.Tab>
       </CapsuleTabs>
     </div>
