@@ -1,27 +1,27 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface MonthPayment {
-    month: String;
-    type: String;
-    value: Number;
+  month: string;
+  type: string;
+  value: number;
 }
 
 interface MonthPaymentState {
-    monthPayments: MonthPayment[]
+  monthPayments: MonthPayment[];
 }
 
 const initialState: MonthPaymentState = {
-    monthPayments: []
-}
+  monthPayments: [],
+};
 
 export const monthPaymentsSlice = createSlice({
-    name: "monthPayments",
-    initialState,
-    reducers: {
-        setMonthPayments: (state, action: PayloadAction<MonthPayment[]>) => {
-            state.monthPayments = action.payload;
-        },
+  name: 'monthPayments',
+  initialState,
+  reducers: {
+    setMonthPayments: (state, action: PayloadAction<MonthPayment[]>) => {
+      state.monthPayments = action.payload;
     },
+  },
 });
 
 export const { setMonthPayments } = monthPaymentsSlice.actions;

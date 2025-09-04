@@ -25,8 +25,8 @@ export const PaymentProgreesBar: React.FC<PaymentProgreesBarProps> = ({
         return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item['Product']);
     }) || [];
     const currentMonthPaymentsCount = currentMonthPayments.length;
-      const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
-      const optyAllCount = optyData.length;
+    const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
+    const optyAllCount = optyData.length;
 
     return (
         <Col flex="auto">

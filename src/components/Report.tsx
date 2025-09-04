@@ -62,8 +62,8 @@ export const IncomeReport: React.FC = () => {
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
   const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
-  const getLastSixMonths = () =>
-  [...Array(6)].map((_, i) => {
+  const getLastSixMonths = (countMonth: number) =>
+  [...Array(countMonth)].map((_, i) => {
     const date = new Date();
     date.setDate(1);
     date.setMonth(date.getMonth() - i);
@@ -72,7 +72,10 @@ export const IncomeReport: React.FC = () => {
   });
   const filteredData = useMemo(() => {
     if (selectedMonth === 'last6months') {
-      const lastSixMonths = getLastSixMonths();
+      const lastSixMonths = getLastSixMonths(6);
+      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
+    } else if (selectedMonth === 'last3months') {
+      const lastSixMonths = getLastSixMonths(3);
       return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
     } else if (selectedMonth) {
       return memoizedMonthPaymentData.filter((item) => item.month === selectedMonth);
@@ -97,132 +100,73 @@ export const IncomeReport: React.FC = () => {
     setCurrent(e.key);
     if (e.key) navigate(e.key);
   };
-  const paymentSum = useMemo(() => filteredData.filter((x) => x.type === 'Аренда').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const depositSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const depositReturnSum = useMemo(() => filteredData.filter((x) => x.type === 'Депозит возврат').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const expensesSum = useMemo(() => filteredData.filter((x) => x.type === 'Расход').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const serviceAlatauSum = useMemo(() => filteredData.filter((x) => x.type === 'Комм. Алатау').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
-  const servicePavlenkoSum = useMemo(() => filteredData.filter((x) => x.type === 'Комм. Павленко').reduce((sum, item) => sum + Number(item.value), 0), [filteredData]);
 
-  const chartConfig: Record<string, any> = {
-    line: {
-      data: ensureAllTypes(PaymentTypes),
-      xField: 'month',
-      yField: 'value',
-      seriesField: 'type',
-      colorField: 'type',
-      tooltip: false,
-      xAxis: {
-        label: {
-          rotate: -45,
-          offset: 10,
-        },
-      },
-      yAxis: {
-        label: {
-          formatter: (value) => `${(value / 1000).toFixed(0)} KZT`,
-        },
-      },
-      point: {
-        size: 10,
-        shape: 'circle',
-        style: ({ type }) => ({
-          stroke: '#fff',
-          lineWidth: 20,
-          fillOpacity: 1,
-          shadowBlur: 6,
-          shadowColor: 'rgba(0,0,0,0.2)',
-          ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
-          ...(type === 'Депозит' && { fill: 'green', size: 12 })
-        }),
-      },
-      label: {
-        formatter: (datum: number) => {
-          if (!datum || datum === undefined) return '';
-          return new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'KZT',
-            maximumFractionDigits: 0,
-          }).format(datum / 1000);
-        },
-        style: {
-          fill: '#000',
-          fontSize: 14,
-          fontWeight: 700,
-          stroke: '#fff',
-          strokeWidth: 3,
-          shadowColor: 'rgba(0,0,0,0.1)',
-          shadowBlur: 3,
-        },
-        position: 'top',
-        offsetY: -20,
-        layout: [{ type: 'interval-hide-overlap' }],
-      },
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'KZT',
+      maximumFractionDigits: 0,
+    }).format(value);
+
+  const calcSum = (data, type: string) => data.filter((x) => x.type === type).reduce((sum, item) => sum + Number(item.value), 0);
+
+  const sums = useMemo(() => ({
+    payment: calcSum(filteredData, 'Аренда'),
+    deposit: calcSum(filteredData, 'Депозит'),
+    depositReturn: calcSum(filteredData, 'Депозит возврат'),
+    expenses: calcSum(filteredData, 'Расход'),
+    serviceAlatau: calcSum(filteredData, 'Комм. Алатау'),
+    servicePavlenko: calcSum(filteredData, 'Комм. Павленко'),
+  }), [filteredData])
+
+
+  const createChartConfig = (data, types) => ({
+    data: ensureAllTypes(types),
+    xField: 'month',
+    yField: 'value',
+    seriesField: 'type',
+    colorField: 'type',
+    tooltip: false,
+    xAxis: { label: { rotate: -45, offset: 10 } },
+    yAxis: { label: { formatter: (value) => `${(value / 1000).toFixed(0)} KZT` } },
+    point: {
+      size: 10,
+      shape: 'circle',
+      style: ({ type }) => ({
+        stroke: '#fff',
+        lineWidth: 20,
+        fillOpacity: 1,
+        shadowBlur: 6,
+        shadowColor: 'rgba(0,0,0,0.2)',
+        ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
+        ...(type === 'Депозит' && { fill: 'green', size: 12 }),
+      }),
     },
-    lineExpenses: {
-      data: ensureAllTypes(ExpensesTypes),
-      xField: 'month',
-      yField: 'value',
-      seriesField: 'type',
-      colorField: 'type',
-      tooltip: false,
-      xAxis: {
-        label: {
-          rotate: -45,
-          offset: 10,
-        },
+    label: {
+      formatter: (datum: number) => (datum ? formatCurrency(datum / 1000) : ''),
+      style: {
+        fill: '#000',
+        fontSize: 14,
+        fontWeight: 700,
+        stroke: '#fff',
+        strokeWidth: 3,
+        shadowColor: 'rgba(0,0,0,0.1)',
+        shadowBlur: 3,
       },
-      yAxis: {
-        label: {
-          formatter: (value) => `${(value / 1000).toFixed(0)} KZT`,
-        },
-      },
-      point: {
-        size: 10,
-        shape: 'circle',
-        style: ({ type }) => ({
-          stroke: '#fff',
-          lineWidth: 20,
-          fillOpacity: 1,
-          shadowBlur: 6,
-          shadowColor: 'rgba(0,0,0,0.2)',
-          ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
-          ...(type === 'Депозит' && { fill: 'green', size: 12 })
-        }),
-      },
-      label: {
-        formatter: (datum: number) => {
-          if (!datum || datum === undefined) return '';
-          return new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'KZT',
-            maximumFractionDigits: 0,
-          }).format(datum / 1000);
-        },
-        style: {
-          fill: '#000',
-          fontSize: 14,
-          fontWeight: 700,
-          stroke: '#fff',
-          strokeWidth: 3,
-          shadowColor: 'rgba(0,0,0,0.1)',
-          shadowBlur: 3,
-        },
-        position: 'top',
-        offsetY: -20,
-        layout: [{ type: 'interval-hide-overlap' }],
-      },
+      position: 'top',
+      offsetY: -20,
+      layout: [{ type: 'interval-hide-overlap' }],
     },
+  });
+
+  const chartConfig = {
+    income: createChartConfig(filteredData, PaymentTypes),
+    expenses: createChartConfig(filteredData, ExpensesTypes),
   };
 
-  const chartMap: Record<string, React.JSX.Element> = {
-    line: <Line {...chartConfig.line} />,
-  };
-
-  const chartMap2: Record<string, React.JSX.Element> = {
-    line: <Line {...chartConfig.lineExpenses} />,
-  };
-
+  const SummaryRow: React.FC<{ label: string; value: number; type?: "success" | "warning" | "danger" }> = ({ label, value, type }) => (
+    <Text type={type}>{`${label}: ${formatCurrency(value)}`}</Text>
+  );
   return (
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
@@ -257,6 +201,9 @@ export const IncomeReport: React.FC = () => {
           <Option key="last6months" value="last6months">
             Последние 6 мес.
           </Option>
+          <Option key="last3months" value="last3months">
+            Последние 3 мес.
+          </Option>
           {months.map((month) => (
             <Option key={String(month)} value={String(month)}>
               {month}
@@ -268,45 +215,25 @@ export const IncomeReport: React.FC = () => {
       <CapsuleTabs>
         <CapsuleTabs.Tab title='Доходы' key='fruits'>
           <div style={{ width: '100%' }}>
-            {chartMap[current]}
+            <Line {...chartConfig.income} />
             <div style={{ marginTop: '16px' }}>
-              <Text type="success">{`Доходы: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(paymentSum)}`}
-              </Text>
-              <br/><Text type="warning">{`Депозит: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(depositSum)}`}
-              </Text>
-              <br/><Text type="danger">{`Депозит возврат: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(depositReturnSum)}`}
-              </Text>
+              <SummaryRow label="Доходы" value={sums.payment} type="success" />
+              <br/>
+              <SummaryRow label="Депозиты" value={sums.deposit} type="warning" />
+              <br/>
+              <SummaryRow label="Депозит возврат" value={sums.depositReturn} type="danger" />
             </div>
           </div>
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Расходы' key='vegetables' >
           <div style={{ width: '100%' }}>
-            {chartMap2[current]}
+            <Line {...chartConfig.expenses} />
             <div style={{ marginTop: '16px'}}>
-              <Text type="danger">{`Расходы: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(expensesSum)}`}
-              </Text>
-              <br/><Text type="warning">{`Комм. Алатау: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(serviceAlatauSum)}`}
-              </Text>
-              <br/><Text type="warning">{`Комм. Павленко: ${new Intl.NumberFormat('ru-RU', {
-                  style: 'currency',
-                  currency: 'KZT',
-                }).format(servicePavlenkoSum)}`}
-              </Text>
+              <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
+              <br/>
+              <SummaryRow label="Комм. Алатау" value={sums.serviceAlatau} type="warning" />
+              <br/>
+              <SummaryRow label="Комм. Павленко" value={sums.servicePavlenko} type="warning" />
             </div>
           </div>
 

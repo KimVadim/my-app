@@ -1,5 +1,5 @@
 import { Button, Spin, Table, Row, Col, Input } from "antd";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
@@ -17,27 +17,24 @@ export const Opportunity: React.FC = () => {
   const [isModalPayment, setIsModalPayment] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const isCalledRef = useRef(false);
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
 
   useEffect(() => {
     if (!isCalledRef.current) {
-      getSheetData(dispatch);
+      setLoading(true);
+      getSheetData(dispatch).finally(() => setLoading(false));
       isCalledRef.current = true;
     }
   }, [dispatch]);
-  useEffect(() => {
-    if (searchText) {
-      const filtered = optyData.filter((item) =>
-        item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) |
-        item[OpportunityFieldData.FullName]?.toString().toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(optyData);
-    }
+
+  const filteredData = useMemo(() => {
+    if (!searchText) return optyData;
+    return optyData.filter(item =>
+      item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+      item[OpportunityFieldData.FullName]?.toString().toLowerCase().includes(searchText.toLowerCase())
+    );
   }, [searchText, optyData]);
 
   const actions ={

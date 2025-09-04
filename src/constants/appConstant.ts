@@ -51,9 +51,9 @@ export const FieldRules = {
   ClientName: { pattern: /^[A-Za-zА-Яа-яЁё]+$/, message: 'Только буквы!' },
   ExpenseAmount: {
     type: 'number',
-    min: -300000,
-    max: 300000,
-    message: 'Введите сумму от -300000 до 300000',
+    min: 0,
+    max: 5000000,
+    message: 'Введите сумму от 0 до 5000000',
   },
   PaymentAmount: {
     type: 'number',
