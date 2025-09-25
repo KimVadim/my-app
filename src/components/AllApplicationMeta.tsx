@@ -51,15 +51,21 @@ export const expenseMeta = [{
       {apartNum && <Tag color={"red"}>{apartNum}</Tag>}
     </>
   },
-  width: 220,
+  width: 260,
 }, {
     title: ExpenseField.AmountLabel,
     dataIndex: ExpenseFieldData.Sum,
     key: ExpenseField.Amount,
     width: 90,
-      render: (status: String, record: any) => {
-      return <Tag color="red">{Number(record?.[ExpenseFieldData.Sum])?.toLocaleString("ru-RU")}</Tag>
+      render: (status: string, record: any) => {
+      const rawSum = Number(record?.[ExpenseFieldData.Sum]) || 0
+      const expenseSum = rawSum.toLocaleString("ru-RU")
 
+      return (
+        <Tag color={rawSum > 0 ? "green" : "red"}>
+          {expenseSum}
+        </Tag>
+      )
     },
   }, Table.EXPAND_COLUMN];
 
@@ -108,7 +114,7 @@ const PaymentCell = ({ status, record }: { status: string; record: any }) => {
         <Tag color="#2db7f5">{filteredOpty?.[0]?.[OpportunityFieldData.ApartNum] || "N/A"}</Tag>
         <Tag color="blue">{date.toLocaleDateString("ru-RU")}</Tag>
         <Tag color="green">{productMap[record?.[PaymentsFieldData.Product] as keyof typeof productMap]}</Tag>
-        <Tag color="red">{(Number(record?.[PaymentsFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
+        <Tag color="red">{Math.floor(Number(record?.[PaymentsFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
         <Text type="secondary">
           {(() => {
             const fullName = filteredOpty?.[0]?.[OpportunityFieldData.FullName];

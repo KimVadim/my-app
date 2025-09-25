@@ -31,9 +31,15 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     const actions = {
       handleSearch: (value: string) => {
         if (!optyData) return;
-
+        const selectedProduct = form.getFieldValue(PaymentField.Product);
         const filteredOptions = optyData
-          .filter(item => item[OpportunityFieldData.Stage] === Stage.Signed)
+          .filter(item => {
+            if ([Product.Return].includes(selectedProduct)) {
+              return true;
+            }
+            // иначе — только Signed
+            return item[OpportunityFieldData.Stage] === Stage.Signed;
+          })
           .filter(item =>
             item[OpportunityFieldData.FullName].toLowerCase().includes(value.toLowerCase()) ||
             item[OpportunityFieldData.ApartNum].toLowerCase().includes(value.toLowerCase())
@@ -62,7 +68,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         });
       },
     }
-    //console.log(form.getFieldsValue('ApartNum'))
     return (
       <Modal
         title={ModalTitle.AddPayment}
