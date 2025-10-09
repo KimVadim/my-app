@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../store.ts";
 import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
-import { ExpenseFieldData, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
+import { ExpenseFieldData, ExpenseType, FieldPlaceholder, ModalTitle, OpportunityType } from "../constants/appConstant.ts";
 import { AddFloatButton } from "./AddFloatButton.tsx";
 import { AddExpenseModal } from "./AddExpenseModal.tsx";
 import { MenuComp } from "./Menu.tsx";
@@ -14,8 +14,8 @@ export const Expenses: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const expenseData = useSelector((state: RootState) => state.expense.expense);
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
+  const expenseData = useSelector((state: RootState) => state.expense.expense) as unknown as ExpenseType[];
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
   const [isAddExpense, setIsAddExpense] = useState(false);
   const isCalledRef = useRef(false);
 
@@ -38,8 +38,8 @@ export const Expenses: React.FC = () => {
   }, [dispatch, optyData]);
   useEffect(() => {
     if (searchText) {
-      const filtered = expenseData.filter((item) =>
-        item[ExpenseFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) |
+      const filtered = expenseData.filter((item: ExpenseType) =>
+        item[ExpenseFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
         item[ExpenseFieldData.Comment]?.toString().toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredData(filtered);

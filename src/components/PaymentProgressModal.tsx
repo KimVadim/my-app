@@ -3,7 +3,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { Card, Popup, ProgressCircle, Space } from "antd-mobile";
-import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
+import { ModalTitle, OpportunityFieldData, OpportunityType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { MODAL_TEXT } from "../constants/dictionaries.ts";
 
 interface PaymentProgreesProps {
@@ -23,10 +23,11 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
     optyActiveCount,
     optyAllCount,
 }) => {
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity).filter((x)=> x['Stage'] === 'Заключили');
+    const optyData = useSelector((state: RootState) => state.opportunity.opportunity as unknown as OpportunityType[])
+        .filter((x)=> x['Stage'] === 'Заключили');
 
-    const paymentsAparts = payments.map(payment => {
-        const opportunity = optyData.find(item => item[OpportunityFieldData.Id] === payment['Opportunity']);
+    const paymentsAparts = payments.map((payment: PaymentsType) => {
+        const opportunity = optyData.find(item => item[OpportunityFieldData.Id] === payment[PaymentsFieldData.OptyId]);
         const apartNum = opportunity?.[OpportunityFieldData.ApartNum] || MODAL_TEXT.NotFound;
         return apartNum;
     });
@@ -46,7 +47,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 <Tag color="#2db7f5">{floorNumber}</Tag>
                 {floorAparts.map((apartNum, index) => {
                     const hasPayment = paymentsAparts.includes(apartNum);
-                    const counts = paymentsAparts.reduce((acc, item) => {
+                    const counts = paymentsAparts.reduce((acc: any, item: any) => {
                         acc[item] = (acc[item] || 0) + 1;
                         return acc;
                     }, {});

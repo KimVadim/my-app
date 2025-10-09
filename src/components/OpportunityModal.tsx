@@ -3,7 +3,7 @@ import { DatePicker, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, Stage } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData, updateOptyPayDate } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast } from 'antd-mobile'
@@ -25,7 +25,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const optyId = record?.[OpportunityFieldData.Id]
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
-  );
+  ) as unknown as PaymentsType[];
 
   const handleSubmit = (optyId: string) => {
     setLoading(true);
@@ -119,7 +119,12 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   allowClear={false}
                   needConfirm={true}
                   onChange={(value) => {
-                    value?.['$D'] && value?.['$M'] && value?.['$y'] && handleUpdateOpty(`${value['$M']+1}/${value['$D']}/${value['$y']}`)
+                    if (value) {
+                      const day = value.date();
+                      const month = value.month() + 1; // месяцы начинаются с 0
+                      const year = value.year();
+                      handleUpdateOpty(`${month}/${day}/${year}`);
+                    }
                   }}
                   /*onChange={async (value) => {
                     const confirmed = await value?.['$D'] && value?.['$M'] && value?.['$y'] && Dialog.confirm({
@@ -140,18 +145,18 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
           <Steps direction='vertical'>
             {filteredQuotes && filteredQuotes.map(
               (item) => {
-                const date = new Date(item[OpportunityFieldData.OptyDateTime]);
+                const date = new Date(item[PaymentsFieldData.Created]);
                 return <Step
-                  key={item[OpportunityFieldData.Id]}
+                  key={item[PaymentsFieldData.Id]}
                   title={`
                     ${date.toLocaleDateString("ru-RU")} /
-                    ${productMap[item[OpportunityFieldData.Product] as keyof typeof productMap]} /
-                    ${item[OpportunityFieldData.PaymentType]} / ${Number(item[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
+                    ${productMap[item[PaymentsFieldData.Product] as keyof typeof productMap]} /
+                    ${item[PaymentsFieldData.PaymentType]} / ${Number(item[PaymentsFieldData.Amount])?.toLocaleString("ru-RU")}
                   `}
                   status={
-                    item[OpportunityFieldData.Product] === Product.Deposit
+                    item[PaymentsFieldData.Product] === Product.Deposit
                       ? STEP_STATUS.Process
-                      : item[OpportunityFieldData.Product] === Product.Return
+                      : item[PaymentsFieldData.Product] === Product.Return
                         ? STEP_STATUS.Error
                         : STEP_STATUS.Finish
                   }

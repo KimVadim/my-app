@@ -218,6 +218,21 @@ export enum ExpenseFieldData {
   Processed = 'Processed',
 }
 
+export type ExpenseType = {
+  [ExpenseFieldData.Id]: string;
+  [ExpenseFieldData.Contact]: string;
+  [ExpenseFieldData.Company]: string;
+  [ExpenseFieldData.Type]: string;
+  [ExpenseFieldData.ExpenseDate]: string;
+  [ExpenseFieldData.CreatedBy]: string;
+  [ExpenseFieldData.Sum]: string;
+  [ExpenseFieldData.Comment]: string;
+  [ExpenseFieldData.ApartNum]: string;
+  [ExpenseFieldData.PaymentType]: string;
+  [ExpenseFieldData.Invoice]: string;
+  [ExpenseFieldData.Processed]: string;
+};
+
 export type FieldType = {
   username?: string;
   password?: string;
@@ -232,7 +247,6 @@ export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит �
 
 export const ExpensesTypes = ['Расход', 'Комм. Алатау', 'Комм. Павленко'];
 
-//Контакты
 export enum ContactFieldData {
   Id = 'ID',
   FirstName = 'First Name',
@@ -243,6 +257,17 @@ export enum ContactFieldData {
   Description = 'Description',
   Status = 'Status',
 }
+
+export type ContactType = {
+  [ContactFieldData.Id]: string;
+  [ContactFieldData.FirstName]: string;
+  [ContactFieldData.LastName]: string;
+  [ContactFieldData.ApartNum]: string;
+  [ContactFieldData.Type]: string;
+  [ContactFieldData.Phone]: string;
+  [ContactFieldData.Description]: string;
+  [ContactFieldData.Status]: string;
+};
 
 export interface AddContact {
   firstName: string;
@@ -276,6 +301,16 @@ export enum PaymentsFieldData {
   PaymentType = 'Notes',
   Product = 'Product',
 }
+
+export type PaymentsType = {
+  [PaymentsFieldData.Id]: string;
+  [PaymentsFieldData.OptyId]: string;
+  [PaymentsFieldData.ContactId]: string;
+  [PaymentsFieldData.Product]: string;
+  [PaymentsFieldData.PaymentType]: string;
+  [PaymentsFieldData.Amount]: string;
+  [PaymentsFieldData.Created]: string;
+};
 
 export enum PaymentsField {
   PaymentsLabel = '№ / Дата / Сумма / ФИО',

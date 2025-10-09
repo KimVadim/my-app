@@ -1,9 +1,9 @@
-import { Col, Row, Select, Spin, Table } from "antd";
+import { Col, Row, Select, Table } from "antd";
 import React, { useState } from "react";
 import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { paymentsMeta } from "./AllApplicationMeta.tsx";
-import { ModalTitle, PaymentsFieldData } from "../constants/appConstant.ts";
+import { ModalTitle, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { PaymentProgreesBar } from "./PaymentProgressBar.tsx";
 import { MenuComp } from "./Menu.tsx";
 
@@ -12,10 +12,9 @@ const { Option } = Select;
 export const Payments: React.FC = () => {
   const date = new Date();
   const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const [loading, setLoading] = useState<boolean>(false);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(month);
   const [isModalPayment, setIsModalPayment] = useState(false);
-  const paymentsData = useSelector((state: RootState) => state.quote.quote);
+  const paymentsData = useSelector((state: RootState) => state.quote.quote) as unknown as PaymentsType[];
   const months = Array.from(
     new Set(
       paymentsData.map((item) => {
@@ -39,54 +38,52 @@ export const Payments: React.FC = () => {
 
   return (
     <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
-      <Spin spinning={loading}>
-        <Row align="middle" gutter={15} >
-          <Col flex="auto" style={{ maxWidth: "111px" }}>
-            <MenuComp/>
-          </Col>
-          <Col>
-            <strong>{ModalTitle.Payments}</strong>
-          </Col>
-          <Col>
-            <Select
-              placeholder="Фильтр по месяцу"
-              style={{ width: 200 }}
-              allowClear
-              onChange={(value) => setSelectedMonth(value)}
-              value={selectedMonth}
-            >
-              {months.map((month) => (
-                <Option key={String(month)} value={String(month)}>
-                  {month}
-                </Option>
-              ))}
-            </Select>
+      <Row align="middle" gutter={15} >
+        <Col flex="auto" style={{ maxWidth: "111px" }}>
+          <MenuComp/>
+        </Col>
+        <Col>
+          <strong>{ModalTitle.Payments}</strong>
+        </Col>
+        <Col>
+          <Select
+            placeholder="Фильтр по месяцу"
+            style={{ width: 200 }}
+            allowClear
+            onChange={(value) => setSelectedMonth(value)}
+            value={selectedMonth}
+          >
+            {months.map((month) => (
+              <Option key={String(month)} value={String(month)}>
+                {month}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
+        <Row align="middle" gutter={15}>
+          <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px', marginBottom: '10px' }}>
+            <PaymentProgreesBar
+              setIsPaymentModal={setIsModalPayment}
+              isPaymentModal={isModalPayment}
+            />
           </Col>
         </Row>
-          <Row align="middle" gutter={15}>
-            <Col flex="auto" style={{ maxWidth: '500px', marginTop: '10px', marginBottom: '10px' }}>
-              <PaymentProgreesBar
-                setIsPaymentModal={setIsModalPayment}
-                isPaymentModal={isModalPayment}
-              />
-            </Col>
-          </Row>
-        <Table
-          rowKey="ID"
-          scroll={{ x: 395 }}
-          columns={paymentsMeta}
-            dataSource={[...filteredData].sort(
-            (a, b) =>
-              new Date(b[PaymentsFieldData.Created]).getTime() -
-              new Date(a[PaymentsFieldData.Created]).getTime()
-          )}
-          size="middle"
-          pagination={{
-            position: ["bottomCenter"],
-            pageSize: 50,
-          }}
-        />
-      </Spin>
+      <Table
+        rowKey="ID"
+        scroll={{ x: 395 }}
+        columns={paymentsMeta}
+          dataSource={[...filteredData].sort(
+          (a, b) =>
+            new Date(b[PaymentsFieldData.Created]).getTime() -
+            new Date(a[PaymentsFieldData.Created]).getTime()
+        )}
+        size="middle"
+        pagination={{
+          position: ["bottomCenter"],
+          pageSize: 50,
+        }}
+      />
     </div>
   );
 };
