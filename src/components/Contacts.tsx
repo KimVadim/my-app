@@ -28,7 +28,7 @@ export const Contacts: React.FC = () => {
     } else {
       setFilteredData(contactData);
     }
-  }, [searchText, contactData]);
+  }, [searchText, contactAllData]);
 
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
