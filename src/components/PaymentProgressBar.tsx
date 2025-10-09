@@ -21,8 +21,8 @@ export const PaymentProgreesBar: React.FC<PaymentProgreesBarProps> = ({
     const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
     const quotesData = useSelector((state: RootState) => state.quote.quote) as unknown as PaymentsType[];
     const currentMonthPayments = quotesData?.filter(item => {
-        const payDate = new Date(PaymentsFieldData.Created);
-        return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item[PaymentsFieldData.Product]);
+        const payDate = new Date(item[PaymentsFieldData.Created]);
+        return payDate.getMonth() === currentMonth && payDate.getFullYear() === currentYear && ['Prod_1', 'Rent180'].includes(item['Product']);
     }) || [];
     const currentMonthPaymentsCount = currentMonthPayments.length;
     const optyActiveCount = optyData.filter(x => x[OpportunityFieldData.Stage] === 'Заключили').length;
