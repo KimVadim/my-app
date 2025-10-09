@@ -4,7 +4,7 @@ import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
-import { ModalTitle, OpportunityFieldData } from "../constants/appConstant.ts";
+import { ModalTitle, OpportunityFieldData, OpportunityType } from "../constants/appConstant.ts";
 import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import '../App.css';
 import { Toast } from "antd-mobile";
@@ -19,7 +19,7 @@ export const Opportunity: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
   const isCalledRef = useRef(false);
-  const optyData = useSelector((state: RootState) => state.opportunity.opportunity);
+  const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
 
   useEffect(() => {
     if (!isCalledRef.current) {

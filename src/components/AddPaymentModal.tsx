@@ -4,7 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
 import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
 import { BUTTON_TEXT, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
-import { AddPayment, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, PaymentField, Stage } from "../constants/appConstant.ts";
+import {
+  AddPayment,
+  FieldFormat,
+  FieldPlaceholder,
+  FieldRules,
+  ModalTitle,
+  OpportunityFieldData,
+  OpportunityType,
+  PaymentField,
+  Stage } from "../constants/appConstant.ts";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import { Selector, Toast } from "antd-mobile";
@@ -25,7 +34,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [options, setOptions] = useState<{ apartNum: String; optyId: string; value: string; label: string }[]>([]);
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+    const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
 
     const actions = {
@@ -89,7 +98,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             }}
             layout="vertical"
             initialValues={{
-              [PaymentField.Product]: Product.Rent170,
+              [PaymentField.Product]: Product.Rent180,
               [PaymentField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             }}
           >
@@ -100,7 +109,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             >
               <Selector
                 options={PRODUCT}
-                defaultValue={[Product.Rent170]}
+                defaultValue={[Product.Rent180]}
                 onChange={(arr) => {
                   arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
                   arr.length > 0 && [Product.Return, Product.Deposit].includes(arr[0]) ? setHiddenItem(true) : setHiddenItem(false);

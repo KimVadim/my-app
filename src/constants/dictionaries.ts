@@ -44,7 +44,7 @@ export enum Product {
 }
 
 export const PRODUCT = [
-  { value: Product.Rent170, label: Product.Rent170Value },
+  //{ value: Product.Rent170, label: Product.Rent170Value },
   { value: Product.Rent180, label: Product.Rent180Value },
   { value: Product.Deposit, label: Product.DepositValue },
   { value: Product.Return, label: Product.ReturnValue },

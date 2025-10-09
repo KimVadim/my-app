@@ -77,17 +77,38 @@ export interface AddOpportunuty {
 export enum OpportunityFieldData {
   Id = 'ID',
   Contact = 'Contact',
-  Stage = 'Stage',
-  FullName = 'full_name',
   ApartNum = 'Description',
+  Product = 'Product',
+  Stage = 'Stage',
+  Amount = 'Amount',
+  Created = 'Created',
   OptyDate = 'OppoDate',
   PaymentDate = 'PaymentDate',
-  PaymentType = 'Notes',
-  Product = 'Product',
-  Amount = 'Amount',
+  ContactId = 'contact_id',
+  FirstName = 'First Name',
+  LastName = 'Last Name',
+  PhoneOld = 'Phone',
+  FullName = 'full_name',
   Phone = 'phone',
-  OptyDateTime = 'Date/Time',
 }
+
+export type OpportunityType = {
+  [OpportunityFieldData.Id]: string;
+  [OpportunityFieldData.Contact]: string;
+  [OpportunityFieldData.ApartNum]: string;
+  [OpportunityFieldData.Product]: string;
+  [OpportunityFieldData.Stage]: string;
+  [OpportunityFieldData.Amount]: string;
+  [OpportunityFieldData.Created]: string;
+  [OpportunityFieldData.OptyDate]: string;
+  [OpportunityFieldData.PaymentDate]: string;
+  [OpportunityFieldData.ContactId]: string;
+  [OpportunityFieldData.FirstName]: string;
+  [OpportunityFieldData.LastName]: string;
+  [OpportunityFieldData.PhoneOld]: string;
+  [OpportunityFieldData.FullName]: string;
+  [OpportunityFieldData.Phone]: string;
+};
 
 export enum OpportunityField {
   LastNameLabel = 'Фамилия',
