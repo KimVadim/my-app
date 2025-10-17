@@ -1,12 +1,14 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Spin } from "antd";
-import React from "react"
+import React, { useState } from "react"
 import dayjs from 'dayjs';
 import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Product, PRODUCT } from "../constants/dictionaries.ts";
-import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
-import { Selector, Toast } from "antd-mobile";
+import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
+import { Selector, Switch, Toast } from "antd-mobile";
+import TextArea from "antd/es/input/TextArea";
+import { formattedPhone } from "../service/utils.ts";
 
 interface AddOpportunutyModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -18,6 +20,9 @@ interface AddOpportunutyModalProps {
 export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
+    const [phone, setPhone] = useState("+7");
+    const [payPhone, setPayPhone] = useState("+7");
+    const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
     const handleSubmit = (values: AddOpportunuty) => {
       setLoading(true);
       addOpty(values).then((optyId) => {
@@ -29,6 +34,20 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
     };
+    const actions = {
+      handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedPhoneStr = formattedPhone(e.target.value);
+
+        setPhone(formattedPhoneStr);
+        form.setFieldsValue({ phone: formattedPhoneStr });
+      },
+      handlePayPhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedPhoneStr = formattedPhone(e.target.value);
+
+        setPayPhone(formattedPhoneStr);
+        form.setFieldsValue({ payPhone: formattedPhoneStr });
+      }
+    }
 
     return (
       <Modal
@@ -47,7 +66,8 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
           layout="vertical"
           initialValues={{
             phone: '+7',
-            product: Product.Rent170,
+            payPhone: '+7',
+            product: Product.Rent180,
             [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             [OpportunityField.OptyDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
           }}
@@ -58,28 +78,57 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             name={OpportunityField.LastName}
             rules={[FieldRules.Required, FieldRules.ClientName]}
           >
-            <Input />
+            <Input style={FieldStyle.InputStyle}/>
           </Form.Item>
           <Form.Item
             label={OpportunityField.FisrtNameLabel}
             name={OpportunityField.FisrtName}
             rules={[FieldRules.Required, FieldRules.ClientName]}
           >
-            <Input />
+            <Input style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={OpportunityField.PhoneLabel}
             name={OpportunityField.Phone}
-            rules={[FieldRules.Required, FieldRules.PhoneNum]}
+            rules={[FieldRules.Required, FieldRules.PhoneFormat]}
           >
-            <Input />
+            <Input
+              value={phone}
+              placeholder="+7 (777) 123-45-67"
+              onChange={actions.handlePhoneChange}
+              maxLength={18}
+              style={FieldStyle.InputStyle}
+            />
+          </Form.Item>
+          <Form.Item
+            label={OpportunityField.PayPhoneFlgLabel}
+            name={OpportunityField.PayPhoneFlg}
+          >
+            <Switch onChange={(value) => setHiddenItem(value)}/>
+          </Form.Item>
+          <Form.Item hidden={!isHiddenItem}>
+            {isHiddenItem && (
+              <Form.Item
+                label={OpportunityField.PayPhoneLabel}
+                name={OpportunityField.PayPhone}
+                rules={[FieldRules.Required, FieldRules.PhoneFormat]}
+              >
+                <Input
+                  value={payPhone}
+                  placeholder="+7 (777) 123-45-67"
+                  onChange={actions.handlePayPhoneChange}
+                  maxLength={18}
+                  style={FieldStyle.InputStyle}
+                />
+              </Form.Item>
+            )}
           </Form.Item>
           <Form.Item
             label={OpportunityField.ApartNumLabel}
             name={OpportunityField.ApartNum}
             rules={[FieldRules.Required, FieldRules.ApartNum]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <InputNumber style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={OpportunityField.ProductLabel}
@@ -87,9 +136,22 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <Selector
-              options={PRODUCT.filter((x: any)=> x.value === Product.Rent170 || x.value === Product.Rent180)}
+              options={PRODUCT.filter((x: any)=> x.value === Product.Rent180)}
               defaultValue={[Product.Rent180]}
               onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
+            />
+          </Form.Item>
+          <Form.Item
+            label={OpportunityField.CommentLabel}
+            name={OpportunityField.Comment}
+            rules={[FieldRules.Required]}
+          >
+            <TextArea
+              showCount
+              maxLength={300}
+              placeholder={FieldPlaceholder.Comment}
+              autoSize={{ minRows: 2, maxRows: 4 }}
+              style={FieldStyle.AreaStyle}
             />
           </Form.Item>
           <Form.Item
@@ -98,7 +160,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <DatePicker
-              style={{ width: '100%' }}
+              style={FieldStyle.InputStyle}
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}
@@ -112,7 +174,7 @@ export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <DatePicker
-              style={{ width: '100%' }}
+              style={FieldStyle.InputStyle}
               format={FieldFormat.Date}
               inputReadOnly={true}
               placeholder={FieldPlaceholder.Date}

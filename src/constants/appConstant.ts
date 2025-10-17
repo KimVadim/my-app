@@ -48,6 +48,10 @@ export const FieldRules = {
     pattern: /^\+7\d{10}$/,
     message: 'Формат номера +7 000 000 00 00',
   },
+  PhoneFormat: {
+    pattern: /^\+7\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/,
+    message: 'Формат номера +7 (XXX) XXX-XX-XX',
+  },
   ClientName: { pattern: /^[A-Za-zА-Яа-яЁё]+$/, message: 'Только буквы!' },
   ExpenseAmount: {
     type: 'number',
@@ -63,6 +67,17 @@ export const FieldRules = {
   },
 } as const;
 
+export const FieldStyle = {
+  InputStyle: {
+    height: '36px',
+    backgroundColor: '#faf7eeff',
+    width: '100%',
+  },
+  AreaStyle: {
+    backgroundColor: '#faf7eeff',
+  },
+};
+
 // Договора
 export interface AddOpportunuty {
   firstName: string;
@@ -72,6 +87,8 @@ export interface AddOpportunuty {
   apartNum: number;
   optyDate: Date;
   paymentDate: Date;
+  payPhone?: string;
+  comment: string;
 }
 
 export enum OpportunityFieldData {
@@ -124,14 +141,20 @@ export enum OpportunityField {
   FullNameLabel = 'ФИО',
   OptyAmountLabel = 'Сумма договора',
   OptyNameLabel = '№ / Статус / Дата / Сумма',
+  PayPhoneFlgLabel = 'Kaspi на другом номере',
+  PayPhoneLabel = 'Телефон для платежей',
+  CommentLabel = 'Информация о жильцах',
 
   LastName = 'lastName',
   FisrtName = 'firstName',
   Phone = 'phone',
+  PayPhoneFlg = 'payPhoneFlg',
+  PayPhone = 'payPhone',
   ApartNum = 'apartNum',
   Product = 'product',
   OptyDate = 'optyDate',
   PaymentDate = 'paymentDate',
+  Comment = 'comment',
 }
 
 // Платежи

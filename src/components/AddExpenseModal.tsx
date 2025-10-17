@@ -6,7 +6,7 @@ import { addExpense, getExpenseData } from "../service/appServiceBackend.ts";
 import TextArea from "antd/es/input/TextArea";
 import { debounce } from 'lodash';
 import { BUTTON_TEXT, EXPENSE_TYPE, ExpenseType, PAYMENT_TYPE, Product } from "../constants/dictionaries.ts";
-import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, ModalTitle, OpportunityFieldData, OptionType } from "../constants/appConstant.ts";
+import { AddExpense, ExpenseField, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityFieldData, OpportunityType, OptionType } from "../constants/appConstant.ts";
 import { Selector, Toast } from "antd-mobile";
 
 interface AddExpenseModalProps {
@@ -18,7 +18,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
     const dispatch: AppDispatch = useDispatch();
     const [form] = Form.useForm();
     const [options, setOptions] = useState<{ optyId: string; value: string; label: string; apartNum: string }[]>([]);
-    const optyData = useSelector((state: RootState) => state.opportunity.opportunity)
+    const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[]
     const [loading, setLoading] = React.useState<boolean>(false);
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(true);
 
@@ -93,7 +93,6 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 rules={[FieldRules.Required]}
               >
                 <Select
-                  style={{ width: '100%' }}
                   options={EXPENSE_TYPE}
                   onSelect={(value: string) => {
                     form.setFieldsValue({[ExpenseField.ExpenseType]: value});
@@ -150,9 +149,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                 name={ExpenseField.Amount}
                 rules={[FieldRules.Required,FieldRules.ExpenseAmount]}
               >
-                <InputNumber
-                  style={{ width: '100%' }}
-                />
+                <InputNumber style={FieldStyle.InputStyle} />
               </Form.Item>
               <Form.Item
                 label={ExpenseField.CommentLabel}
@@ -161,9 +158,10 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
               >
                 <TextArea
                   showCount
-                  maxLength={300}
+                  maxLength={1000}
                   placeholder={FieldPlaceholder.Comment}
                   autoSize={{ minRows: 2, maxRows: 4 }}
+                  style={FieldStyle.AreaStyle}
                 />
               </Form.Item>
               <Form.Item style={{ textAlign: "center" }}>

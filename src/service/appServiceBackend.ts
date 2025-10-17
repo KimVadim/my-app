@@ -76,6 +76,7 @@ export const addOpty = async (values: AddOpportunuty) => {
         : 'newApp',
       optyDate: dayjs(values.optyDate).format(FieldFormat.DateEN),
       paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
+      payPhone: values.payPhone,
     };
 
     const response = await axios.post(endpoints.OPPORTUNITY, payload);

@@ -126,17 +126,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                       handleUpdateOpty(`${month}/${day}/${year}`);
                     }
                   }}
-                  /*onChange={async (value) => {
-                    const confirmed = await value?.['$D'] && value?.['$M'] && value?.['$y'] && Dialog.confirm({
-                      content: `${MODAL_TEXT.OptyCloseText} ${value['$D']}.${value['$M']+1}.${value['$y']}`,
-                      cancelText: BUTTON_TEXT.Cancel,
-                      confirmText: BUTTON_TEXT.Ok,
-                    });
-
-                    if (confirmed) {
-                      handleUpdateOpty(`${value['$M']+1}/${value['$D']}/${value['$y']}`);
-                    }
-                  }}*/
                 />
               </span>
             </div>

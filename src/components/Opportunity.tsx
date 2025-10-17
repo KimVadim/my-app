@@ -37,7 +37,7 @@ export const Opportunity: React.FC = () => {
     );
   }, [searchText, optyData]);
 
-  const actions ={
+  const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
     },

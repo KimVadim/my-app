@@ -9,6 +9,7 @@ import {
   FieldFormat,
   FieldPlaceholder,
   FieldRules,
+  FieldStyle,
   ModalTitle,
   OpportunityFieldData,
   OpportunityType,
@@ -121,7 +122,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               name={PaymentField.Amount}
               rules={[FieldRules.Required, FieldRules.PaymentAmount]}
             >
-              <InputNumber style={{ width: '100%' }} />
+              <InputNumber style={FieldStyle.InputStyle} />
             </Form.Item>
             <Form.Item
               label={PaymentField.OptyNameLabel}
@@ -129,7 +130,6 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <AutoComplete
-                style={{ width: '100%' }}
                 onSearch={actions.handleSearch}
                 placeholder={FieldPlaceholder.OptyName}
                 options={options}
@@ -164,6 +164,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                   maxLength={300}
                   placeholder={FieldPlaceholder.Comment}
                   autoSize={{ minRows: 2, maxRows: 4 }}
+                  style={FieldStyle.AreaStyle}
                 />
             </Form.Item>)}
             <Form.Item
@@ -172,7 +173,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <DatePicker
-                style={{ width: '100%' }}
+                style={FieldStyle.InputStyle}
                 format={FieldFormat.Date}
                 inputReadOnly={true}
                 placeholder={FieldPlaceholder.Date}

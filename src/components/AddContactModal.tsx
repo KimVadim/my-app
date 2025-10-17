@@ -1,12 +1,13 @@
 import { Button, Form, Input, Modal, Spin } from "antd";
-import React from "react"
+import React, { useState } from "react"
 import { addContact, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT } from "../constants/dictionaries.ts";
-import { AddContact, ContactField, FieldPlaceholder, FieldRules, ModalTitle } from "../constants/appConstant.ts";
+import { AddContact, ContactField, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle } from "../constants/appConstant.ts";
 import { Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
+import { formattedPhone } from "../service/utils.ts";
 
 interface AddContactModalProps {
   setIsAddContact: (isOpen: boolean) => void;
@@ -18,6 +19,7 @@ interface AddContactModalProps {
 export const AddContactModal: React.FC<AddContactModalProps> = ({setIsAddContact, isAddContact, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
+    const [phone, setPhone] = useState("+7");
     const handleSubmit = (values: AddContact) => {
       setLoading(true);
       addContact(values).then((conId) => {
@@ -28,6 +30,13 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({setIsAddContact
           ? Toast.show({content: <div><b>Готово!</b><div>Контакт № {conId}</div></div>, icon: 'success', duration: 3000 })
           : Toast.show({content: `Ошибка!`, icon: 'fail', duration: 3000 });
       });
+    };
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formattedPhoneStr = formattedPhone(e.target.value);
+
+      setPhone(formattedPhoneStr);
+      form.setFieldsValue({ phone: formattedPhoneStr });
     };
 
     return (
@@ -57,21 +66,27 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({setIsAddContact
             name={ContactField.FirstName}
             rules={[FieldRules.Required, FieldRules.ClientName]}
           >
-            <Input />
+            <Input style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={ContactField.PhoneLabel}
             name={ContactField.Phone}
-            rules={[FieldRules.Required, FieldRules.PhoneNum]}
+            rules={[FieldRules.Required, FieldRules.PhoneFormat]}
           >
-            <Input />
+            <Input
+              value={phone}
+              placeholder="+7 (777) 123-45-67"
+              onChange={handlePhoneChange}
+              maxLength={18}
+              style={FieldStyle.InputStyle}
+            />
           </Form.Item>
           <Form.Item
             label={ContactField.TypeLabel}
             name={ContactField.Type}
             rules={[FieldRules.Required, FieldRules.Required]}
           >
-            <Input />
+            <Input style={FieldStyle.InputStyle} />
           </Form.Item>
           <Form.Item
             label={ContactField.DescriptionLabel}
@@ -83,6 +98,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({setIsAddContact
               maxLength={300}
               placeholder={FieldPlaceholder.Comment}
               autoSize={{ minRows: 2, maxRows: 4 }}
+              style={FieldStyle.AreaStyle}
             />
           </Form.Item>
           <Form.Item style={{ textAlign: "center" }}>
