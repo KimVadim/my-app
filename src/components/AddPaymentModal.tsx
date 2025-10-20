@@ -109,7 +109,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <Selector
-                options={PRODUCT}
+                options={PRODUCT.filter((item) => item.activeFlg === true)}
                 defaultValue={[Product.Rent180]}
                 onChange={(arr) => {
                   arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
@@ -140,6 +140,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
                     apartNum: option.apartNum,
                   });
                 }}
+                style={FieldStyle.InputStyle}
               />
             </Form.Item>
             <Form.Item

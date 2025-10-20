@@ -7,7 +7,7 @@ import axios from 'axios';
 import {
   AddContact,
   AddExpense,
-  AddOpportunuty,
+  AddOpportunity,
   AddPayment,
   FieldFormat,
   Stage,
@@ -54,7 +54,7 @@ export const getSheetData = async (dispatch: AppDispatch) => {
   }
 };
 
-export const addOpty = async (values: AddOpportunuty) => {
+export const addOpty = async (values: AddOpportunity) => {
   try {
     let optyAmount = 0;
     if (values.product === Product.Rent170) {
@@ -77,6 +77,7 @@ export const addOpty = async (values: AddOpportunuty) => {
       optyDate: dayjs(values.optyDate).format(FieldFormat.DateEN),
       paymentDate: dayjs(values.paymentDate).format(FieldFormat.DateEN),
       payPhone: values.payPhone,
+      comment: values.comment,
     };
 
     const response = await axios.post(endpoints.OPPORTUNITY, payload);

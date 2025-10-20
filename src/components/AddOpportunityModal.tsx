@@ -5,25 +5,25 @@ import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Product, PRODUCT } from "../constants/dictionaries.ts";
-import { AddOpportunuty, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
+import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, ModalTitle, OpportunityField } from "../constants/appConstant.ts";
 import { Selector, Switch, Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
 
-interface AddOpportunutyModalProps {
+interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
   isAddOpty: boolean;
   setLoading: (isOpen: boolean) => void;
   loading: boolean;
 }
 
-export const AddOpportunutyModal: React.FC<AddOpportunutyModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
+export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("+7");
     const [payPhone, setPayPhone] = useState("+7");
     const [isHiddenItem, setHiddenItem] = React.useState<boolean>(false);
-    const handleSubmit = (values: AddOpportunuty) => {
+    const handleSubmit = (values: AddOpportunity) => {
       setLoading(true);
       addOpty(values).then((optyId) => {
         getSheetData(dispatch);

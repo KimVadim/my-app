@@ -1,7 +1,7 @@
 import { Opportunity } from './Opportunity.tsx'
 import React, { useState } from 'react';
 import { AddFloatButton } from './AddFloatButton.tsx';
-import { AddOpportunutyModal } from './AddOpportunityModal.tsx';
+import { AddOpportunityModal } from './AddOpportunityModal.tsx';
 import { AddPaymentModal } from './AddPaymentModal.tsx';
 import { AddExpenseModal } from './AddExpenseModal.tsx';
 
@@ -20,7 +20,7 @@ function HomePage() {
           setIsAddPayment={setIsAddPayment}
           setIsAddExpense={setIsAddExpense}
         />
-        {isAddOpty && <AddOpportunutyModal
+        {isAddOpty && <AddOpportunityModal
           setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
           setLoading={setLoading} loading={loading}
         />}

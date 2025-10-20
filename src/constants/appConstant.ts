@@ -79,7 +79,7 @@ export const FieldStyle = {
 };
 
 // Договора
-export interface AddOpportunuty {
+export interface AddOpportunity {
   firstName: string;
   lastName: string;
   phone: string;
