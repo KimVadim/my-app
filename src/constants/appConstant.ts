@@ -107,6 +107,8 @@ export enum OpportunityFieldData {
   PhoneOld = 'Phone',
   FullName = 'full_name',
   Phone = 'phone',
+  PayPhone = 'PayPhone',
+  Comment = 'Comment',
 }
 
 export type OpportunityType = {

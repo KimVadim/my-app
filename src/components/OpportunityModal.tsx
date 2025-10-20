@@ -6,7 +6,7 @@ import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType, Stage } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetData, updateOptyPayDate } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast } from 'antd-mobile'
+import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast, TextArea } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
@@ -129,6 +129,17 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 />
               </span>
             </div>
+            <p className="opty-card">
+              <strong>{`${OpportunityField.PayPhoneLabel}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
+            </p>
+            <p className="opty-card">
+              <strong>{`${OpportunityField.CommentLabel}:`}</strong>
+            </p>
+            <TextArea
+              placeholder={OpportunityField.CommentLabel}
+              value={record?.[OpportunityFieldData.Comment]}
+              autoSize={{ minRows: 3, maxRows: 8 }}
+            />
           </Card>
           <Divider>Платежи</Divider>
           <Steps direction='vertical'>
