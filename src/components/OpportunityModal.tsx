@@ -138,7 +138,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             <TextArea
               placeholder={OpportunityField.CommentLabel}
               value={record?.[OpportunityFieldData.Comment]}
-              autoSize={{ minRows: 3, maxRows: 8 }}
+              autoSize={{ minRows: 2, maxRows: 8 }}
             />
           </Card>
           <Divider>Платежи</Divider>
