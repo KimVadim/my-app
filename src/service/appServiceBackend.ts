@@ -128,13 +128,9 @@ export const addExpense = async (values: AddExpense) => {
       optyId: values.optyId,
       expenseType: values.expenseType,
       paymentType: values.paymentType,
-      amount: [
-        'Комм. Алатау',
-        'Возврат',
-        'Расход',
-        'Зарплата',
-        'Комм. Павленко',
-      ].includes(values.expenseType)
+      amount: ['Комм. Алатау', 'Снятие', 'Расход', 'Комм. Павленко'].includes(
+        values.expenseType
+      )
         ? -values.amount
         : values.amount,
       createBy: localStorage.getItem('login')
