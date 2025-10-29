@@ -1,28 +1,28 @@
 import { MenuProps } from 'antd';
 
 export enum ExpenseType {
-  Rent = 'Аренда',
   Deposit = 'Депозит',
   Return = 'Возврат',
   Expense = 'Расход',
-  Salary = 'Зарплата',
+  Income = 'Пополнение',
+  Removal = 'Снятие',
   TenantUtilities = 'Комм. Жильцы',
   AlatauUtilities = 'Комм. Алатау',
   PavlenkoUtilities = 'Комм. Павленко',
+  Other = 'Другое',
 }
 
 export const EXPENSE_TYPE = [
-  //{ value: ExpenseType.Rent, label: ExpenseType.Rent },
-  //{ value: ExpenseType.Deposit, label: ExpenseType.Deposit },
-  //{ value: ExpenseType.Return, label: ExpenseType.Return },
   { value: ExpenseType.Expense, label: ExpenseType.Expense },
-  { value: ExpenseType.Salary, label: ExpenseType.Salary },
+  { value: ExpenseType.Income, label: ExpenseType.Income },
+  { value: ExpenseType.Removal, label: ExpenseType.Removal },
   { value: ExpenseType.TenantUtilities, label: ExpenseType.TenantUtilities },
   { value: ExpenseType.AlatauUtilities, label: ExpenseType.AlatauUtilities },
   {
     value: ExpenseType.PavlenkoUtilities,
     label: ExpenseType.PavlenkoUtilities,
   },
+  { value: ExpenseType.Other, label: ExpenseType.Other },
 ];
 
 export enum Product {

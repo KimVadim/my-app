@@ -96,7 +96,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({setIsAddExpense
                   options={EXPENSE_TYPE}
                   onSelect={(value: string) => {
                     form.setFieldsValue({[ExpenseField.ExpenseType]: value});
-                    ['Комм. Алатау', 'Расход', 'Зарплата', 'Комм. Павленко'].includes(value)
+                    ['Комм. Алатау', 'Расход', 'Пополнение', 'Снятие', 'Комм. Павленко'].includes(value)
                       ? setHiddenItem(true)
                       : setHiddenItem(false)
                   }}
