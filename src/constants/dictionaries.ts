@@ -29,13 +29,16 @@ export enum Product {
   RentAmount160 = 160000,
   RentAmount170 = 170000,
   RentAmount180 = 180000,
+  RentAmount185 = 185000,
 
+  Rent185Value = 'Аренда 185',
   Rent180Value = 'Аренда 180',
   Rent170Value = 'Аренда 170',
   Rent160Value = 'Аренда 160',
   DepositValue = 'Депозит',
   ReturnValue = 'Депозит возврат',
   UnknownValue = 'Неизвестный продукт',
+  Rent185 = 'Rent185',
   Rent180 = 'Rent180',
   Rent170 = 'Prod_1',
   Rent160 = 'Prod_2',
@@ -44,16 +47,43 @@ export enum Product {
 }
 
 export const PRODUCT = [
-  { value: Product.Rent170, label: Product.Rent170Value, activeFlg: false },
-  { value: Product.Rent180, label: Product.Rent180Value, activeFlg: true },
-  { value: Product.Deposit, label: Product.DepositValue, activeFlg: true },
-  { value: Product.Return, label: Product.ReturnValue, activeFlg: true },
+  {
+    value: Product.Rent170,
+    label: Product.Rent170Value,
+    optyFlg: false,
+    payFlg: false,
+  },
+  {
+    value: Product.Rent180,
+    label: Product.Rent180Value,
+    optyFlg: true,
+    payFlg: true,
+  },
+  {
+    value: Product.Rent185,
+    label: Product.Rent185Value,
+    optyFlg: true,
+    payFlg: true,
+  },
+  {
+    value: Product.Deposit,
+    label: Product.DepositValue,
+    optyFlg: false,
+    payFlg: true,
+  },
+  {
+    value: Product.Return,
+    label: Product.ReturnValue,
+    optyFlg: false,
+    payFlg: true,
+  },
 ];
 
 export const productMap = {
   [Product.Rent170]: Product.Rent170Value,
   [Product.Rent160]: Product.Rent160Value,
   [Product.Rent180]: Product.Rent180Value,
+  [Product.Rent185]: Product.Rent185Value,
   [Product.Deposit]: Product.DepositValue,
   [Product.Return]: Product.ReturnValue,
 };

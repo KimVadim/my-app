@@ -136,7 +136,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <Selector
-              options={PRODUCT.filter((x: any)=> x.value === Product.Rent180)}
+              options={PRODUCT.filter((x: any)=> x.optyFlg === true)}
               defaultValue={[Product.Rent180]}
               onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
             />

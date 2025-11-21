@@ -10,6 +10,8 @@ import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast, AutoCenter }
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
+import { CalendarOutline } from 'antd-mobile-icons';
+import { Button as ButtonAnt }  from 'antd';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -71,26 +73,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <span>
                 <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
               </span>
-
-              <Button
-                color="warning"
-                size="small"
-                style={{ width: 110, marginTop: '-5px' }}
-                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
-                onClick={async () => {
-                  const confirmed = await Dialog.confirm({
-                    content: MODAL_TEXT.OptyCloseText,
-                    cancelText: BUTTON_TEXT.Cancel,
-                    confirmText: BUTTON_TEXT.Ok,
-                  });
-
-                  if (confirmed) {
-                    handleSubmit(optyId);
-                  }
-                }}
-              >
-                Расторгнуть
-              </Button>
             </div>
             <p className="opty-card">
               <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
@@ -133,9 +115,40 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <strong>{`${OpportunityField.PayPhoneLabel}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
             </p>}
             <p className="opty-card">
-              <strong>{`${OpportunityField.CommentLabel}:`}</strong>
+              <strong>{`${OpportunityField.CommentLabel}: `}</strong>
+              {record?.[OpportunityFieldData.Comment]}
             </p>
-            <AutoCenter>{record?.[OpportunityFieldData.Comment]}</AutoCenter>
+            <AutoCenter>
+              <Button
+                color="warning"
+                size="small"
+                style={{ width: 110, marginTop: '5px' }}
+                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
+                onClick={async () => {
+                  const confirmed = await Dialog.confirm({
+                    content: MODAL_TEXT.OptyCloseText,
+                    cancelText: BUTTON_TEXT.Cancel,
+                    confirmText: BUTTON_TEXT.Ok,
+                  });
+
+                  if (confirmed) {
+                    handleSubmit(optyId);
+                  }
+                }}
+              >
+                Расторгнуть
+              </Button>
+              {
+                //<CalendarOutline fontSize={36} />
+                //<PicturesOutline fontSize={36} />
+              }
+
+              <ButtonAnt
+                type="primary"
+                icon={<CalendarOutline fontSize={24} />}
+                onClick={() => {}}
+              />
+            </AutoCenter>
           </Card>
           <Divider>Платежи</Divider>
           <Steps direction='vertical'>

@@ -57,8 +57,8 @@ export const getSheetData = async (dispatch: AppDispatch) => {
 export const addOpty = async (values: AddOpportunity) => {
   try {
     let optyAmount = 0;
-    if (values.product === Product.Rent170) {
-      optyAmount = Product.RentAmount170;
+    if (values.product === Product.Rent185) {
+      optyAmount = Product.RentAmount185;
     } else if (values.product === Product.Rent180) {
       optyAmount = Product.RentAmount180;
     }

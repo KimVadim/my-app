@@ -109,7 +109,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <Selector
-                options={PRODUCT.filter((item) => item.activeFlg === true)}
+                options={PRODUCT.filter((item) => item.payFlg === true)}
                 defaultValue={[Product.Rent180]}
                 onChange={(arr) => {
                   arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});

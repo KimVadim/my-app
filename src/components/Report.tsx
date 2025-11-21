@@ -143,7 +143,7 @@ export const IncomeReport: React.FC = () => {
       }),
     },
     label: {
-      formatter: (datum: number) => (datum ? formatCurrency(datum / 1000) : ''),
+      formatter: (datum: number) => (datum ? Math.trunc(datum / 1000) : ''),
       style: {
         fill: '#000',
         fontSize: 14,

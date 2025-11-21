@@ -2,8 +2,8 @@ import { Badge, Tag } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Card, Popup, ProgressCircle, Space } from "antd-mobile";
-import { ModalTitle, OpportunityFieldData, OpportunityType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
+import { Card, Divider, Popup, ProgressCircle, Space } from "antd-mobile";
+import { OpportunityFieldData, OpportunityType, PaymentsFieldData, PaymentsType } from "../constants/appConstant.ts";
 import { MODAL_TEXT } from "../constants/dictionaries.ts";
 
 interface PaymentProgreesProps {
@@ -44,7 +44,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
 
         return (
             <p key={floorNumber}>
-                <Tag color="#2db7f5">{floorNumber}</Tag>
+                <Divider>{floorNumber} этаж платежи</Divider>
                 {floorAparts.map((apartNum, index) => {
                     const hasPayment = paymentsAparts.includes(apartNum);
                     const counts = paymentsAparts.reduce((acc: any, item: any) => {
@@ -71,7 +71,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            bodyStyle={{ height: '33vh' }}
+            //bodyStyle={{ height: '33vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}
@@ -79,8 +79,8 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                 setIsPaymentModal(false);
             }}
         >
-            <div style={{ padding: 5, display: 'flex', justifyContent: 'center'}}>
-                <Card title={ModalTitle.PaymentsMonthProgress}>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <Card>
                     {renderFloorApartments(1, 10, 20)}
                     {renderFloorApartments(2, 20, 30)}
                     {renderFloorApartments(3, 30, 40)}
