@@ -84,10 +84,15 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     {renderFloorApartments(1, 10, 20)}
                     {renderFloorApartments(2, 20, 30)}
                     {renderFloorApartments(3, 30, 40)}
-
-                    <p>Всего платежей: {paymentsCount} из {optyActiveCount}</p>
                     <p>
                         <Space style={{ '--gap': '24px' }}>
+                            <ProgressCircle
+                                percent={(paymentsCount)/27*100}
+                                style={{'--fill-color': 'var(--adm-color-success)',}}
+                            >
+                                {paymentsCount}/плт
+                            </ProgressCircle>
+                            <div style={{ marginTop: '17px' }}><b>{Math.floor((paymentsCount)/27*100)}% общ/плт</b></div>
                             <ProgressCircle
                                 percent={(optyActiveCount/27)*100}
                                 style={{'--fill-color': 'var(--adm-color-success)',}}
@@ -95,13 +100,6 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                                 {optyActiveCount}/зак
                             </ProgressCircle>
                             <div style={{ marginTop: '17px' }}><b>{Math.floor((optyActiveCount/27)*100)}% общ/зак</b></div>
-                            <ProgressCircle
-                                percent={(optyAllCount-optyActiveCount)/optyAllCount*100}
-                                style={{'--fill-color': 'var(--adm-color-danger)',}}
-                            >
-                                {optyAllCount - optyActiveCount}/рас
-                            </ProgressCircle>
-                            <div style={{ marginTop: '17px' }}><b>{Math.floor((optyAllCount-optyActiveCount)/optyAllCount*100)}% общ/рас</b></div>
                         </Space>
                     </p>
                 </Card>

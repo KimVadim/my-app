@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getExpenseData, getSheetData } from "../service/appServiceBackend.ts";
 import { expenseMeta } from "./AllApplicationMeta.tsx";
 import { ExpenseFieldData, ExpenseType, FieldPlaceholder, ModalTitle, OpportunityType } from "../constants/appConstant.ts";
-import { AddFloatButton } from "./AddFloatButton.tsx";
-import { AddExpenseModal } from "./AddExpenseModal.tsx";
-import { MenuComp } from "./Menu.tsx";
+import { AddFloatButton } from "../components/AddFloatButton.tsx";
+import { AddExpenseModal } from "../components/AddExpenseModal.tsx";
+import { MenuComp } from "../components/Menu.tsx";
 
 export const Expenses: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

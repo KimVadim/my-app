@@ -4,9 +4,9 @@ import { RootState } from "../store.ts";
 import { useSelector } from "react-redux";
 import { contactMeta } from "./AllApplicationMeta.tsx";
 import { ContactFieldData, ContactType, FieldPlaceholder, ModalTitle } from "../constants/appConstant.ts";
-import { AddFloatButton } from "./AddFloatButton.tsx";
-import { AddContactModal } from "./AddContactModal.tsx";
-import { MenuComp } from "./Menu.tsx";
+import { AddFloatButton } from "../components/AddFloatButton.tsx";
+import { AddContactModal } from "../components/AddContactModal.tsx";
+import { MenuComp } from "../components/Menu.tsx";
 
 export const Contacts: React.FC = () => {
   const [searchText, setSearchText] = useState("");

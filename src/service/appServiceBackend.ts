@@ -12,7 +12,7 @@ import {
   FieldFormat,
   Stage,
   Status,
-  UpdateOptyPayDate,
+  UpdateOpty,
 } from '../constants/appConstant.ts';
 import { Product } from '../constants/dictionaries.ts';
 import { setMonthPayments } from '../slices/monthPaymentsSlice.ts';
@@ -271,11 +271,13 @@ export const addContact = async (values: AddContact) => {
   }
 };
 
-export const updateOptyPayDate = async (values: UpdateOptyPayDate) => {
+export const updateOpty = async (values: UpdateOpty) => {
   try {
     const payload = {
       optyId: values.optyId,
-      paymentDate: values.paymentDate,
+      PaymentDate: values?.PaymentDate,
+      Comment: values?.Comment,
+      PayPhone: values?.PayPhone,
     };
 
     const response = await axios.post(endpoints.UPDATE_OPTY, payload);

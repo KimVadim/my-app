@@ -1,17 +1,17 @@
 import React from 'react';
-import { DatePicker, Spin } from 'antd';
+import { Button, DatePicker, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType, Stage } from '../constants/appConstant.ts';
+import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { closeOpty, getSheetData, updateOptyPayDate } from '../service/appServiceBackend.ts';
-import { Dialog, Popup, Steps, Button, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
+import { closeOpty, getSheetData, updateOpty } from '../service/appServiceBackend.ts';
+import { Dialog, Popup, Steps, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
-import { CalendarOutline } from 'antd-mobile-icons';
-import { Button as ButtonAnt }  from 'antd';
+import { StopOutline } from 'antd-mobile-icons';
+import { ButtonChangeModal } from './ButtonChangeModal.tsx';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -29,23 +29,26 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     selectFilteredQuotes(state, optyId)
   ) as unknown as PaymentsType[];
 
-  const handleSubmit = (optyId: string) => {
-    setLoading(true);
-    closeOpty(optyId).then(() => {
-      getSheetData(dispatch);
-      setLoading(false);
-      setIsModalOpen(false);
-    });
-  };
-
-  const handleUpdateOpty = (values: string) => {
-    setLoading(true);
-    updateOptyPayDate({optyId , paymentDate: values}).then(() => {
-      getSheetData(dispatch);
-      setLoading(false);
-      setIsModalOpen(false);
-      Toast.show({content: <div><b>Готово!</b><div>Дата платежа обновлена</div></div>, icon: 'success', duration: 3000 })
-    });
+  const actions = {
+    handleSubmit: (optyId: string) => {
+      setLoading(true);
+      closeOpty(optyId).then(() => {
+        getSheetData(dispatch);
+        setLoading(false);
+        setIsModalOpen(false);
+      });
+    },
+    handleUpdateOpty: (value: string, fieldName: string) => {
+      setLoading(true);
+      console.log(fieldName)
+      console.log(value)
+      updateOpty({optyId, [fieldName]: value}).then(() => {
+        getSheetData(dispatch);
+        setLoading(false);
+        setIsModalOpen(false);
+        Toast.show({content: <div><b>Готово!</b><div>Договор обновлен</div></div>, icon: 'success', duration: 3000 })
+      });
+    },
   };
 
   let parsedDate = optyPayDate && dayjs(optyPayDate);
@@ -105,7 +108,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                       const day = value.date();
                       const month = value.month() + 1; // месяцы начинаются с 0
                       const year = value.year();
-                      handleUpdateOpty(`${month}/${day}/${year}`);
+                      actions.handleUpdateOpty(`${month}/${day}/${year}`, OpportunityFieldData.PaymentDate);
                     }
                   }}
                 />
@@ -118,12 +121,10 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               <strong>{`${OpportunityField.CommentLabel}: `}</strong>
               {record?.[OpportunityFieldData.Comment]}
             </p>
-            <AutoCenter>
+            <AutoCenter style={{ marginTop: '20px' }}>
               <Button
-                color="warning"
-                size="small"
-                style={{ width: 110, marginTop: '5px' }}
-                disabled={record?.[OpportunityFieldData.Stage] !== Stage.Signed}
+                icon={<StopOutline fontSize={40} />}
+                variant="filled"
                 onClick={async () => {
                   const confirmed = await Dialog.confirm({
                     content: MODAL_TEXT.OptyCloseText,
@@ -132,21 +133,24 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                   });
 
                   if (confirmed) {
-                    handleSubmit(optyId);
+                    actions.handleSubmit(optyId);
                   }
                 }}
-              >
-                Расторгнуть
-              </Button>
-              {
-                //<CalendarOutline fontSize={36} />
-                //<PicturesOutline fontSize={36} />
-              }
-
-              <ButtonAnt
-                type="primary"
-                icon={<CalendarOutline fontSize={24} />}
-                onClick={() => {}}
+                size='large'
+                style={{ height: 55, width: 55 }}
+                color="primary"
+              />
+              <ButtonChangeModal
+                record={record}
+                type='TextArea'
+                fieldName={OpportunityFieldData.Comment}
+                updateData={actions.handleUpdateOpty}
+              />
+              <ButtonChangeModal
+                record={record}
+                type='PhoneInput'
+                fieldName={OpportunityFieldData.PayPhone}
+                updateData={actions.handleUpdateOpty}
               />
             </AutoCenter>
           </Card>

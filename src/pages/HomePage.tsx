@@ -1,9 +1,10 @@
-import { Opportunity } from './Opportunity.tsx'
 import React, { useState } from 'react';
-import { AddFloatButton } from './AddFloatButton.tsx';
-import { AddOpportunityModal } from './AddOpportunityModal.tsx';
-import { AddPaymentModal } from './AddPaymentModal.tsx';
-import { AddExpenseModal } from './AddExpenseModal.tsx';
+
+import { Opportunity } from './Opportunity.tsx';
+import { AddFloatButton } from '../components/AddFloatButton.tsx';
+import { AddExpenseModal } from '../components/AddExpenseModal.tsx';
+import { AddPaymentModal } from '../components/AddPaymentModal.tsx';
+import { AddOpportunityModal } from '../components/AddOpportunityModal.tsx';
 
 function HomePage() {
   const [isAddOpty, setIsAddOpty] = useState(false);

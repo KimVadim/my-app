@@ -5,11 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
 import { getSheetData } from "../service/appServiceBackend.ts";
 import { ModalTitle, OpportunityFieldData, OpportunityType } from "../constants/appConstant.ts";
-import { opportunityMeta } from "./AllApplicationMeta.tsx";
 import '../App.css';
 import { Toast } from "antd-mobile";
-import { PaymentProgreesBar } from "./PaymentProgressBar.tsx";
-import { MenuComp } from "./Menu.tsx";
+import { MenuComp } from "../components/Menu.tsx";
+import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
+import { opportunityMeta } from "./AllApplicationMeta.tsx";
+
 
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

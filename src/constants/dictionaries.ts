@@ -114,6 +114,7 @@ export enum BUTTON_TEXT {
   Ok = 'OK',
   Cancel = 'Отмена',
   Add = 'Добавить',
+  Save = 'Сохранить',
 }
 
 export enum MODAL_TEXT {

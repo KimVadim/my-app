@@ -1,13 +1,12 @@
 import './App.css';
-import React from 'react';
-import HomePage from './components/HomePage.tsx';
-import Login from './components/Login.tsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute.tsx';
-import { IncomeReport } from './components/Report.tsx';
-import { Expenses } from './components/Expenses.tsx';
-import { Contacts } from './components/Contacts.tsx';
-import { Payments } from './components/Payments.tsx';
+import HomePage from './pages/HomePage.tsx';
+import { IncomeReport } from './pages/Report.tsx';
+import { Payments } from './pages/Payments.tsx';
+import { Contacts } from './pages/Contacts.tsx';
+import { Expenses } from './pages/Expenses.tsx';
+import Login from './pages/Login.tsx';
 
 function App() {
   return (

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
-import { PaymentProgreesBar } from './PaymentProgressBar.tsx';
+import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
 import { CapsuleTabs } from 'antd-mobile'
 import { SettingOutlined } from '@ant-design/icons';
 
