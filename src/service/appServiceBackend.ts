@@ -54,6 +54,25 @@ export const getSheetData = async (dispatch: AppDispatch) => {
   }
 };
 
+export const getSheetDataParam = async (type: string) => {
+  try {
+    const { data } = await axios.get(endpoints.SHEET_DATE, {
+      params: { type },
+    });
+    const opportunities = data.message?.opportunity || [];
+    const contact = data.message?.contact || [];
+    const quote = data.message?.quotes || [];
+
+    return { opportunities, quote, contact };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Ошибка запроса:', error.response?.status);
+    } else {
+      console.error('Непредвиденная ошибка:', error);
+    }
+  }
+};
+
 export const addOpty = async (values: AddOpportunity) => {
   try {
     let optyAmount = 0;
@@ -61,6 +80,12 @@ export const addOpty = async (values: AddOpportunity) => {
       optyAmount = Product.RentAmount185;
     } else if (values.product === Product.Rent180) {
       optyAmount = Product.RentAmount180;
+    } else if (values.product === Product.StorageS) {
+      optyAmount = Product.StorageSAmount;
+    } else if (values.product === Product.StorageM) {
+      optyAmount = Product.StorageMAmount;
+    } else if (values.product === Product.StorageL) {
+      optyAmount = Product.StorageLAmount;
     }
     const payload = {
       firstName: values.firstName,

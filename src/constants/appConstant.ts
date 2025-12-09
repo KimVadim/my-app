@@ -44,6 +44,12 @@ export const FieldRules = {
     max: 39,
     message: 'Введите число с 11 по 39',
   },
+  StorageNum: {
+    type: 'number',
+    min: 1,
+    max: 12,
+    message: 'Введите число с 1 по 12',
+  },
   PhoneNum: {
     pattern: /^\+7\d{10}$/,
     message: 'Формат номера +7 000 000 00 00',
@@ -143,9 +149,13 @@ export enum OpportunityField {
   FullNameLabel = 'ФИО',
   OptyAmountLabel = 'Сумма договора',
   OptyNameLabel = '№ / Статус / Дата / Сумма',
+  StorageNameLabel = '№ / Статус / Дата',
   PayPhoneFlgLabel = 'Kaspi на другом номере',
   PayPhoneLabel = 'Телефон для платежей',
   CommentLabel = 'Информация о жильцах',
+  CommentStorageLabel = 'Перечень товаров',
+  PeriodLabel = 'Срок хранения',
+  StorageNumLabel = 'Номер склада',
 
   LastName = 'lastName',
   FisrtName = 'firstName',

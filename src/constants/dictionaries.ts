@@ -30,6 +30,9 @@ export enum Product {
   RentAmount170 = 170000,
   RentAmount180 = 180000,
   RentAmount185 = 185000,
+  StorageSAmount = 18000,
+  StorageMAmount = 20000,
+  StorageLAmount = 29000,
 
   Rent185Value = 'Аренда 185',
   Rent180Value = 'Аренда 180',
@@ -38,12 +41,18 @@ export enum Product {
   DepositValue = 'Депозит',
   ReturnValue = 'Депозит возврат',
   UnknownValue = 'Неизвестный продукт',
+  StorageSValue = 'Склад S',
+  StorageMValue = 'Склад M',
+  StorageLValue = 'Склад L',
   Rent185 = 'Rent185',
   Rent180 = 'Rent180',
   Rent170 = 'Prod_1',
   Rent160 = 'Prod_2',
   Deposit = 'Prod_3',
   Return = 'Prod_4',
+  StorageS = 'Storage_S',
+  StorageM = 'Storage_M',
+  StorageL = 'Storage_L',
 }
 
 export const PRODUCT = [
@@ -52,30 +61,56 @@ export const PRODUCT = [
     label: Product.Rent170Value,
     optyFlg: false,
     payFlg: false,
+    storageFlg: false,
   },
   {
     value: Product.Rent180,
     label: Product.Rent180Value,
     optyFlg: true,
     payFlg: true,
+    storageFlg: false,
   },
   {
     value: Product.Rent185,
     label: Product.Rent185Value,
     optyFlg: true,
     payFlg: true,
+    storageFlg: false,
   },
   {
     value: Product.Deposit,
     label: Product.DepositValue,
     optyFlg: false,
     payFlg: true,
+    storageFlg: false,
   },
   {
     value: Product.Return,
     label: Product.ReturnValue,
     optyFlg: false,
     payFlg: true,
+    storageFlg: false,
+  },
+  {
+    value: Product.StorageS,
+    label: Product.StorageSValue,
+    optyFlg: false,
+    payFlg: false,
+    storageFlg: true,
+  },
+  {
+    value: Product.StorageM,
+    label: Product.StorageMValue,
+    optyFlg: false,
+    payFlg: false,
+    storageFlg: true,
+  },
+  {
+    value: Product.StorageL,
+    label: Product.StorageLValue,
+    optyFlg: false,
+    payFlg: false,
+    storageFlg: true,
   },
 ];
 
@@ -86,6 +121,9 @@ export const productMap = {
   [Product.Rent185]: Product.Rent185Value,
   [Product.Deposit]: Product.DepositValue,
   [Product.Return]: Product.ReturnValue,
+  [Product.StorageS]: Product.StorageSValue,
+  [Product.StorageM]: Product.StorageMValue,
+  [Product.StorageL]: Product.StorageLValue,
 };
 
 export enum Payment {

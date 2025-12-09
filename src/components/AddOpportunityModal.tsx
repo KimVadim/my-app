@@ -1,7 +1,7 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Spin } from "antd";
 import React, { useState } from "react"
 import dayjs from 'dayjs';
-import { addOpty, getSheetData } from "../service/appServiceBackend.ts";
+import { addOpty, getSheetDataParam } from "../service/appServiceBackend.ts";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store.ts";
 import { BUTTON_TEXT, Product, PRODUCT } from "../constants/dictionaries.ts";
@@ -9,15 +9,40 @@ import { AddOpportunity, FieldFormat, FieldPlaceholder, FieldRules, FieldStyle, 
 import { Selector, Switch, Toast } from "antd-mobile";
 import TextArea from "antd/es/input/TextArea";
 import { formattedPhone } from "../service/utils.ts";
+import { setQuote } from "../slices/quoteSlice.ts";
+import { setContact } from "../slices/contactSlice.ts";
+import { setOpportunity } from "../slices/opportunitySlice.ts";
+//import { CloudOutlined, RocketOutlined, ThunderboltOutlined } from '@ant-design/icons';
+//import { Flex, Segmented } from 'antd';
+//import type { SegmentedProps } from 'antd';
 
 interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
   isAddOpty: boolean;
   setLoading: (isOpen: boolean) => void;
   loading: boolean;
+  view?: string;
 }
 
-export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading}) => {
+/*const options: SegmentedProps['options'] = [
+  {
+    label: '2 недели',
+    value: '2_week',
+    icon: <RocketOutlined />,
+  },
+  {
+    label: '1 месяц',
+    value: '1_month',
+    icon: <ThunderboltOutlined />,
+  },
+  {
+    label: '3 месяца',
+    value: '3_month',
+    icon: <CloudOutlined />,
+  },
+];*/
+
+export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
     const [phone, setPhone] = useState("+7");
@@ -26,7 +51,11 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
     const handleSubmit = (values: AddOpportunity) => {
       setLoading(true);
       addOpty(values).then((optyId) => {
-        getSheetData(dispatch);
+        getSheetDataParam(view==='Storage' ? 'Storage' : 'Renter').then((response) => {
+            dispatch(setOpportunity(response?.opportunities));
+            dispatch(setQuote(response?.quote));
+            dispatch(setContact(response?.contact));
+        })
         setLoading(false);
         setIsAddOpty(false);
         optyId
@@ -49,6 +78,10 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
       }
     }
 
+
+    //const segmentedSharedProps: SegmentedProps = {
+    //  options
+    //};
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -67,7 +100,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           initialValues={{
             phone: '+7',
             payPhone: '+7',
-            product: Product.Rent180,
+            product: view === 'Storage' ? Product.StorageS : Product.Rent180,
             [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             [OpportunityField.OptyDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
           }}
@@ -124,9 +157,9 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             )}
           </Form.Item>
           <Form.Item
-            label={OpportunityField.ApartNumLabel}
+            label={view==='Storage' ? OpportunityField.StorageNumLabel: OpportunityField.ApartNumLabel}
             name={OpportunityField.ApartNum}
-            rules={[FieldRules.Required, FieldRules.ApartNum]}
+            rules={[FieldRules.Required, view==='Storage' ? FieldRules.StorageNum : FieldRules.ApartNum]}
           >
             <InputNumber style={FieldStyle.InputStyle} />
           </Form.Item>
@@ -136,13 +169,19 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             rules={[FieldRules.Required]}
           >
             <Selector
-              options={PRODUCT.filter((x: any)=> x.optyFlg === true)}
-              defaultValue={[Product.Rent180]}
+              options={view==='Storage' ? PRODUCT.filter((x: any)=> x.storageFlg === true) : PRODUCT.filter((x: any)=> x.optyFlg === true)}
+              defaultValue={view==='Storage' ? [Product.StorageS] : [Product.Rent180]}
               onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
             />
           </Form.Item>
+          {//<Form.Item style={{ textAlign: "center" }} hidden={!(view==='Storage')} label={OpportunityField.PeriodLabel} rules={[FieldRules.Required]}>
+            //<Flex vertical gap="middle">
+              //<Segmented {...segmentedSharedProps} />
+            //</Flex>
+          //</Form.Item>
+          }
           <Form.Item
-            label={OpportunityField.CommentLabel}
+            label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
             name={OpportunityField.Comment}
             rules={[FieldRules.Required]}
           >
@@ -172,6 +211,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
             label={OpportunityField.PaymentDateLabel}
             name={OpportunityField.PaymentDate}
             rules={[FieldRules.Required]}
+            hidden={view && view==='Storage' ? true : false}
           >
             <DatePicker
               style={FieldStyle.InputStyle}

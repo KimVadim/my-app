@@ -6,6 +6,7 @@ import contactReducer from './slices/contactSlice.ts';
 import monthPaymentReducer from './slices/monthPaymentsSlice.ts';
 import expenseReducer from './slices/expenseSlice.ts';
 import accessGroup from './slices/accessGroupSlice.ts';
+import storageReducer from './slices/storageSlice.ts';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     contact: contactReducer,
     monthPayment: monthPaymentReducer,
     expense: expenseReducer,
+    storage: storageReducer,
   },
 });
 

@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-
 import { Opportunity } from './Opportunity.tsx';
+import { Storage } from './Storage.tsx';
 import { AddFloatButton } from '../components/AddFloatButton.tsx';
 import { AddExpenseModal } from '../components/AddExpenseModal.tsx';
 import { AddPaymentModal } from '../components/AddPaymentModal.tsx';
 import { AddOpportunityModal } from '../components/AddOpportunityModal.tsx';
 
-function HomePage() {
+interface HomePageProps {
+  view: string;
+}
+
+export const HomePage: React.FC<HomePageProps> = ({view}) => {
   const [isAddOpty, setIsAddOpty] = useState(false);
   const [isAddPayment, setIsAddPayment] = useState(false);
   const [isAddExpense, setIsAddExpense] = useState(false)
@@ -15,19 +19,20 @@ function HomePage() {
   return (
     <>
       <div style={{ padding: 5, display: 'flex', justifyContent: 'center' }}>
-        <Opportunity />
+        {view === 'Opportunity' && <Opportunity />}
+        {view === 'Storage' && <Storage />}
         <AddFloatButton
           setIsAddOpty={setIsAddOpty}
           setIsAddPayment={setIsAddPayment}
-          setIsAddExpense={setIsAddExpense}
+          setIsAddExpense={['Opportunity'].includes(view) ? setIsAddExpense : undefined }
         />
         {isAddOpty && <AddOpportunityModal
           setIsAddOpty={setIsAddOpty} isAddOpty={isAddOpty}
-          setLoading={setLoading} loading={loading}
+          setLoading={setLoading} loading={loading} view={view}
         />}
         {isAddPayment && <AddPaymentModal
           setIsAddPayment={setIsAddPayment} isAddPayment={isAddPayment}
-          setLoading={setLoading} loading={loading}
+          setLoading={setLoading} loading={loading} view={view}
         />}
         {isAddExpense && <AddExpenseModal
           setIsAddExpense={setIsAddExpense} isAddExpense={isAddExpense}

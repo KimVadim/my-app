@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://my-app-lake-zeta.vercel.app",
-  "_homepage": "https://KimVadim.github.io/my-app/",
   "dependencies": {
     "@ant-design/charts": "^2.2.7",
     "@antv/util": "^3.3.10",
@@ -15,6 +14,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "antd": "^5.24.1",
     "antd-mobile": "^5.39.0",
+    "antd-style": "^3.7.1",
     "axios": "^1.9.0",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.18",

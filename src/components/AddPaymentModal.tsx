@@ -2,7 +2,7 @@ import { AutoComplete, Button, DatePicker, Form, InputNumber, Modal, Spin } from
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store.ts";
-import { addPayment, getSheetData } from "../service/appServiceBackend.ts";
+import { addPayment, getSheetDataParam } from "../service/appServiceBackend.ts";
 import { BUTTON_TEXT, PAYMENT_TYPE, Product, PRODUCT } from "../constants/dictionaries.ts";
 import {
   AddPayment,
@@ -18,19 +18,24 @@ import {
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import { Selector, Toast } from "antd-mobile";
+import { setQuote } from "../slices/quoteSlice.ts";
+import { setContact } from "../slices/contactSlice.ts";
+import { setOpportunity } from "../slices/opportunitySlice.ts";
 
 interface AddPaymentModalProps {
   setIsAddPayment: (isOpen: boolean) => void;
   isAddPayment: boolean;
   setLoading: (isOpen: boolean) => void;
   loading: boolean;
+  view: string
 }
 
 export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
     setIsAddPayment,
     isAddPayment,
     setLoading,
-    loading
+    loading,
+    view
   }) => {
     const [form] = Form.useForm();
     const dispatch: AppDispatch = useDispatch();
@@ -68,7 +73,11 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
       handleSubmit: (values: AddPayment) => {
         setLoading(true)
         addPayment(values).then((paymentId) => {
-          paymentId && getSheetData(dispatch);
+          paymentId && getSheetDataParam(view==='Storage' ? 'Storage' : 'Renter').then((response) => {
+              dispatch(setOpportunity(response?.opportunities));
+              dispatch(setQuote(response?.quote));
+              dispatch(setContact(response?.contact));
+          })
           setLoading(false);
           setIsAddPayment(false);
           form.resetFields();
@@ -99,7 +108,7 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
             }}
             layout="vertical"
             initialValues={{
-              [PaymentField.Product]: Product.Rent180,
+              [PaymentField.Product]: view === 'Storage' ? Product.StorageS : Product.Rent180,
               [PaymentField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             }}
           >
@@ -109,8 +118,8 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
               rules={[FieldRules.Required]}
             >
               <Selector
-                options={PRODUCT.filter((item) => item.payFlg === true)}
-                defaultValue={[Product.Rent180]}
+                options={view === 'Storage' ? PRODUCT.filter((item) => item.storageFlg === true) : PRODUCT.filter((item) => item.payFlg === true)}
+                defaultValue={view === 'Storage' ? [Product.StorageS] : [Product.Rent180]}
                 onChange={(arr) => {
                   arr.length > 0 && form.setFieldsValue({[PaymentField.Product]: arr[0]});
                   arr.length > 0 && [Product.Return, Product.Deposit].includes(arr[0]) ? setHiddenItem(true) : setHiddenItem(false);

@@ -14,11 +14,12 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/opportunities" element={<HomePage/>} />
+          <Route path="/opportunities" element={<HomePage view='Opportunity'/>} />
           <Route path="/incomereport" element={<IncomeReport/>} />
           <Route path='/expenses' element={<Expenses/>} />
           <Route path='/contacts' element={<Contacts/>} />
           <Route path='/payments' element={<Payments/>} />
+          <Route path='/storage' element={<HomePage view='Storage'/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>

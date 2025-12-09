@@ -1,21 +1,20 @@
 import { Button, Spin, Table, Row, Col, Input } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
+import { OpportunityModal } from "../components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../store";
+import { RootState, AppDispatch } from "../store.ts";
 import { getSheetDataParam } from "../service/appServiceBackend.ts";
 import { ModalTitle, OpportunityFieldData, OpportunityType } from "../constants/appConstant.ts";
 import '../App.css';
 import { Toast } from "antd-mobile";
 import { MenuComp } from "../components/Menu.tsx";
 import { PaymentProgreesBar } from "../components/PaymentProgressBar.tsx";
-import { opportunityMeta } from "./AllApplicationMeta.tsx";
-import { setOpportunity } from "../slices/opportunitySlice.ts";
+import { storageMeta } from "./AllApplicationMeta.tsx";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
+import { setOpportunity } from "../slices/opportunitySlice.ts";
 
-
-export const Opportunity: React.FC = () => {
+export const Storage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalPayment, setIsModalPayment] = useState(false);
@@ -28,7 +27,7 @@ export const Opportunity: React.FC = () => {
   useEffect(() => {
     if (!isCalledRef.current) {
       setLoading(true);
-      getSheetDataParam('Renter')
+      getSheetDataParam('Storage')
       .then((response) => {
         dispatch(setOpportunity(response?.opportunities));
         dispatch(setQuote(response?.quote));
@@ -92,14 +91,11 @@ export const Opportunity: React.FC = () => {
                   type="primary"
                   onClick={() => {
                     setLoading(true);
-                    getSheetDataParam('Renter')
-                    .then((response) => {
+                    getSheetDataParam('Storage').then((response) => {
                       dispatch(setOpportunity(response?.opportunities));
                       dispatch(setQuote(response?.quote));
                       dispatch(setContact(response?.contact));
-                    })
-                    .finally(() => {
-                      setLoading(false)
+                      setLoading(false);
                       Toast.show({content: 'Договора обновлены!', duration: 3000 });
                     });
                   }}
@@ -110,7 +106,7 @@ export const Opportunity: React.FC = () => {
             </Row>
           </>
           }
-          columns={opportunityMeta}
+          columns={storageMeta}
           dataSource={filteredData}
           size='middle'
           pagination={{

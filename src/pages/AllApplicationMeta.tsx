@@ -33,6 +33,35 @@ export const opportunityMeta = [{
   },
 }];
 
+export const storageMeta = [{
+  title: OpportunityField.StorageNameLabel,
+  dataIndex: OpportunityFieldData.Stage,
+  key: OpportunityFieldData.Stage,
+  render: (status: String, record: any) => {
+    const date = new Date(record?.[OpportunityFieldData.PaymentDate])
+
+    return <>
+      <Tag color={"#2db7f5"}>{`П${record?.[OpportunityFieldData.ApartNum]}`}</Tag>
+      <Tag color={status === Stage.Signed ? "green" : "red"}>{status}</Tag>
+      <Tag color="blue">
+        {`${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}.${date.getFullYear().toString().slice(-2)}`}
+      </Tag>
+      <Tag color="red">{(Number(record?.[OpportunityFieldData.Amount])/1000)?.toLocaleString("ru-RU")}</Tag>
+    </>
+  },
+  width: 265,
+  }, {
+    title: OpportunityField.FullNameLabel,
+    dataIndex: OpportunityFieldData.FullName,
+    key: OpportunityFieldData.FullName,
+    ellipsis: true,
+    render: (full_name: String, record: any) => {
+      return <><strong className="full-name">{full_name}</strong><br/></>
+  },
+}];
+
 export const expenseMeta = [{
   title: ExpenseField.ExpenseLabel,
   dataIndex: ExpenseFieldData.ApartNum,

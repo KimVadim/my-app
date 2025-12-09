@@ -40,8 +40,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     },
     handleUpdateOpty: (value: string, fieldName: string) => {
       setLoading(true);
-      console.log(fieldName)
-      console.log(value)
       updateOpty({optyId, [fieldName]: value}).then(() => {
         getSheetData(dispatch);
         setLoading(false);
@@ -128,8 +126,8 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 onClick={async () => {
                   const confirmed = await Dialog.confirm({
                     content: MODAL_TEXT.OptyCloseText,
-                    cancelText: BUTTON_TEXT.Cancel,
                     confirmText: BUTTON_TEXT.Ok,
+                    cancelText: BUTTON_TEXT.Cancel,
                   });
 
                   if (confirmed) {
