@@ -51,7 +51,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
     const handleSubmit = (values: AddOpportunity) => {
       setLoading(true);
       addOpty(values).then((optyId) => {
-        getSheetDataParam(view==='Storage' ? 'Storage' : 'Renter').then((response) => {
+        getSheetDataParam(view === 'Storage' ? 'Storage' : 'Renter').then((response) => {
             dispatch(setOpportunity(response?.opportunities));
             dispatch(setQuote(response?.quote));
             dispatch(setContact(response?.contact));

@@ -44,7 +44,11 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
 
         return (
             <p key={floorNumber}>
-                <Divider>{floorNumber} этаж платежи</Divider>
+                <Divider contentPosition='left' style={{
+                    color: '#1677ff',
+                    borderColor: '#98bff6ff',
+                    //borderStyle: 'dashed',
+                }}>{floorNumber} этаж плат.</Divider>
                 {floorAparts.map((apartNum, index) => {
                     const hasPayment = paymentsAparts.includes(apartNum);
                     const counts = paymentsAparts.reduce((acc: any, item: any) => {

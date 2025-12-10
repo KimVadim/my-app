@@ -5,13 +5,17 @@ import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
 import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
-import { closeOpty, getSheetData, updateOpty } from '../service/appServiceBackend.ts';
+import { closeOpty, getSheetDataParam, updateOpty } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Steps, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
 import dayjs from 'dayjs';
 import { StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
+import { useLocation } from "react-router-dom";
+import { setOpportunity } from '../slices/opportunitySlice.ts';
+import { setQuote } from '../slices/quoteSlice.ts';
+import { setContact } from '../slices/contactSlice.ts';
 
 interface OpportunityModalProps {
   isModalOpen: boolean;
@@ -21,6 +25,7 @@ interface OpportunityModalProps {
 
 export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen, setIsModalOpen, record }) => {
   const dispatch: AppDispatch = useDispatch();
+  const location = useLocation();
   const [loading, setLoading] = React.useState<boolean>(false);
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
   const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
@@ -28,12 +33,30 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   ) as unknown as PaymentsType[];
+  let locationPath;
+
+  switch (location.pathname) {
+    case "/opportunities":
+      locationPath = "Renter";
+      break;
+
+    case "/storage":
+      locationPath = "Storage";
+      break;
+
+    default:
+      locationPath = "Renter";
+  }
 
   const actions = {
     handleSubmit: (optyId: string) => {
       setLoading(true);
       closeOpty(optyId).then(() => {
-        getSheetData(dispatch);
+        getSheetDataParam(locationPath).then((response) => {
+            dispatch(setOpportunity(response?.opportunities));
+            dispatch(setQuote(response?.quote));
+            dispatch(setContact(response?.contact));
+        })
         setLoading(false);
         setIsModalOpen(false);
       });
@@ -41,13 +64,19 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     handleUpdateOpty: (value: string, fieldName: string) => {
       setLoading(true);
       updateOpty({optyId, [fieldName]: value}).then(() => {
-        getSheetData(dispatch);
+        getSheetDataParam(locationPath).then((response) => {
+            dispatch(setOpportunity(response?.opportunities));
+            dispatch(setQuote(response?.quote));
+            dispatch(setContact(response?.contact));
+        })
         setLoading(false);
         setIsModalOpen(false);
         Toast.show({content: <div><b>Готово!</b><div>Договор обновлен</div></div>, icon: 'success', duration: 3000 })
       });
     },
   };
+
+  console.log(locationPath);
 
   let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
