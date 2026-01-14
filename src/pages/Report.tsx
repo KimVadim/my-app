@@ -27,6 +27,7 @@ const menuItems: MenuItem[] = [
           { label: 'Платежи', key: '/payments' },
           { label: 'Контакты', key: '/contacts' },
           { label: 'Расходы', key: '/expenses' },
+          { label: 'Склады', key: '/storage' },
         ],
       },
       {
@@ -71,7 +72,10 @@ export const IncomeReport: React.FC = () => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
   });
   const filteredData = useMemo(() => {
-    if (selectedMonth === 'last6months') {
+    if (selectedMonth === 'last12months') {
+      const lastSixMonths = getLastSixMonths(12);
+      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
+    } else if (selectedMonth === 'last6months') {
       const lastSixMonths = getLastSixMonths(6);
       return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
     } else if (selectedMonth === 'last3months') {
@@ -198,6 +202,9 @@ export const IncomeReport: React.FC = () => {
           onChange={(value) => setSelectedMonth(value)}
           value={selectedMonth}
         >
+          <Option key="last12months" value="last12months">
+            Последние 12 мес.
+          </Option>
           <Option key="last6months" value="last6months">
             Последние 6 мес.
           </Option>

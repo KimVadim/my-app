@@ -18,12 +18,13 @@ export const Expenses: React.FC = () => {
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
   const [isAddExpense, setIsAddExpense] = useState(false);
   const isCalledRef = useRef(false);
+  const date = new Date();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        await getExpenseData(dispatch);
+        await getExpenseData(date.getFullYear(), date.getMonth()+1, dispatch);
         !optyData && getSheetData(dispatch);
       } catch (error) {
         console.error("Ошибка загрузки данных:", error);

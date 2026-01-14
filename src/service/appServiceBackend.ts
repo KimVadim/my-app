@@ -237,9 +237,15 @@ export const getMonthPaymentData = async (dispatch: AppDispatch) => {
   }
 };
 
-export const getExpenseData = async (dispatch: AppDispatch) => {
+export const getExpenseData = async (
+  year: number,
+  month: number,
+  dispatch: AppDispatch
+) => {
   try {
-    const { data } = await axios.get(endpoints.EXPENSES);
+    const { data } = await axios.get(endpoints.EXPENSES, {
+      params: { year, month },
+    });
 
     const expense = data.message?.expenses || [];
 

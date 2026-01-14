@@ -243,7 +243,7 @@ export enum ExpenseFieldData {
   Contact = 'Contact',
   Company = 'Company',
   Type = 'Type',
-  ExpenseDate = 'Date/Time',
+  ExpenseDate = 'CreatedDt',
   CreatedBy = 'Author',
   Sum = 'Sum',
   Comment = 'Comment',
@@ -278,7 +278,7 @@ export interface LoginData {
   password: string;
 }
 
-export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат'];
+export const PaymentTypes = ['Аренда', 'Депозит', 'Депозит возврат', 'Склад'];
 
 export const ExpensesTypes = ['Расход', 'Комм. Алатау', 'Комм. Павленко'];
 
