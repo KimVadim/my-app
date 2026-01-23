@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
 import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
-import { CapsuleTabs } from 'antd-mobile'
+import { CapsuleTabs, Divider } from 'antd-mobile'
 import { SettingOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -47,7 +47,7 @@ export const IncomeReport: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState('line');
-  const [selectedMonth, setSelectedMonth] = useState<string | null>('last6months');
+  const [selectedMonth, setSelectedMonth] = useState<string | null>('last12months');
   const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +62,6 @@ export const IncomeReport: React.FC = () => {
 
   const monthPaymentData = useSelector((state: RootState) => state.monthPayment.monthPayments);
   const memoizedMonthPaymentData = useMemo(() => monthPaymentData, [monthPaymentData]);
-  const months = Array.from(new Set(memoizedMonthPaymentData.map((item) => item.month)));
   const getLastSixMonths = (countMonth: number) =>
   [...Array(countMonth)].map((_, i) => {
     const date = new Date();
@@ -121,6 +120,7 @@ export const IncomeReport: React.FC = () => {
     expenses: calcSum(filteredData, 'Расход'),
     serviceAlatau: calcSum(filteredData, 'Комм. Алатау'),
     servicePavlenko: calcSum(filteredData, 'Комм. Павленко'),
+    storage: calcSum(filteredData, 'Склад'),
   }), [filteredData])
 
 
@@ -211,11 +211,6 @@ export const IncomeReport: React.FC = () => {
           <Option key="last3months" value="last3months">
             Последние 3 мес.
           </Option>
-          {months.map((month) => (
-            <Option key={String(month)} value={String(month)}>
-              {month}
-            </Option>
-          ))}
         </Select>
       </div>
 
@@ -224,11 +219,28 @@ export const IncomeReport: React.FC = () => {
           <div style={{ width: '100%' }}>
             <Line {...chartConfig.income} />
             <div style={{ marginTop: '16px' }}>
-              <SummaryRow label="Доходы" value={sums.payment} type="success" />
+              <Divider contentPosition='left' style={{
+                  color: '#1677ff',
+                  borderColor: '#98bff6ff',
+              }}>Платежи</Divider>
+              <SummaryRow label="Аренда" value={sums.payment} type="success" />
               <br/>
+              <SummaryRow label="Склад" value={sums.storage} type="success" />
+              <br/>
+              <SummaryRow label="Итого" value={sums.payment + sums.storage} type="success" />
+              <br/>
+              <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
+              <br/>
+              <SummaryRow label="Прибыль" value={(sums.payment + sums.storage) - sums.expenses} type="success" />
+              <Divider contentPosition='left' style={{
+                  color: '#1677ff',
+                  borderColor: '#98bff6ff',
+              }}>Депозиты</Divider>
               <SummaryRow label="Депозиты" value={sums.deposit} type="warning" />
               <br/>
               <SummaryRow label="Депозит возврат" value={sums.depositReturn} type="danger" />
+              <br/>
+              <SummaryRow label="Разница" value={sums.deposit - sums.depositReturn} type="success" />
             </div>
           </div>
         </CapsuleTabs.Tab>

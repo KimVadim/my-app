@@ -115,7 +115,7 @@ export const Opportunity: React.FC = () => {
           size='middle'
           pagination={{
             position: ['bottomCenter'],
-            pageSize: 15
+            pageSize: 27
           }}
           onRow={(record) => ({
             onClick: () => actions.handleRowClick(record),
