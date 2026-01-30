@@ -15,6 +15,7 @@ import {
   XAxis,
   ResponsiveContainer,
   LabelList,
+  Legend,
 } from 'recharts'
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -210,12 +211,19 @@ export const IncomeReportcn: React.FC = () => {
             axisLine={false}
             tickFormatter={(value) => value.slice(0, 3)}
           />
-          <Bar dataKey="desktop" fill="#98bff6">
-            <LabelList position="top" fill="#1f2937" fontSize={10} />
+          <Legend
+            formatter={(value) => (
+              <span style={{ color: "#1f2937", fontSize: 14 }}>
+                {value}
+              </span>
+            )}
+          />
+          <Bar dataKey="desktop" name="Комп" fill="#98bff6">
+            <LabelList position="top" fill="#1f2937" fontSize={9} />
           </Bar>
 
-          <Bar dataKey="mobile" fill="#4f46e5">
-            <LabelList position="top" fill="#1f2937" fontSize={10} />
+          <Bar dataKey="mobile" name="Тел" fill="#4f46e5">
+            <LabelList position="top" fill="#1f2937" fontSize={9} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
