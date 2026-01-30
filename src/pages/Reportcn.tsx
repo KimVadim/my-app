@@ -1,17 +1,22 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Menu, Row, Select, Typography } from 'antd';
+import { Col, Menu, Row, Typography } from 'antd';
 import type { MenuProps } from 'antd';
-import { Line } from '@ant-design/charts';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
-import { ExpensesTypes, PaymentTypes } from '../constants/appConstant.ts';
 import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
 import { CapsuleTabs, Divider } from 'antd-mobile'
 import { SettingOutlined } from '@ant-design/icons';
 
-const { Option } = Select;
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  ResponsiveContainer,
+  LabelList,
+} from 'recharts'
+
 type MenuItem = Required<MenuProps>['items'][number];
 const menuItems: MenuItem[] = [
   {
@@ -35,7 +40,6 @@ const menuItems: MenuItem[] = [
         label: 'Отчеты',
         children: [
           { label: 'Отчеты', key: '/incomereport', disabled: true },
-          { label: 'Отчеты CN', key: '/incomereportcn', disabled: true },
         ],
       },
     ],
@@ -44,7 +48,7 @@ const menuItems: MenuItem[] = [
 
 const { Text } = Typography;
 
-export const IncomeReport: React.FC = () => {
+export const IncomeReportcn: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const [current, setCurrent] = useState('line');
@@ -87,18 +91,6 @@ export const IncomeReport: React.FC = () => {
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
 
-  const ensureAllTypes = (PaymentTypes: any) => {
-    return Array.from(new Set(filteredData.map((item) => item.month))).flatMap((month) =>
-      PaymentTypes.map((type) => {
-        const existing = filteredData.find((item) => item.month === month && item.type === type);
-        return {
-          month,
-          type,
-          value: Number(existing?.value ?? 0),
-        };
-      })
-    );
-  };
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
@@ -124,54 +116,25 @@ export const IncomeReport: React.FC = () => {
     storage: calcSum(filteredData, 'Склад'),
   }), [filteredData])
 
-
-  const createChartConfig = (data, types) => ({
-    data: ensureAllTypes(types),
-    xField: 'month',
-    yField: 'value',
-    seriesField: 'type',
-    colorField: 'type',
-    tooltip: false,
-    xAxis: { label: { rotate: -45, offset: 10 } },
-    yAxis: { label: { formatter: (value) => `${(value / 1000).toFixed(0)} KZT` } },
-    point: {
-      size: 10,
-      shape: 'circle',
-      style: ({ type }) => ({
-        stroke: '#fff',
-        lineWidth: 20,
-        fillOpacity: 1,
-        shadowBlur: 6,
-        shadowColor: 'rgba(0,0,0,0.2)',
-        ...(type === 'Аренда' && { fill: 'blue', size: 12 }),
-        ...(type === 'Депозит' && { fill: 'green', size: 12 }),
-      }),
-    },
-    label: {
-      formatter: (datum: number) => (datum ? Math.trunc(datum / 1000) : ''),
-      style: {
-        fill: '#000',
-        fontSize: 14,
-        fontWeight: 700,
-        stroke: '#fff',
-        strokeWidth: 3,
-        shadowColor: 'rgba(0,0,0,0.1)',
-        shadowBlur: 3,
-      },
-      position: 'top',
-      offsetY: -20,
-      layout: [{ type: 'interval-hide-overlap' }],
-    },
-  });
-
-  const chartConfig = {
-    income: createChartConfig(filteredData, PaymentTypes),
-    expenses: createChartConfig(filteredData, ExpensesTypes),
-  };
-
   const SummaryRow: React.FC<{ label: string; value: number; type?: "success" | "warning" | "danger" }> = ({ label, value, type }) => (
     <Text type={type}>{`${label}: ${formatCurrency(value)}`}</Text>
   );
+
+  const chartData = [
+    { month: "Jan", desktop: 1806, mobile: 800 },
+    { month: "Feb", desktop: 3050, mobile: 200 },
+    { month: "Mar", desktop: 2370, mobile: 120 },
+    { month: "Apr", desktop: 7304, mobile: 190 },
+    { month: "May", desktop: 2009, mobile: 130 },
+    { month: "Jun", desktop: 2144, mobile: 140 },
+    { month: "Jul", desktop: 1865, mobile: 80 },
+    { month: "Aug", desktop: 3054, mobile: 200 },
+    { month: "Sen", desktop: 2375, mobile: 120 },
+    { month: "Oct", desktop: 7354, mobile: 190 },
+    { month: "Nov", desktop: 130, mobile: 130 },
+    { month: "Dec", desktop: 2146, mobile: 0 },
+  ]
+
   return (
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
@@ -195,30 +158,10 @@ export const IncomeReport: React.FC = () => {
           />
         </Col>
       </Row>
-      <div style={{ marginBottom: '7px', marginTop: '10px' }}>
-        <Select
-          placeholder="Фильтр по месяцу"
-          style={{ width: 200 }}
-          allowClear
-          onChange={(value) => setSelectedMonth(value)}
-          value={selectedMonth}
-        >
-          <Option key="last12months" value="last12months">
-            Последние 12 мес.
-          </Option>
-          <Option key="last6months" value="last6months">
-            Последние 6 мес.
-          </Option>
-          <Option key="last3months" value="last3months">
-            Последние 3 мес.
-          </Option>
-        </Select>
-      </div>
 
       <CapsuleTabs>
         <CapsuleTabs.Tab title='Доходы' key='fruits'>
           <div style={{ width: '100%' }}>
-            <Line {...chartConfig.income} />
             <div style={{ marginTop: '16px' }}>
               <Divider contentPosition='left' style={{
                   color: '#1677ff',
@@ -247,7 +190,6 @@ export const IncomeReport: React.FC = () => {
         </CapsuleTabs.Tab>
         <CapsuleTabs.Tab title='Расходы' key='vegetables' >
           <div style={{ width: '100%' }}>
-            <Line {...chartConfig.expenses} />
             <div style={{ marginTop: '16px'}}>
               <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
               <br/>
@@ -259,6 +201,25 @@ export const IncomeReport: React.FC = () => {
 
         </CapsuleTabs.Tab>
       </CapsuleTabs>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <Bar dataKey="desktop" fill="#98bff6">
+            <LabelList position="top" fill="#1f2937" fontSize={10} />
+          </Bar>
+
+          <Bar dataKey="mobile" fill="#4f46e5">
+            <LabelList position="top" fill="#1f2937" fontSize={10} />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };
+
