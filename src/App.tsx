@@ -21,7 +21,6 @@ function App() {
           <Route path='/expenses' element={<Expenses/>} />
           <Route path='/contacts' element={<Contacts/>} />
           <Route path='/payments' element={<Payments/>} />
-          <Route path='/storage' element={<HomePage view='Storage'/>} />
         </Route>
         <Route path="*" element={<Login />} />
       </Routes>
