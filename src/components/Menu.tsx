@@ -34,7 +34,7 @@ export const MenuComp: React.FC = () => {
           label: 'Отчеты',
           children: [
             { label: 'Отчеты', key: '/incomereport', disabled: login === 'ttigay' ? true : false },
-            { label: 'Отчеты CN', key: '/incomereportcn',disabled: login === 'ttigay' ? true : false },
+            { label: 'Отчеты New', key: '/incomereportcn',disabled: login === 'ttigay' ? true : false },
           ],
         },
       ],
