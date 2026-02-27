@@ -1,13 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Menu, Row, Typography } from 'antd';
-import type { MenuProps } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Col, Row, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
 import { Divider } from 'antd-mobile'
-import { SettingOutlined } from '@ant-design/icons';
 
 import {
   BarChart,
@@ -17,42 +14,12 @@ import {
   LabelList,
   Legend,
 } from 'recharts'
-
-type MenuItem = Required<MenuProps>['items'][number];
-const menuItems: MenuItem[] = [
-  {
-    label: 'Меню',
-    key: 'SubMenu',
-    icon: <SettingOutlined />,
-    children: [
-      {
-        type: 'group',
-        label: 'Основные',
-        children: [
-          { label: 'Договора', key: '/opportunities' },
-          { label: 'Платежи', key: '/payments' },
-          { label: 'Контакты', key: '/contacts' },
-          { label: 'Расходы', key: '/expenses' },
-          { label: 'Склады', key: '/storage' },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Отчеты',
-        children: [
-          { label: 'Отчеты', key: '/incomereport', disabled: true },
-        ],
-      },
-    ],
-  },
-];
+import { MenuComp } from '../components/Menu.tsx';
 
 const { Text } = Typography;
 
 export const IncomeReportcn: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [current, setCurrent] = useState('line');
   const [selectedMonth, setSelectedMonth] = useState<string | null>('last12months');
   const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
@@ -91,12 +58,6 @@ export const IncomeReportcn: React.FC = () => {
     }
     return memoizedMonthPaymentData;
   }, [memoizedMonthPaymentData, selectedMonth]);
-
-
-  const onClick: MenuProps['onClick'] = (e) => {
-    setCurrent(e.key);
-    if (e.key) navigate(e.key);
-  };
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('ru-RU', {
@@ -146,15 +107,10 @@ export const IncomeReportcn: React.FC = () => {
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
         <Col flex="auto" style={{ maxWidth: '111px' }}>
-          <Menu
-            onClick={onClick}
-            selectedKeys={[current]}
-            mode="horizontal"
-            items={menuItems}
-          />
+          <MenuComp/>
         </Col>
         <Col>
-          <strong>Отчёт по доходам</strong>
+          <strong>Отчёты по доходам</strong>
         </Col>
       </Row>
       <Row align="middle" gutter={15}>
@@ -210,6 +166,17 @@ export const IncomeReportcn: React.FC = () => {
           </Bar>
 
           <Bar dataKey="Склад" name="Склад" fill="#4f46e5">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+
+          <Bar dataKey="Расход" name="Расход" fill="#e0b1b3">
             <LabelList
               position="top"
               fill="#1f2937"
@@ -278,7 +245,7 @@ export const IncomeReportcn: React.FC = () => {
           <Divider contentPosition='left' style={{
               color: '#1677ff',
               borderColor: '#98bff6ff',
-          }}>Расходы</Divider>
+          }}>Коммунальные платежи</Divider>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={300}>
@@ -309,36 +276,6 @@ export const IncomeReportcn: React.FC = () => {
           </Bar>
 
           <Bar dataKey="Комм. Павленко" name="Комм. Павленко" fill="#4f46e5">
-            <LabelList
-              position="top"
-              fill="#1f2937"
-              fontSize={9}
-              formatter={(value) =>
-                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
-              }
-            />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(2, 7)}
-            tick={{ fontSize: 8 }}
-          />
-          <Legend
-            formatter={(value) => (
-              <span style={{ color: "#1f2937", fontSize: 14 }}>
-                {value}
-              </span>
-            )}
-          />
-          <Bar dataKey="Расход" name="Расход" fill="#98bff6">
             <LabelList
               position="top"
               fill="#1f2937"
