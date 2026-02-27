@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
 import { PaymentProgreesBar } from '../components/PaymentProgressBar.tsx';
-import { CapsuleTabs, Divider } from 'antd-mobile'
+import { Divider } from 'antd-mobile'
 import { SettingOutlined } from '@ant-design/icons';
 
 import {
@@ -121,20 +121,26 @@ export const IncomeReportcn: React.FC = () => {
     <Text type={type}>{`${label}: ${formatCurrency(value)}`}</Text>
   );
 
-  const chartData = [
-    { month: "Jan", desktop: 1806, mobile: 800 },
-    { month: "Feb", desktop: 3050, mobile: 200 },
-    { month: "Mar", desktop: 2370, mobile: 120 },
-    { month: "Apr", desktop: 7304, mobile: 190 },
-    { month: "May", desktop: 2009, mobile: 130 },
-    { month: "Jun", desktop: 2144, mobile: 140 },
-    { month: "Jul", desktop: 1865, mobile: 80 },
-    { month: "Aug", desktop: 3054, mobile: 200 },
-    { month: "Sen", desktop: 2375, mobile: 120 },
-    { month: "Oct", desktop: 7354, mobile: 190 },
-    { month: "Nov", desktop: 130, mobile: 130 },
-    { month: "Dec", desktop: 2146, mobile: 0 },
-  ]
+  const chartData = useMemo(() => {
+    const grouped: Record<string, any> = {};
+
+    filteredData.forEach((row) => {
+      const { month, type, value } = row;
+
+      if (!grouped[month]) {
+        grouped[month] = { month };
+      }
+
+      grouped[month][type] =
+        (grouped[month][type] || 0) + Number(value);
+    });
+
+    return Object.values(grouped).sort((a: any, b: any) =>
+      a.month.localeCompare(b.month)
+    );
+  }, [filteredData]);
+
+  console.log(chartData)
 
   return (
     <div style={{ padding: '24px' }}>
@@ -159,49 +165,23 @@ export const IncomeReportcn: React.FC = () => {
           />
         </Col>
       </Row>
-
-      <CapsuleTabs>
-        <CapsuleTabs.Tab title='Доходы' key='fruits'>
-          <div style={{ width: '100%' }}>
-            <div style={{ marginTop: '16px' }}>
-              <Divider contentPosition='left' style={{
-                  color: '#1677ff',
-                  borderColor: '#98bff6ff',
-              }}>Платежи</Divider>
-              <SummaryRow label="Аренда" value={sums.payment} type="success" />
-              <br/>
-              <SummaryRow label="Склад" value={sums.storage} type="success" />
-              <br/>
-              <SummaryRow label="Итого" value={sums.payment + sums.storage} type="success" />
-              <br/>
-              <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
-              <br/>
-              <SummaryRow label="Прибыль" value={(sums.payment + sums.storage) - sums.expenses} type="success" />
-              <Divider contentPosition='left' style={{
-                  color: '#1677ff',
-                  borderColor: '#98bff6ff',
-              }}>Депозиты</Divider>
-              <SummaryRow label="Депозиты" value={sums.deposit} type="warning" />
-              <br/>
-              <SummaryRow label="Депозит возврат" value={sums.depositReturn} type="danger" />
-              <br/>
-              <SummaryRow label="Разница" value={sums.deposit - sums.depositReturn} type="success" />
-            </div>
-          </div>
-        </CapsuleTabs.Tab>
-        <CapsuleTabs.Tab title='Расходы' key='vegetables' >
-          <div style={{ width: '100%' }}>
-            <div style={{ marginTop: '16px'}}>
-              <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
-              <br/>
-              <SummaryRow label="Комм. Алатау" value={sums.serviceAlatau} type="warning" />
-              <br/>
-              <SummaryRow label="Комм. Павленко" value={sums.servicePavlenko} type="warning" />
-            </div>
-          </div>
-
-        </CapsuleTabs.Tab>
-      </CapsuleTabs>
+      <div style={{ width: '100%' }}>
+        <div style={{ marginTop: '16px' }}>
+          <Divider contentPosition='left' style={{
+              color: '#1677ff',
+              borderColor: '#98bff6ff',
+          }}>Платежи</Divider>
+          <SummaryRow label="Аренда" value={sums.payment} type="success" />
+          <br/>
+          <SummaryRow label="Склад" value={sums.storage} type="success" />
+          <br/>
+          <SummaryRow label="Итого" value={sums.payment + sums.storage} type="success" />
+          <br/>
+          <SummaryRow label="Расходы" value={sums.expenses} type="danger" />
+          <br/>
+          <SummaryRow label="Прибыль" value={(sums.payment + sums.storage) - sums.expenses} type="success" />
+        </div>
+      </div>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <XAxis
@@ -209,7 +189,7 @@ export const IncomeReportcn: React.FC = () => {
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
+            tickFormatter={(value) => value.slice(2, 7)}
           />
           <Legend
             formatter={(value) => (
@@ -218,12 +198,155 @@ export const IncomeReportcn: React.FC = () => {
               </span>
             )}
           />
-          <Bar dataKey="desktop" name="Комп" fill="#98bff6">
-            <LabelList position="top" fill="#1f2937" fontSize={9} />
+          <Bar dataKey="Аренда" name="Аренда" fill="#98bff6">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
           </Bar>
 
-          <Bar dataKey="mobile" name="Тел" fill="#4f46e5">
-            <LabelList position="top" fill="#1f2937" fontSize={9} />
+          <Bar dataKey="Склад" name="Склад" fill="#4f46e5">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <div style={{ width: '100%' }}>
+        <div style={{ marginTop: '16px' }}>
+          <Divider contentPosition='left' style={{
+              color: '#1677ff',
+              borderColor: '#98bff6ff',
+          }}>Депозиты</Divider>
+          <SummaryRow label="Депозиты" value={sums.deposit} type="warning" />
+          <br/>
+          <SummaryRow label="Депозит возврат" value={sums.depositReturn} type="danger" />
+          <br/>
+          <SummaryRow label="Разница" value={sums.deposit - sums.depositReturn} type="success" />
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(2, 7)}
+          />
+          <Legend
+            formatter={(value) => (
+              <span style={{ color: "#1f2937", fontSize: 14 }}>
+                {value}
+              </span>
+            )}
+          />
+          <Bar dataKey="Депозит" name="Депозит" fill="#98bff6">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+
+          <Bar dataKey="Депозит возврат" name="Депозит возврат" fill="#4f46e5">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <div style={{ width: '100%' }}>
+        <div style={{ marginTop: '16px' }}>
+          <Divider contentPosition='left' style={{
+              color: '#1677ff',
+              borderColor: '#98bff6ff',
+          }}>Расходы</Divider>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(2, 7)}
+          />
+          <Legend
+            formatter={(value) => (
+              <span style={{ color: "#1f2937", fontSize: 14 }}>
+                {value}
+              </span>
+            )}
+          />
+          <Bar dataKey="Комм. Алатау" name="Комм. Алатау" fill="#98bff6">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+
+          <Bar dataKey="Комм. Павленко" name="Комм. Павленко" fill="#4f46e5">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(2, 7)}
+            tick={{ fontSize: 8 }}
+          />
+          <Legend
+            formatter={(value) => (
+              <span style={{ color: "#1f2937", fontSize: 14 }}>
+                {value}
+              </span>
+            )}
+          />
+          <Bar dataKey="Расход" name="Расход" fill="#98bff6">
+            <LabelList
+              position="top"
+              fill="#1f2937"
+              fontSize={9}
+              formatter={(value) =>
+                Math.round(Number(value) / 1000).toLocaleString("ru-RU")
+              }
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
