@@ -101,8 +101,6 @@ export const IncomeReportcn: React.FC = () => {
     );
   }, [filteredData]);
 
-  console.log(chartData)
-
   return (
     <div style={{ padding: '24px' }}>
       <Row align="middle" gutter={15}>
@@ -143,11 +141,41 @@ export const IncomeReportcn: React.FC = () => {
           <XAxis
             dataKey="month"
             tickLine={false}
-            tickMargin={10}
+            tickMargin={20}
             axisLine={false}
-            tickFormatter={(value) => value.slice(2, 7)}
+            tickFormatter={(value) => {
+              const date = new Date(value + "-01")
+
+              const year = date.getFullYear().toString().slice(2)
+              const month = date
+                .toLocaleString("ru-RU", { month: "short" })
+                .slice(0, 3)
+
+              return `${month} ${year}`
+            }}
+            angle={-90}
+            tick={({ x, y, payload }) => {
+              const date = new Date(payload.value + "-01")
+              const year = date.getFullYear().toString().slice(2)
+              const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3)
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={12}
+                  fill="#1f2937"
+                  transform={`rotate(-90, ${x}, ${y})`}
+                >
+                  {`${month} ${year}`}
+                </text>
+              )
+            }}
           />
           <Legend
+            verticalAlign="bottom"
+            wrapperStyle={{ paddingTop: "25px" }}
             formatter={(value) => (
               <span style={{ color: "#1f2937", fontSize: 14 }}>
                 {value}
@@ -158,7 +186,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -169,7 +197,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -180,7 +208,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -189,7 +217,7 @@ export const IncomeReportcn: React.FC = () => {
         </BarChart>
       </ResponsiveContainer>
       <div style={{ width: '100%' }}>
-        <div style={{ marginTop: '16px' }}>
+        <div style={{ marginTop: '25px' }}>
           <Divider contentPosition='left' style={{
               color: '#1677ff',
               borderColor: '#98bff6ff',
@@ -206,11 +234,41 @@ export const IncomeReportcn: React.FC = () => {
           <XAxis
             dataKey="month"
             tickLine={false}
-            tickMargin={10}
+            tickMargin={20}
             axisLine={false}
-            tickFormatter={(value) => value.slice(2, 7)}
+            tickFormatter={(value) => {
+              const date = new Date(value + "-01")
+
+              const year = date.getFullYear().toString().slice(2)
+              const month = date
+                .toLocaleString("ru-RU", { month: "short" })
+                .slice(0, 3)
+
+              return `${month} ${year}`
+            }}
+            angle={-90}
+            tick={({ x, y, payload }) => {
+              const date = new Date(payload.value + "-01")
+              const year = date.getFullYear().toString().slice(2)
+              const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3)
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={12}
+                  fill="#1f2937"
+                  transform={`rotate(-90, ${x}, ${y})`}
+                >
+                  {`${month} ${year}`}
+                </text>
+              )
+            }}
           />
           <Legend
+            verticalAlign="bottom"
+            wrapperStyle={{ paddingTop: "30px" }}
             formatter={(value) => (
               <span style={{ color: "#1f2937", fontSize: 14 }}>
                 {value}
@@ -221,7 +279,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -232,7 +290,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -241,7 +299,7 @@ export const IncomeReportcn: React.FC = () => {
         </BarChart>
       </ResponsiveContainer>
       <div style={{ width: '100%' }}>
-        <div style={{ marginTop: '16px' }}>
+        <div style={{ marginTop: '30px' }}>
           <Divider contentPosition='left' style={{
               color: '#1677ff',
               borderColor: '#98bff6ff',
@@ -253,11 +311,41 @@ export const IncomeReportcn: React.FC = () => {
           <XAxis
             dataKey="month"
             tickLine={false}
-            tickMargin={10}
+            tickMargin={20}
             axisLine={false}
-            tickFormatter={(value) => value.slice(2, 7)}
+            tickFormatter={(value) => {
+              const date = new Date(value + "-01")
+
+              const year = date.getFullYear().toString().slice(2)
+              const month = date
+                .toLocaleString("ru-RU", { month: "short" })
+                .slice(0, 3)
+
+              return `${month} ${year}`
+            }}
+            angle={-90}
+            tick={({ x, y, payload }) => {
+              const date = new Date(payload.value + "-01")
+              const year = date.getFullYear().toString().slice(2)
+              const month = date.toLocaleString("ru-RU", { month: "short" }).slice(0, 3)
+              return (
+                <text
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={12}
+                  fill="#1f2937"
+                  transform={`rotate(-90, ${x}, ${y})`}
+                >
+                  {`${month} ${year}`}
+                </text>
+              )
+            }}
           />
           <Legend
+            verticalAlign="bottom"
+            wrapperStyle={{ paddingTop: "25px" }}
             formatter={(value) => (
               <span style={{ color: "#1f2937", fontSize: 14 }}>
                 {value}
@@ -268,7 +356,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
@@ -279,7 +367,7 @@ export const IncomeReportcn: React.FC = () => {
             <LabelList
               position="top"
               fill="#1f2937"
-              fontSize={9}
+              fontSize={10}
               formatter={(value) =>
                 Math.round(Number(value) / 1000).toLocaleString("ru-RU")
               }
