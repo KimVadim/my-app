@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Col, Row, Typography } from 'antd';
+import { Col, Row, Select, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store.ts';
 import { getMonthPaymentData } from '../service/appServiceBackend.ts';
@@ -16,11 +16,22 @@ import {
 } from 'recharts'
 import { MenuComp } from '../components/Menu.tsx';
 
+interface Item {
+  type: string;
+  value: number | string;
+}
+
 const { Text } = Typography;
+
+const calcSum = (data: Item[], type: string): number => {
+  return data
+    .filter((x) => x.type === type)
+    .reduce((sum, item) => sum + Number(item.value), 0);
+};
 
 export const IncomeReportcn: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const [selectedMonth, setSelectedMonth] = useState<string | null>('last12months');
+  const [selectedMonth, setSelectedMonth] = useState<string | null>('6');
   const [isModalPayment, setIsModalPayment] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
@@ -44,19 +55,16 @@ export const IncomeReportcn: React.FC = () => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
   });
   const filteredData = useMemo(() => {
-    if (selectedMonth === 'last12months') {
-      const lastSixMonths = getLastSixMonths(12);
-      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
-    } else if (selectedMonth === 'last6months') {
-      const lastSixMonths = getLastSixMonths(6);
-      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
-    } else if (selectedMonth === 'last3months') {
-      const lastSixMonths = getLastSixMonths(3);
-      return memoizedMonthPaymentData.filter((item) => lastSixMonths.includes(item.month));
-    } else if (selectedMonth) {
-      return memoizedMonthPaymentData.filter((item) => item.month === selectedMonth);
+    if (!selectedMonth || selectedMonth === 'all') {
+      return memoizedMonthPaymentData;
     }
-    return memoizedMonthPaymentData;
+
+    const monthsCount = Number(selectedMonth);
+    const months = getLastSixMonths(monthsCount);
+
+    return memoizedMonthPaymentData.filter((item) =>
+      months.includes(item.month)
+    );
   }, [memoizedMonthPaymentData, selectedMonth]);
 
   const formatCurrency = (value: number) =>
@@ -65,8 +73,6 @@ export const IncomeReportcn: React.FC = () => {
       currency: 'KZT',
       maximumFractionDigits: 0,
     }).format(value);
-
-  const calcSum = (data, type: string) => data.filter((x) => x.type === type).reduce((sum, item) => sum + Number(item.value), 0);
 
   const sums = useMemo(() => ({
     payment: calcSum(filteredData, 'Аренда'),
@@ -116,6 +122,20 @@ export const IncomeReportcn: React.FC = () => {
           <PaymentProgreesBar
             setIsPaymentModal={setIsModalPayment}
             isPaymentModal={isModalPayment}
+          />
+        </Col>
+      </Row>
+      <Row align="middle" gutter={15} style={{ marginTop: '10px' }}>
+        <Col>
+          <Select
+            value={selectedMonth ?? 'all'}
+            style={{ width: 180 }}
+            onChange={(value) => setSelectedMonth(value)}
+            options={[
+              { label: 'Послед. 6 мес.', value: '6' },
+              { label: 'Послед. 12 мес.', value: '12' },
+              { label: 'Все', value: 'all' },
+            ]}
           />
         </Col>
       </Row>
@@ -305,6 +325,9 @@ export const IncomeReportcn: React.FC = () => {
               borderColor: '#98bff6ff',
           }}>Коммунальные платежи</Divider>
         </div>
+        <SummaryRow label="Комм. Алатау" value={sums.serviceAlatau} type="success" />
+        <br/>
+        <SummaryRow label="Комм. Павленко" value={sums.servicePavlenko} type="success" />
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>

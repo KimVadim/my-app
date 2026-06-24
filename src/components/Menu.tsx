@@ -25,7 +25,6 @@ export const MenuComp: React.FC = () => {
             { label: 'Договора', key: '/opportunities' },
             { label: 'Платежи', key: '/payments' },
             { label: 'Контакты', key: '/contacts' },
-            { label: 'Расходы', key: '/expenses', disabled: login === 'ttigay' ? true : false  },
             { label: 'Склады', key: '/storage', disabled: login === 'ttigay' ? true : false  },
           ],
         },

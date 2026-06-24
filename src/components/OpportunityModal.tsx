@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, DatePicker, Spin } from 'antd';
+import React, { useState } from 'react';
+import { Button, DatePicker, Input, Popover, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
@@ -33,6 +33,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   ) as unknown as PaymentsType[];
+  const [open, setOpen] = useState(false);
   let locationPath;
 
   switch (location.pathname) {
@@ -121,24 +122,51 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
             </p>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
               <span>
-                <strong>{`${OpportunityField.PayDateLabel}: `}</strong>
-                <DatePicker
-                  format={FieldFormat.Date}
-                  inputReadOnly={true}
-                  placeholder={FieldPlaceholder.Date}
-                  disabledDate={(current) => current && current.isBefore(parsedDate, 'day')}
-                  value={optyPayDate ? parsedDate : undefined}
-                  allowClear={false}
-                  needConfirm={true}
-                  onChange={(value) => {
-                    if (value) {
-                      const day = value.date();
-                      const month = value.month() + 1; // месяцы начинаются с 0
-                      const year = value.year();
-                      actions.handleUpdateOpty(`${month}/${day}/${year}`, OpportunityFieldData.PaymentDate);
-                    }
-                  }}
-                />
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
+                  <span>
+                    <strong>{`${OpportunityField.PayDateLabel}: `}</strong>
+                    <Popover
+                      trigger="click"
+                      open={open}
+                      onOpenChange={setOpen}
+                      content={
+                        <div style={{ width: 260 }}>
+                          <DatePicker
+                            style={{ width: '100%' }}
+                            onChange={(value) => {
+                              if (value) {
+                                const day = value.date();
+                                const month = value.month() + 1;
+                                const year = value.year();
+
+                                actions.handleUpdateOpty(
+                                  `${month}/${day}/${year}`,
+                                  OpportunityFieldData.PaymentDate
+                                );
+                              }
+                            }}
+                          />
+
+                          <Input placeholder="Комментарий" style={{ marginTop: 8 }} />
+
+                          <Button
+                            type="primary"
+                            style={{ marginTop: 8, width: '100%' }}
+                            onClick={() => setOpen(false)}
+                          >
+                            ОК
+                          </Button>
+                        </div>
+                      }
+                    >
+                      <Input
+                        readOnly
+                        value={parsedDate ? parsedDate.format('DD.MM.YYYY') : ''}
+                        placeholder={FieldPlaceholder.Date}
+                      />
+                    </Popover>
+                  </span>
+                </div>
               </span>
             </div>
             {record?.[OpportunityFieldData.PayPhone] && record?.[OpportunityFieldData.PayPhone] !== 'Нет информации' && <p className="opty-card">

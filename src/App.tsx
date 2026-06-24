@@ -5,7 +5,6 @@ import HomePage from './pages/HomePage.tsx';
 import { IncomeReportcn } from './pages/Reportcn.tsx';
 import { Payments } from './pages/Payments.tsx';
 import { Contacts } from './pages/Contacts.tsx';
-import { Expenses } from './pages/Expenses.tsx';
 import Login from './pages/Login.tsx';
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/opportunities" element={<HomePage view='Opportunity'/>} />
           <Route path="/incomereportcn" element={<IncomeReportcn/>} />
-          <Route path='/expenses' element={<Expenses/>} />
           <Route path='/contacts' element={<Contacts/>} />
           <Route path='/payments' element={<Payments/>} />
           <Route path='/storage' element={<HomePage view='Storage'/>} />
