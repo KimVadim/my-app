@@ -1,4 +1,4 @@
-import { Button, Spin, Table, Row, Col, Input } from "antd";
+import { Button, Spin, Table, Row, Col, Input, Tabs } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { OpportunityModal } from "../../src/components/OpportunityModal.tsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +14,10 @@ import { setOpportunity } from "../slices/opportunitySlice.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 
+const STAGE_TABS = {
+  ACTIVE: 'Заключили',
+  TERMINATED: 'Расторгли', // уточни точное название стадии в твоих данных
+};
 
 export const Opportunity: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -22,6 +26,7 @@ export const Opportunity: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>(STAGE_TABS.ACTIVE); // новое состояние для активного таба
   const isCalledRef = useRef(false);
   const optyData = useSelector((state: RootState) => state.opportunity.opportunity) as unknown as OpportunityType[];
 
@@ -42,12 +47,15 @@ export const Opportunity: React.FC = () => {
   }, [dispatch]);
 
   const filteredData = useMemo(() => {
-    if (!searchText) return optyData;
-    return optyData.filter(item =>
+    // сначала фильтруем по вкладке (стадии договора)
+    const stageFiltered = optyData.filter(item => item['Stage'] === activeTab);
+
+    if (!searchText) return stageFiltered;
+    return stageFiltered.filter(item =>
       item[OpportunityFieldData.ApartNum]?.toString().toLowerCase().includes(searchText.toLowerCase()) ||
       item[OpportunityFieldData.FullName]?.toString().toLowerCase().includes(searchText.toLowerCase())
     );
-  }, [searchText, optyData]);
+  }, [searchText, optyData, activeTab]);
 
   const actions = {
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +64,9 @@ export const Opportunity: React.FC = () => {
     handleRowClick: (record: any) => {
       setSelectedRecord(record);
       setIsModalOpen(true);
+    },
+    handleTabChange: (key: string) => {
+      setActiveTab(key);
     },
   };
 
@@ -108,6 +119,14 @@ export const Opportunity: React.FC = () => {
                 </Button>
               </Col>
             </Row>
+            <Tabs
+              activeKey={activeTab}
+              onChange={actions.handleTabChange}
+              items={[
+                { key: STAGE_TABS.ACTIVE, label: 'Заключенные' },
+                { key: STAGE_TABS.TERMINATED, label: 'Расторгнутые' },
+              ]}
+            />
           </>
           }
           columns={opportunityMeta}
