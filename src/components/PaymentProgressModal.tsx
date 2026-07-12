@@ -67,7 +67,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                     }, {});
                     const contractDate = apartToContractDate[apartNum];
                     const dayOfMonth = contractDate ? dayjs(contractDate).date() : null; // число месяца (1-31)
-                    const formattedDate = contractDate ? dayjs(contractDate).format("DD.MM") : null;
+                    const formattedDate = contractDate ? dayjs(contractDate).format("DD") : null;
                     const isBefore15 = dayOfMonth !== null ? dayOfMonth <= 15 : null;
 
                     return (
@@ -82,7 +82,7 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
                         >
                             <span
                                 style={{
-                                    fontSize: 10,
+                                    fontSize: 11,
                                     lineHeight: "12px",
                                     height: 12,
                                     marginLeft: -9,
@@ -109,7 +109,6 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
             visible={isPaymentModal}
             showCloseButton
             position='top'
-            //bodyStyle={{ height: '33vh' }}
             onClose={() => {
                 setIsPaymentModal(false);
             }}
