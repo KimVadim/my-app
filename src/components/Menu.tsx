@@ -24,17 +24,9 @@ export const MenuComp: React.FC = () => {
           children: [
             { label: 'Договора', key: '/opportunities' },
             { label: 'Платежи', key: '/payments' },
-            { label: 'Контакты', key: '/contacts' },
             { label: 'Склады', key: '/storage', disabled: login === 'ttigay' ? true : false  },
           ],
-        },
-        {
-          type: 'group',
-          label: 'Отчеты',
-          children: [
-            { label: 'Отчеты', key: '/incomereportcn',disabled: login === 'ttigay' ? true : false },
-          ],
-        },
+        }
       ],
     },
   ];
