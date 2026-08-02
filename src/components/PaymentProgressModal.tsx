@@ -33,7 +33,6 @@ export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
         return String(apartNum);
     });
 
-    // ↓↓↓ Новый словарь: квартира -> дата договора ↓↓↓
     const apartToContractDate = optyData.reduce((acc: Record<string, string>, item: OpportunityType) => {
         const apartNum = item[OpportunityFieldData.ApartNum];
         const contractDate = item[OpportunityFieldData.PaymentDate]; // уточни точное имя поля

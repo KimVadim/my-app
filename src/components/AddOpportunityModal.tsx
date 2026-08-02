@@ -12,9 +12,6 @@ import { formattedPhone } from "../service/utils.ts";
 import { setQuote } from "../slices/quoteSlice.ts";
 import { setContact } from "../slices/contactSlice.ts";
 import { setOpportunity } from "../slices/opportunitySlice.ts";
-//import { CloudOutlined, RocketOutlined, ThunderboltOutlined } from '@ant-design/icons';
-//import { Flex, Segmented } from 'antd';
-//import type { SegmentedProps } from 'antd';
 
 interface AddOpportunityModalProps {
   setIsAddOpty: (isOpen: boolean) => void;
@@ -23,24 +20,6 @@ interface AddOpportunityModalProps {
   loading: boolean;
   view?: string;
 }
-
-/*const options: SegmentedProps['options'] = [
-  {
-    label: '2 недели',
-    value: '2_week',
-    icon: <RocketOutlined />,
-  },
-  {
-    label: '1 месяц',
-    value: '1_month',
-    icon: <ThunderboltOutlined />,
-  },
-  {
-    label: '3 месяца',
-    value: '3_month',
-    icon: <CloudOutlined />,
-  },
-];*/
 
 export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAddOpty, isAddOpty, setLoading, loading, view}) => {
     const [form] = Form.useForm();
@@ -78,10 +57,6 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
       }
     }
 
-
-    //const segmentedSharedProps: SegmentedProps = {
-    //  options
-    //};
     return (
       <Modal
         title={ModalTitle.AddOpportunity}
@@ -174,12 +149,6 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
               onChange={(arr) => arr.length > 0 && form.setFieldsValue({[OpportunityField.Product]: arr[0]})}
             />
           </Form.Item>
-          {//<Form.Item style={{ textAlign: "center" }} hidden={!(view==='Storage')} label={OpportunityField.PeriodLabel} rules={[FieldRules.Required]}>
-            //<Flex vertical gap="middle">
-              //<Segmented {...segmentedSharedProps} />
-            //</Flex>
-          //</Form.Item>
-          }
           <Form.Item
             label={view==='Storage' ? OpportunityField.CommentStorageLabel : OpportunityField.CommentLabel}
             name={OpportunityField.Comment}

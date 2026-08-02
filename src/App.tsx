@@ -2,7 +2,6 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute.tsx';
 import HomePage from './pages/HomePage.tsx';
-import { IncomeReportcn } from './pages/Reportcn.tsx';
 import { Payments } from './pages/Payments.tsx';
 import { Contacts } from './pages/Contacts.tsx';
 import Login from './pages/Login.tsx';
@@ -14,7 +13,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<PrivateRoute />}>
           <Route path="/opportunities" element={<HomePage view='Opportunity'/>} />
-          <Route path="/incomereportcn" element={<IncomeReportcn/>} />
           <Route path='/contacts' element={<Contacts/>} />
           <Route path='/payments' element={<Payments/>} />
           <Route path='/storage' element={<HomePage view='Storage'/>} />
