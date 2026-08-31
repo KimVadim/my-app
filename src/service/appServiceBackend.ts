@@ -306,9 +306,10 @@ export const updateOpty = async (values: UpdateOpty) => {
   try {
     const payload = {
       optyId: values.optyId,
-      PaymentDate: values?.PaymentDate,
+      PaymentDay: values?.PaymentDay,
       Comment: values?.Comment,
       PayPhone: values?.PayPhone,
+      OptySum: values?.OptySum,
     };
 
     const response = await axios.post(endpoints.UPDATE_OPTY, payload);

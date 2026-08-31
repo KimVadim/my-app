@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { Button, DatePicker, Input, Popover, Spin } from 'antd';
+import React from 'react';
+import { Button, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { selectFilteredQuotes } from '../selector/selectors.tsx';
-import { FieldFormat, FieldPlaceholder, ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType } from '../constants/appConstant.ts';
+import { ModalTitle, OpportunityField, OpportunityFieldData, PaymentsFieldData, PaymentsType, UpdateOpty } from '../constants/appConstant.ts';
 import { formatPhoneNumber } from '../service/utils.ts';
 import { closeOpty, getSheetDataParam, updateOpty } from '../service/appServiceBackend.ts';
 import { Dialog, Popup, Steps, Divider, Space, Card, Toast, AutoCenter } from 'antd-mobile'
 import { Step } from 'antd-mobile/es/components/steps/step';
 import { BUTTON_TEXT, MODAL_TEXT, Product, productMap, STEP_STATUS } from '../constants/dictionaries.ts';
-import dayjs from 'dayjs';
 import { StopOutline } from 'antd-mobile-icons';
 import { ButtonChangeModal } from './ButtonChangeModal.tsx';
 import { useLocation } from "react-router-dom";
@@ -28,14 +27,18 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
   const location = useLocation();
   const [loading, setLoading] = React.useState<boolean>(false);
   const optyDate = new Date(record?.[OpportunityFieldData.OptyDate]);
-  const optyPayDate = new Date(record?.[OpportunityFieldData.PaymentDate]);
+  const optyPayDay = record?.[OpportunityFieldData.PaymentDay];
   const optyId = record?.[OpportunityFieldData.Id]
   const filteredQuotes = useSelector((state: RootState) =>
     selectFilteredQuotes(state, optyId)
   ) as unknown as PaymentsType[];
-  const [open, setOpen] = useState(false);
   let locationPath;
-
+  const totalAmount = filteredQuotes
+  .filter(item => item[PaymentsFieldData.Product] !== 'Prod_3')
+  .reduce(
+    (sum, item) => sum + Number(item[PaymentsFieldData.Amount] || 0),
+    0
+  );
   switch (location.pathname) {
     case "/opportunities":
       locationPath = "Renter";
@@ -62,9 +65,15 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
         setIsModalOpen(false);
       });
     },
-    handleUpdateOpty: (value: string, fieldName: string) => {
+    handleUpdateOpty: (values: UpdateOpty) => {
       setLoading(true);
-      updateOpty({optyId, [fieldName]: value}).then(() => {
+      updateOpty({
+        optyId,
+        PayPhone: values?.phone,
+        Comment: values?.comment,
+        OptySum: values?.optySum,
+        PaymentDay: values?.paymentDay
+      }).then(() => {
         getSheetDataParam(locationPath).then((response) => {
             dispatch(setOpportunity(response?.opportunities));
             dispatch(setQuote(response?.quote));
@@ -77,9 +86,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
     },
   };
 
-  console.log(locationPath);
-
-  let parsedDate = optyPayDate && dayjs(optyPayDate);
   return (
     <Popup
       visible={isModalOpen}
@@ -91,7 +97,7 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
       <Spin spinning={loading}>
         <div
           style={{
-            height: '55vh',
+            height: '60vh',
             overflowY: 'scroll',
             padding: '20px',
             marginBottom: '30px',
@@ -105,10 +111,13 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 <strong>{`${OpportunityField.FullNameLabel}: `}</strong> {record?.[OpportunityFieldData.FullName]}
               </span>
             </div>
-            <p className="opty-card">
+            <p>
               <strong>{`${OpportunityField.OptyAmountLabel}: `}</strong> {Number(record?.[OpportunityFieldData.Amount])?.toLocaleString("ru-RU")}
             </p>
-            <p className="opty-card"><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
+            <p>
+              <strong>{`${OpportunityField.OptySumLabel} `}</strong> {Number(record?.[OpportunityFieldData.OptySum])?.toLocaleString("ru-RU")} / {totalAmount?.toLocaleString("ru-RU")}
+            </p>
+            <p><strong>{`${OpportunityField.PhoneLabel}: `}</strong>
               <a
                 className="phone-link"
                 href={`tel:${record?.[OpportunityFieldData.Phone]}`}
@@ -117,62 +126,16 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
                 {formatPhoneNumber(record?.[OpportunityFieldData.Phone])}
               </a>
             </p>
-            <p className="opty-card">
+            <p>
               <strong>{`${OpportunityField.OptyDateLabel}: `}</strong> {optyDate.toLocaleDateString("ru-RU")}
             </p>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
-              <span>
-                <div style={{ display: 'flex', flexDirection: 'row', gap: 8, paddingTop: '10px' }}>
-                  <span>
-                    <strong>{`${OpportunityField.PayDateLabel}: `}</strong>
-                    <Popover
-                      trigger="click"
-                      open={open}
-                      onOpenChange={setOpen}
-                      content={
-                        <div style={{ width: 260 }}>
-                          <DatePicker
-                            style={{ width: '100%' }}
-                            onChange={(value) => {
-                              if (value) {
-                                const day = value.date();
-                                const month = value.month() + 1;
-                                const year = value.year();
-
-                                actions.handleUpdateOpty(
-                                  `${month}/${day}/${year}`,
-                                  OpportunityFieldData.PaymentDate
-                                );
-                              }
-                            }}
-                          />
-
-                          <Input placeholder="Комментарий" style={{ marginTop: 8 }} />
-
-                          <Button
-                            type="primary"
-                            style={{ marginTop: 8, width: '100%' }}
-                            onClick={() => setOpen(false)}
-                          >
-                            ОК
-                          </Button>
-                        </div>
-                      }
-                    >
-                      <Input
-                        readOnly
-                        value={parsedDate ? parsedDate.format('DD.MM.YYYY') : ''}
-                        placeholder={FieldPlaceholder.Date}
-                      />
-                    </Popover>
-                  </span>
-                </div>
-              </span>
-            </div>
+            <p>
+              <strong>{`${OpportunityField.PaymentDayLabel}: ${optyPayDay} чис.`}</strong>
+            </p>
             {record?.[OpportunityFieldData.PayPhone] && record?.[OpportunityFieldData.PayPhone] !== 'Нет информации' && <p className="opty-card">
               <strong>{`${OpportunityField.PayPhoneLabel}: `}</strong> {formatPhoneNumber(record?.[OpportunityFieldData.PayPhone])}
             </p>}
-            <p className="opty-card">
+            <p>
               <strong>{`${OpportunityField.CommentLabel}: `}</strong>
               {record?.[OpportunityFieldData.Comment]}
             </p>
@@ -197,14 +160,6 @@ export const OpportunityModal: React.FC<OpportunityModalProps> = ({ isModalOpen,
               />
               <ButtonChangeModal
                 record={record}
-                type='TextArea'
-                fieldName={OpportunityFieldData.Comment}
-                updateData={actions.handleUpdateOpty}
-              />
-              <ButtonChangeModal
-                record={record}
-                type='PhoneInput'
-                fieldName={OpportunityFieldData.PayPhone}
                 updateData={actions.handleUpdateOpty}
               />
             </AutoCenter>

@@ -63,7 +63,7 @@ export const FieldRules = {
     type: 'number',
     min: 0,
     max: 5000000,
-    message: 'Введите сумму от 0 до 5000000',
+    message: 'Введите сумму от 0 до 5 000 000',
   },
   PaymentAmount: {
     type: 'number',
@@ -97,6 +97,13 @@ export interface AddOpportunity {
   comment: string;
 }
 
+export interface UpdateOpty {
+  phone?: string;
+  paymentDay?: number;
+  optySum?: number;
+  comment?: string;
+}
+
 export enum OpportunityFieldData {
   Id = 'ID',
   Contact = 'Contact',
@@ -104,9 +111,11 @@ export enum OpportunityFieldData {
   Product = 'Product',
   Stage = 'Stage',
   Amount = 'Amount',
+  OptySum = 'OptySum',
   Created = 'Created',
   OptyDate = 'OppoDate',
   PaymentDate = 'PaymentDate',
+  PaymentDay = 'PaymentDay',
   ContactId = 'contact_id',
   FirstName = 'First Name',
   LastName = 'Last Name',
@@ -143,11 +152,13 @@ export enum OpportunityField {
   ProductLabel = 'Продукт',
   OptyDateLabel = 'Дата договора',
   PaymentDateLabel = 'Дата оплаты',
+  PaymentDayLabel = 'День оплаты',
   PayDateLabel = 'Дата платежа',
   PaymentTypeLabel = 'Источник',
   AmountLabel = 'Сумма',
   FullNameLabel = 'ФИО',
   OptyAmountLabel = 'Сумма договора',
+  OptySumLabel = 'Сум. догов. / Сум. плат.',
   OptyNameLabel = '№ / Статус / Дата / Сумма',
   StorageNameLabel = '№ / Статус / Дата',
   PayPhoneFlgLabel = 'Kaspi на другом номере',
@@ -167,6 +178,8 @@ export enum OpportunityField {
   OptyDate = 'optyDate',
   PaymentDate = 'paymentDate',
   Comment = 'comment',
+  OptySum = 'optySum',
+  PaymentDay = 'paymentDay',
 }
 
 // Платежи
@@ -355,7 +368,8 @@ export enum PaymentsField {
 
 export interface UpdateOpty {
   optyId: string;
-  PaymentDate?: string;
+  PaymentDay?: number;
   Comment?: string;
   PayPhone?: string;
+  OptySum?: number;
 }
