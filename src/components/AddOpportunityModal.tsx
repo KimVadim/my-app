@@ -75,7 +75,7 @@ export const AddOpportunityModal: React.FC<AddOpportunityModalProps> = ({setIsAd
           initialValues={{
             phone: '+7',
             payPhone: '+7',
-            product: view === 'Storage' ? Product.StorageS : Product.Rent180,
+            product: view === 'Storage' ? Product.StorageS : Product.Rent185,
             [OpportunityField.PaymentDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
             [OpportunityField.OptyDate]: dayjs(dayjs().format(FieldFormat.Date), FieldFormat.Date),
           }}

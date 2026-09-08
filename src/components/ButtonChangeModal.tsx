@@ -121,10 +121,6 @@ export const ButtonChangeModal: React.FC<ButtonChangeModalProps> = ({
             <Form.Item
               label={OpportunityField.PayPhoneLabel}
               name={OpportunityField.Phone}
-              rules={[
-                FieldRules.Required,
-                FieldRules.PhoneFormat,
-              ]}
             >
               <Input
                 value={phone}
