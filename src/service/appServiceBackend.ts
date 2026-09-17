@@ -86,6 +86,8 @@ export const addOpty = async (values: AddOpportunity) => {
       optyAmount = Product.StorageMAmount;
     } else if (values.product === Product.StorageL) {
       optyAmount = Product.StorageLAmount;
+    } else if (values.product === Product.Rent190) {
+      optyAmount = Product.RentAmount190;
     }
     const payload = {
       firstName: values.firstName,
