@@ -129,6 +129,7 @@ export const productMap = {
   [Product.Rent160]: Product.Rent160Value,
   [Product.Rent180]: Product.Rent180Value,
   [Product.Rent185]: Product.Rent185Value,
+  [Product.Rent190]: Product.Rent190Value,
   [Product.Deposit]: Product.DepositValue,
   [Product.Return]: Product.ReturnValue,
   [Product.StorageS]: Product.StorageSValue,
