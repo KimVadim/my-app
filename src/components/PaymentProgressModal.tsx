@@ -13,7 +13,7 @@ interface PaymentProgreesProps {
   payments: any;
   paymentsCount: number;
   optyActiveCount: number;
-  optyAllCount: number;
+  optyAllCount?: number;
 }
 
 export const PaymentProgreesModal: React.FC<PaymentProgreesProps> = ({
